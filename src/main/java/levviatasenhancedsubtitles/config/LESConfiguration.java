@@ -1,6 +1,7 @@
 package levviatasenhancedsubtitles.config;
 
 import levviatasenhancedsubtitles.LES;
+import levviatasenhancedsubtitles.OverlayPosition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -12,6 +13,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static levviatasenhancedsubtitles.OverlayPosition.*;
 
 /**
  * Holds the configuration information and synchronises the various copies of it.
@@ -47,8 +50,11 @@ public class LESConfiguration {
 	public static String myString;
 	public static String myColour;
 
+	public static OverlayPosition overlayPosition;
+
 	public static final String CATEGORY_NAME_GENERAL = "category_general";
 	public static final String CATEGORY_NAME_OTHER = "category_other";
+
 
 	public static void preInit()
 	{
@@ -162,33 +168,56 @@ public class LESConfiguration {
 		 * the file, otherwise they will be assigned the default value.
 		 */
 
-		// integer
+		// overlayPosition
+		final String OVERLAYPOSITION_DEFAULT_VALUE = String.valueOf(BOTTOM_LEFT);
+		final String[] POSITION_CHOICES = {
+				String.valueOf(BOTTOM_RIGHT),
+				String.valueOf(BOTTOM_CENTER),
+				String.valueOf(BOTTOM_LEFT),
+				String.valueOf(CENTER_LEFT),
+				String.valueOf(TOP_LEFT),
+				String.valueOf(TOP_CENTER),
+				String.valueOf(TOP_RIGHT),
+				String.valueOf(CENTER_RIGHT)
+				};
 
+		Property propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
+				"myColour", OVERLAYPOSITION_DEFAULT_VALUE,
+				"Configuration subtitle overlay position (overlayPosition): blue, red, yellow");
+				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
+
+		propOverlayPosition.setValidValues(POSITION_CHOICES);
+
+		// integer
 		final int MY_INT_MIN_VALUE = 3;
 		final int MY_INT_MAX_VALUE = 12;
 		final int MY_INT_DEFAULT_VALUE = 10;
-		Property propMyInt = config.get(CATEGORY_NAME_GENERAL, "myInteger", MY_INT_DEFAULT_VALUE,
+		Property propMyInt = config.get(CATEGORY_NAME_GENERAL,
+				"myInteger", MY_INT_DEFAULT_VALUE,
 				"Configuration integer (myInteger)", MY_INT_MIN_VALUE, MY_INT_MAX_VALUE);
 		propMyInt.setLanguageKey("gui.config.myInteger");
 
 		// boolean
 		final boolean MY_BOOL_DEFAULT_VALUE = true;
-		Property propMyBool = config.get(CATEGORY_NAME_GENERAL, "myBoolean", MY_BOOL_DEFAULT_VALUE);
-		propMyBool.setComment("Configuration boolean (myBoolean)");
+		Property propMyBool = config.get(CATEGORY_NAME_GENERAL,
+				"myBoolean", MY_BOOL_DEFAULT_VALUE,
+				"Configuration boolean (myBoolean)");
 		propMyBool.setLanguageKey("gui.config.myBoolean").setRequiresMcRestart(true);
 
 		// double
 		final double MY_DOUBLE_MIN_VALUE = 0.0;
 		final double MY_DOUBLE_MAX_VALUE = 1.0;
 		final double MY_DOUBLE_DEFAULT_VALUE = 0.80;
-		Property propMyDouble = config.get(CATEGORY_NAME_GENERAL, "myDouble", MY_DOUBLE_DEFAULT_VALUE,
+		Property propMyDouble = config.get(CATEGORY_NAME_GENERAL,
+				"myDouble", MY_DOUBLE_DEFAULT_VALUE,
 				"Configuration double (myDouble)", MY_DOUBLE_MIN_VALUE, MY_DOUBLE_MAX_VALUE);
 		propMyDouble.setLanguageKey("gui.config.myDouble");
 
 		// string
 		final String MY_STRING_DEFAULT_VALUE = "default";
-		Property propMyString = config.get(CATEGORY_NAME_GENERAL, "myString", MY_STRING_DEFAULT_VALUE);
-		propMyString.setComment("Configuration string (myString)");
+		Property propMyString = config.get(CATEGORY_NAME_GENERAL,
+				"myString", MY_STRING_DEFAULT_VALUE,
+				"Configuration string (myString)");
 		propMyString.setLanguageKey("gui.config.myString").setRequiresWorldRestart(true);
 
 		// list of integer values
