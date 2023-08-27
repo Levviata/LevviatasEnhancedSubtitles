@@ -1,4 +1,4 @@
-package levviatasenhancedsubtitles.mbe70_configuration;
+package levviatasenhancedsubtitles.config;
 
 /*
  * User: TW
@@ -17,7 +17,7 @@ package levviatasenhancedsubtitles.mbe70_configuration;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-    MBEConfiguration.clientPreInit();  // used to set up an event handler for the GUI so that the altered values are
+    LESConfiguration.clientPreInit();  // used to set up an event handler for the GUI so that the altered values are
                                     //  saved back to disk.
 	}
 

@@ -54,21 +54,21 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
    The initClientOnly method must be moved to a different class StartupClientOnly, which is never loaded in the DedicatedServer at all.
  */
 
-@Mod(modid = MinecraftByExample.MODID, version = MinecraftByExample.VERSION,
-     guiFactory= MinecraftByExample.GUIFACTORY)  //delete guiFactory if MBE70 not present and you don't have a configuration GUI
-public class MinecraftByExample
+@Mod(modid = LES.MODID, version = LES.VERSION,
+     guiFactory= LES.GUIFACTORY)  //delete guiFactory if MBE70 not present and you don't have a configuration GUI
+public class LES
 {
   // you also need to update the modid and version in two other places as well:
   //  build.gradle file (the version, group, and archivesBaseName parameters)
   //  resources/mcmod.info (the name, description, and version parameters)
-   public static final String MODID = "minecraftbyexample";
+   public static final String MODID = "levviatasenhancedsubtitles";
     public static final String VERSION = "1.12.2a";
 
-    public static final String GUIFACTORY = "levviatasenhancedsubtitles.mbe70_configuration.MBEGuiFactory"; //delete if MBE70 not present
+    public static final String GUIFACTORY = "levviatasenhancedsubtitles.config.LESGuiFactory"; //delete if MBE70 not present
 
     // The instance of your mod that Forge uses.  Optional.
-    @Mod.Instance(MinecraftByExample.MODID)
-    public static MinecraftByExample instance;
+    @Mod.Instance(LES.MODID)
+    public static LES instance;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide="levviatasenhancedsubtitles.ClientOnlyProxy", serverSide="levviatasenhancedsubtitles.DedicatedServerProxy")

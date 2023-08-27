@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: LevviatasEnhancedSubtitles
+Implementation-Version: 1.0
+Specification-Vendor: examplemodsareus
+Specification-Title: examplemod
+Implementation-Timestamp: 2023-08-27T09:09:54+0200
+Specification-Version: 1
+Implementation-Vendor: examplemodsareus
+

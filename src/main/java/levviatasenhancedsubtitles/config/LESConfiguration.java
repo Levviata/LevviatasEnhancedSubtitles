@@ -1,6 +1,6 @@
-package levviatasenhancedsubtitles.mbe70_configuration;
+package levviatasenhancedsubtitles.config;
 
-import levviatasenhancedsubtitles.MinecraftByExample;
+import levviatasenhancedsubtitles.LES;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -37,7 +37,7 @@ import java.util.List;
  *
  *  => See ForgeModContainer for more examples.
  */
-public class MBEConfiguration {
+public class LESConfiguration {
 
 	// Declare all configuration fields used by the mod here
 	public static int myInteger;
@@ -60,7 +60,7 @@ public class MBEConfiguration {
 		 * and you specify the name of the config file, together this works
 		 * similar to the old getSuggestedConfigurationFile() function.
 		 */
-		File configFile = new File(Loader.instance().getConfigDir(), "MinecraftByExample.cfg");
+		File configFile = new File(Loader.instance().getConfigDir(), "LevviatasEnhancedSubtitles.cfg");
 
 		// initialize your configuration object with your configuration file values.
 		config = new Configuration(configFile);
@@ -169,13 +169,13 @@ public class MBEConfiguration {
 		final int MY_INT_DEFAULT_VALUE = 10;
 		Property propMyInt = config.get(CATEGORY_NAME_GENERAL, "myInteger", MY_INT_DEFAULT_VALUE,
 				"Configuration integer (myInteger)", MY_INT_MIN_VALUE, MY_INT_MAX_VALUE);
-		propMyInt.setLanguageKey("gui.mbe70_configuration.myInteger");
+		propMyInt.setLanguageKey("gui.config.myInteger");
 
 		// boolean
 		final boolean MY_BOOL_DEFAULT_VALUE = true;
 		Property propMyBool = config.get(CATEGORY_NAME_GENERAL, "myBoolean", MY_BOOL_DEFAULT_VALUE);
 		propMyBool.setComment("Configuration boolean (myBoolean)");
-		propMyBool.setLanguageKey("gui.mbe70_configuration.myBoolean").setRequiresMcRestart(true);
+		propMyBool.setLanguageKey("gui.config.myBoolean").setRequiresMcRestart(true);
 
 		// double
 		final double MY_DOUBLE_MIN_VALUE = 0.0;
@@ -183,26 +183,26 @@ public class MBEConfiguration {
 		final double MY_DOUBLE_DEFAULT_VALUE = 0.80;
 		Property propMyDouble = config.get(CATEGORY_NAME_GENERAL, "myDouble", MY_DOUBLE_DEFAULT_VALUE,
 				"Configuration double (myDouble)", MY_DOUBLE_MIN_VALUE, MY_DOUBLE_MAX_VALUE);
-		propMyDouble.setLanguageKey("gui.mbe70_configuration.myDouble");
+		propMyDouble.setLanguageKey("gui.config.myDouble");
 
 		// string
 		final String MY_STRING_DEFAULT_VALUE = "default";
 		Property propMyString = config.get(CATEGORY_NAME_GENERAL, "myString", MY_STRING_DEFAULT_VALUE);
 		propMyString.setComment("Configuration string (myString)");
-		propMyString.setLanguageKey("gui.mbe70_configuration.myString").setRequiresWorldRestart(true);
+		propMyString.setLanguageKey("gui.config.myString").setRequiresWorldRestart(true);
 
 		// list of integer values
 		final int[] MY_INT_LIST_DEFAULT_VALUE = new int[] { 1, 2, 3, 4, 5 };
 		Property propMyIntList = config.get(CATEGORY_NAME_GENERAL, "myIntList", MY_INT_LIST_DEFAULT_VALUE,
 				"Configuration integer list (myIntList)");
-		propMyIntList.setLanguageKey("gui.mbe70_configuration.myIntList");
+		propMyIntList.setLanguageKey("gui.config.myIntList");
 
 		// a string restricted to several choices - located on a separate category tab in the GUI
 		final String COLOUR_DEFAULT_VALUE = "red";
 		final String[] COLOUR_CHOICES = { "blue", "red", "yellow" };
 		Property propColour = config.get(CATEGORY_NAME_OTHER, "myColour", COLOUR_DEFAULT_VALUE);
 		propColour.setComment("Configuration string (myColour): blue, red, yellow");
-		propColour.setLanguageKey("gui.mbe70_configuration.myColour").setRequiresWorldRestart(true);
+		propColour.setLanguageKey("gui.config.myColour").setRequiresWorldRestart(true);
 		propColour.setValidValues(COLOUR_CHOICES);
 
 		// By defining a property order we can control the order of the
@@ -296,7 +296,7 @@ public class MBEConfiguration {
 		@SubscribeEvent(priority = EventPriority.NORMAL)
 		public void onEvent(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
-			if (MinecraftByExample.MODID.equals(event.getModID()) && !event.isWorldRunning())
+			if (LES.MODID.equals(event.getModID()) && !event.isWorldRunning())
 			{
 				if (event.getConfigID().equals(CATEGORY_NAME_GENERAL) || event.getConfigID().equals(CATEGORY_NAME_OTHER))
 				{

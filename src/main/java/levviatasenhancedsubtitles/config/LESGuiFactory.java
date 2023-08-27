@@ -1,6 +1,6 @@
-package levviatasenhancedsubtitles.mbe70_configuration;
+package levviatasenhancedsubtitles.config;
 
-import levviatasenhancedsubtitles.MinecraftByExample;
+import levviatasenhancedsubtitles.LES;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MBEGuiFactory implements IModGuiFactory
+public class LESGuiFactory implements IModGuiFactory
 {
 	//this class is accessed when Forge needs a GUI made relating to your mod (e.g. config GUI)
 
@@ -52,16 +52,16 @@ public class MBEGuiFactory implements IModGuiFactory
 		public MBEConfigGui(GuiScreen parentScreen)
 		{
 			//I18n function basically "translates" or localizes the given key using the appropriate .lang file
-			super(parentScreen, getConfigElements(), MinecraftByExample.MODID,
-            false, false, I18n.format("gui.mbe70_configuration.mainTitle"));
+			super(parentScreen, getConfigElements(), LES.MODID,
+            false, false, I18n.format("gui.config.mainTitle"));
 		}
 
 		private static List<IConfigElement> getConfigElements()
 		{
 			List<IConfigElement> list = new ArrayList<IConfigElement>();
 			//Add the two buttons that will go to each config category edit screen
-			list.add(new DummyCategoryElement("mainCfg", "gui.mbe70_configuration.ctgy.general", CategoryEntryGeneral.class));
-			list.add(new DummyCategoryElement("miscCfg", "gui.mbe70_configuration.ctgy.other", CategoryEntryOther.class));
+			list.add(new DummyCategoryElement("mainCfg", "gui.config.ctgy.general", CategoryEntryGeneral.class));
+			list.add(new DummyCategoryElement("miscCfg", "gui.config.ctgy.other", CategoryEntryOther.class));
 			return list;
 		}
 
@@ -83,14 +83,14 @@ public class MBEGuiFactory implements IModGuiFactory
 				//Additionally, Forge best practices say to put the path to the config file for the category as
 				// the title for the category config screen
 
-        Configuration configuration = MBEConfiguration.getConfig();
-        ConfigElement cat_general = new ConfigElement(configuration.getCategory(MBEConfiguration.CATEGORY_NAME_GENERAL));
+        Configuration configuration = LESConfiguration.getConfig();
+        ConfigElement cat_general = new ConfigElement(configuration.getCategory(LESConfiguration.CATEGORY_NAME_GENERAL));
         List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
         String windowTitle = configuration.toString();
 
         return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
                               this.owningScreen.modID,
-                              MBEConfiguration.CATEGORY_NAME_GENERAL,
+                              LESConfiguration.CATEGORY_NAME_GENERAL,
                               this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
                               this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
                               windowTitle);
@@ -109,14 +109,14 @@ public class MBEGuiFactory implements IModGuiFactory
 			@Override
 			protected GuiScreen buildChildScreen()
 			{
-        Configuration configuration = MBEConfiguration.getConfig();
-        ConfigElement cat_general = new ConfigElement(configuration.getCategory(MBEConfiguration.CATEGORY_NAME_OTHER));
+        Configuration configuration = LESConfiguration.getConfig();
+        ConfigElement cat_general = new ConfigElement(configuration.getCategory(LESConfiguration.CATEGORY_NAME_OTHER));
         List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
         String windowTitle = configuration.toString();
 
         return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
                              this.owningScreen.modID,
-                             MBEConfiguration.CATEGORY_NAME_OTHER,
+                             LESConfiguration.CATEGORY_NAME_OTHER,
                              this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
                              this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
                              windowTitle);
