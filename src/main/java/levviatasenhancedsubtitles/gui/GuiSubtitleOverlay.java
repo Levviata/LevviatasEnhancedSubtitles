@@ -19,25 +19,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import org.lwjgl.opengl.Display;
 
-public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
+public class GuiSubtitleOverlay extends Gui
 {
 
     private final Minecraft client;
-    private final List<Subtitle> subtitles = Lists.<Subtitle>newArrayList();
+    private static final List<Subtitle> subtitles = Lists.<Subtitle>newArrayList();
     private boolean enabled;
 
     public GuiSubtitleOverlay(Minecraft clientIn)
     {
         this.client = clientIn;
     }
-
-
-
-    public static void preInit() {
-
-    }
-
-
     public void renderSubtitles(ScaledResolution resolution)
     {
         if (!this.enabled && this.client.gameSettings.showSubtitles)
@@ -145,7 +137,26 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);
 
                 GlStateManager.scale(1.0F, 1.0F, 1.0F);
+
+                /*"drawRect" Draws a rectangle with the specified inputs and also the color of it, or in more complex words:
+
+                The drawRect method in the provided code is responsible for drawing a filled rectangle on the screen. This method takes in the coordinates and color as parameters to define the size and appearance of the rectangle.
+
+                Here's the code snippet that calls the drawRect method:
+
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, -872415232);
+                The drawRect method is called with the following parameters:
+
+                    x1: -halfMaxLength - 1
+                    y1: -subtitleHeight / 2 - 1
+                    x2: halfMaxLength + 1
+                    y2: subtitleHeight / 2 + 1
+                    color: -872415232
+                These parameters specify the position and dimensions of the rectangle to be drawn. The x1 and y1 coordinates represent the top-left corner of the rectangle, while x2 and y2 represent the bottom-right corner. The color parameter determines the color of the filled rectangle.
+
+                In summary, the drawRect method is used in the provided code to draw a filled rectangle on the screen with specified dimensions and color.*/
+                drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, -872415232);
+
                 GlStateManager.enableBlend();
 
                 if (!flag)
@@ -169,28 +180,28 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
             GlStateManager.popMatrix();
         }
     }
+    public static void clientPreInit() {
+        MinecraftForge.EVENT_BUS.register(new ISoundEventListener() {
+            public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
+                if (accessor.getSubtitle() != null) {
+                    String s = accessor.getSubtitle().getFormattedText();
 
-    public void soundPlay(ISound soundIn, SoundEventAccessor accessor)
-    {
-        if (accessor.getSubtitle() != null)
-        {
-            String s = accessor.getSubtitle().getFormattedText();
-
-            if (!this.subtitles.isEmpty())
-            {
-                for (Subtitle guisubtitleoverlay$subtitle : this.subtitles)
-                {
-                    if (guisubtitleoverlay$subtitle.getString().equals(s))
-                    {
-                        guisubtitleoverlay$subtitle.refresh(new Vec3d((double)soundIn.getXPosF(), (double)soundIn.getYPosF(), (double)soundIn.getZPosF()));
-                        return;
+                    if (!GuiSubtitleOverlay.subtitles.isEmpty()) {
+                        for (Subtitle guisubtitleoverlay$subtitle : GuiSubtitleOverlay.subtitles) {
+                            if (guisubtitleoverlay$subtitle.getString().equals(s)) {
+                                guisubtitleoverlay$subtitle.refresh(new Vec3d((double)soundIn.getXPosF(), (double)soundIn.getYPosF(), (double)soundIn.getZPosF()));
+                                return;
+                            }
+                        }
                     }
+
+                    GuiSubtitleOverlay.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
                 }
             }
 
-            this.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
-        }
+        });
     }
+
     public static class Subtitle
     {
         private final String subtitle;
