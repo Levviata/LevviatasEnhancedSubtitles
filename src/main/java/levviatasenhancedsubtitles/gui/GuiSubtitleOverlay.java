@@ -15,9 +15,13 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import org.lwjgl.opengl.Display;
 
 public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
 {
+
     private final Minecraft client;
     private final List<Subtitle> subtitles = Lists.<Subtitle>newArrayList();
     private boolean enabled;
@@ -27,20 +31,27 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
         this.client = clientIn;
     }
 
+
+
+    public static void preInit() {
+
+    }
+
+
     public void renderSubtitles(ScaledResolution resolution)
     {
         if (!this.enabled && this.client.gameSettings.showSubtitles)
         {
-            this.client.getSoundHandler().addListener(this);
+            this.client.getSoundHandler().addListener((ISoundEventListener) this);
             this.enabled = true;
         }
         else if (this.enabled && !this.client.gameSettings.showSubtitles)
         {
-            this.client.getSoundHandler().removeListener(this);
+            this.client.getSoundHandler().removeListener((ISoundEventListener) this);
             this.enabled = false;
         }
 
-        if (this.enabled && !this.subtitles.isEmpty())
+        if (this.enabled && !subtitles.isEmpty())
         {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
@@ -51,7 +62,7 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
             Vec3d vec3d3 = vec3d1.crossProduct(vec3d2);
             int captionIndex = 0;
             int maxLength = 0;
-            Iterator<Subtitle> iterator = this.subtitles.iterator();
+            Iterator<Subtitle> iterator = subtitles.iterator();
 
             while (iterator.hasNext())
             {
@@ -94,7 +105,41 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
 
                 float xTranslate, yTranslate;
 
-                //do stuff here
+                int verticalSpacing = 10;
+                switch (position) {
+                    case BOTTOM_CENTER:
+                        xTranslate = (float) Display.getWidth() / 2;
+                        yTranslate = (float) (Display.getHeight() - 50) - (float) (captionIndex * verticalSpacing);
+                        break;
+                    case BOTTOM_LEFT:
+                        xTranslate = (float) halfMaxLength;
+                        yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing);
+                        break;
+                    case CENTER_LEFT:
+                        xTranslate = (float) halfMaxLength;
+                        yTranslate = (float) (Display.getHeight() / 2) - (float) (captionIndex * verticalSpacing - 10);
+                        break;
+                    case TOP_LEFT:
+                        xTranslate = (float) halfMaxLength;
+                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        break;
+                    case TOP_CENTER:
+                        xTranslate = (float) Display.getWidth() / 2;
+                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        break;
+                    case TOP_RIGHT:
+                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
+                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        break;
+                    case CENTER_RIGHT:
+                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
+                        yTranslate = (float) (Display.getHeight() / 2) - (float) (((this.subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
+                        break;
+                    default: //if there's any invalid input just show it in the bottom right
+                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength - 2.0F;
+                        yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing + 5);
+                        break;
+                }
 
                 //"GlStateManager.translate" sets the position, parameters used: (x, y, z). Example of method with parameters: GlStateManager.translate(x, y, z)
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);
@@ -125,7 +170,6 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
         }
     }
 
-    @Override
     public void soundPlay(ISound soundIn, SoundEventAccessor accessor)
     {
         if (accessor.getSubtitle() != null)
@@ -147,7 +191,6 @@ public class GuiSubtitleOverlay extends Gui implements ISoundEventListener
             this.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
         }
     }
-
     public static class Subtitle
     {
         private final String subtitle;

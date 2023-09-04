@@ -20,6 +20,8 @@ public class ClientOnlyProxy extends CommonProxy
   {
     super.preInit();
     levviatasenhancedsubtitles.config.StartupClientOnly.preInitClientOnly();
+
+    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
   }
 
   /**
@@ -30,6 +32,8 @@ public class ClientOnlyProxy extends CommonProxy
   {
     super.init();
     levviatasenhancedsubtitles.config.StartupClientOnly.initClientOnly();
+
+    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
   }
 
   /**
@@ -39,6 +43,8 @@ public class ClientOnlyProxy extends CommonProxy
   {
     super.postInit();
     levviatasenhancedsubtitles.config.StartupClientOnly.postInitClientOnly();
+
+    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
   }
 
   @Override

@@ -182,7 +182,7 @@ public class LESConfiguration {
 				};
 
 		Property propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
-				"myColour", OVERLAYPOSITION_DEFAULT_VALUE,
+				"overlayPosition", OVERLAYPOSITION_DEFAULT_VALUE,
 				"Configuration subtitle overlay position (overlayPosition): blue, red, yellow");
 				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
 
@@ -238,6 +238,7 @@ public class LESConfiguration {
 		// properties in the config file and GUI. This is defined on a per config-category basis.
 
 		List<String> propOrderGeneral = new ArrayList<String>();
+		propOrderGeneral.add(propOverlayPosition.getName());
 		propOrderGeneral.add(propMyInt.getName()); // push the config value's name into the ordered list
 		propOrderGeneral.add(propMyBool.getName());
 		propOrderGeneral.add(propMyDouble.getName());
@@ -261,9 +262,10 @@ public class LESConfiguration {
 
 		if (readFieldsFromConfig)
 		{
-			// If getInt() cannot get an integer value from the config file
-			// value of myInteger (e.g. corrupted file).
-			// It will set it to the default value passed to the function.
+			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_LEFT"
+			if (overlayPosition == null) {
+				overlayPosition = BOTTOM_LEFT;
+			}
 
 			myInteger = propMyInt.getInt(MY_INT_DEFAULT_VALUE);
 			if (myInteger > MY_INT_MAX_VALUE || myInteger < MY_INT_MIN_VALUE) {
@@ -278,6 +280,7 @@ public class LESConfiguration {
 			}
 
 			myString = propMyString.getString();
+			overlayPosition = OverlayPosition.valueOf(propOverlayPosition.getString());
 			myIntList = propMyIntList.getIntList();
 
 			myColour = propColour.getString();
@@ -301,6 +304,7 @@ public class LESConfiguration {
 		 * properties may have been assigned default values if the file was empty or corrupt.
 		 */
 
+		propOverlayPosition.set(overlayPosition.ordinal());
 		propMyInt.set(myInteger);
 		propMyBool.set(myBoolean);
 		propMyDouble.set(myDouble);
