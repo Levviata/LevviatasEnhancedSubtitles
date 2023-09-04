@@ -93,37 +93,37 @@ public class GuiSubtitleOverlay extends Gui
 
                 //Change happens here
 
-                OverlayPosition position = LESConfiguration.overlayPosition;
+                String position = LESConfiguration.overlayPosition;
 
                 float xTranslate, yTranslate;
 
                 int verticalSpacing = 10;
                 switch (position) {
-                    case BOTTOM_CENTER:
+                    case "BOTTOM_CENTER":
                         xTranslate = (float) Display.getWidth() / 2;
                         yTranslate = (float) (Display.getHeight() - 50) - (float) (captionIndex * verticalSpacing);
                         break;
-                    case BOTTOM_LEFT:
+                    case "BOTTOM_LEFT":
                         xTranslate = (float) halfMaxLength;
                         yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing);
                         break;
-                    case CENTER_LEFT:
+                    case "CENTER_LEFT":
                         xTranslate = (float) halfMaxLength;
                         yTranslate = (float) (Display.getHeight() / 2) - (float) (captionIndex * verticalSpacing - 10);
                         break;
-                    case TOP_LEFT:
+                    case "TOP_LEFT":
                         xTranslate = (float) halfMaxLength;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
-                    case TOP_CENTER:
+                    case "TOP_CENTER":
                         xTranslate = (float) Display.getWidth() / 2;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
-                    case TOP_RIGHT:
+                    case "TOP_RIGHT":
                         xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
-                    case CENTER_RIGHT:
+                    case "CENTER_RIGHT":
                         xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
                         yTranslate = (float) (Display.getHeight() / 2) - (float) (((this.subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
                         break;
@@ -182,6 +182,7 @@ public class GuiSubtitleOverlay extends Gui
     }
     public static void clientPreInit() {
         MinecraftForge.EVENT_BUS.register(new ISoundEventListener() {
+            @Override
             public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
                 if (accessor.getSubtitle() != null) {
                     String s = accessor.getSubtitle().getFormattedText();

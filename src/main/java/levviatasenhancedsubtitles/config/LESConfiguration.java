@@ -50,7 +50,7 @@ public class LESConfiguration {
 	public static String myString;
 	public static String myColour;
 
-	public static OverlayPosition overlayPosition;
+	public static String overlayPosition;
 
 	public static final String CATEGORY_NAME_GENERAL = "category_general";
 	public static final String CATEGORY_NAME_OTHER = "category_other";
@@ -167,22 +167,20 @@ public class LESConfiguration {
 		 * already exists, the property values will already have been read from
 		 * the file, otherwise they will be assigned the default value.
 		 */
-
 		// overlayPosition
-		final String OVERLAYPOSITION_DEFAULT_VALUE = String.valueOf(BOTTOM_LEFT);
+		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_LEFT";
 		final String[] POSITION_CHOICES = {
-				String.valueOf(BOTTOM_RIGHT),
-				String.valueOf(BOTTOM_CENTER),
-				String.valueOf(BOTTOM_LEFT),
-				String.valueOf(CENTER_LEFT),
-				String.valueOf(TOP_LEFT),
-				String.valueOf(TOP_CENTER),
-				String.valueOf(TOP_RIGHT),
-				String.valueOf(CENTER_RIGHT)
+				"BOTTOM_RIGHT",
+				"BOTTOM_CENTER",
+				"BOTTOM_LEFT",
+				"CENTER_LEFT",
+				"TOP_LEFT",
+				"TOP_CENTER",
+				"TOP_RIGHT",
+				"CENTER_RIGHT"
 				};
-
 		Property propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
-				"overlayPosition", OVERLAYPOSITION_DEFAULT_VALUE,
+				"overlayPosition", OVERLAY_POSITION_DEFAULT_VALUE,
 				"Configuration subtitle overlay position (overlayPosition): blue, red, yellow");
 				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
 
@@ -262,9 +260,9 @@ public class LESConfiguration {
 
 		if (readFieldsFromConfig)
 		{
-			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_LEFT"
+			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_RIGHT"
 			if (overlayPosition == null) {
-				overlayPosition = BOTTOM_LEFT;
+				overlayPosition = "BOTTOM_RIGHT";
 			}
 
 			myInteger = propMyInt.getInt(MY_INT_DEFAULT_VALUE);
@@ -280,7 +278,7 @@ public class LESConfiguration {
 			}
 
 			myString = propMyString.getString();
-			overlayPosition = OverlayPosition.valueOf(propOverlayPosition.getString());
+			overlayPosition = propOverlayPosition.getString();
 			myIntList = propMyIntList.getIntList();
 
 			myColour = propColour.getString();
@@ -304,7 +302,7 @@ public class LESConfiguration {
 		 * properties may have been assigned default values if the file was empty or corrupt.
 		 */
 
-		propOverlayPosition.set(overlayPosition.ordinal());
+		propOverlayPosition.set(overlayPosition);
 		propMyInt.set(myInteger);
 		propMyBool.set(myBoolean);
 		propMyDouble.set(myDouble);

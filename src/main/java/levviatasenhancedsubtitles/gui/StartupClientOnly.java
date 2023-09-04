@@ -19,13 +19,10 @@ public class StartupClientOnly {
     GuiSubtitleOverlay.clientPreInit();  // used to set up an event handler for the GUI so that the altered values are
                                     //  saved back to disk.
 	}
-
-	public static void initClientOnly()
-	{
+	public static void InitClientOnly() {
 	}
-
 	public static void postInitClientOnly()
 	{
-	}
 
+	}
 }
