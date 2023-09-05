@@ -1,5 +1,8 @@
 package levviatasenhancedsubtitles.gui;
 
+import levviatasenhancedsubtitles.config.LESConfiguration;
+import net.minecraft.client.gui.Gui;
+
 /*
  * User: TW
  * Date: 2/4/2015
@@ -13,16 +16,20 @@ package levviatasenhancedsubtitles.gui;
  *  postInitClientOnly
  *  See MinecraftByExample class for more information
  */
-public class StartupClientOnly {
-	public static void preInitClientOnly()
+public class StartupCommon
+{
+	public static void preInitCommon()
 	{
-    GuiSubtitleOverlay.clientPreInit();// used to set up an event handler for the GUI so that the altered values are
-                                    //  saved back to disk.
-	}
-	public static void InitClientOnly() {
-	}
-	public static void postInitClientOnly()
+    GuiSubtitleOverlay.preInit();
+    }
+    public static void InitCommon()
+    {
+
+    }
+	public static void postInitCommon()
 	{
 
 	}
+
+
 }

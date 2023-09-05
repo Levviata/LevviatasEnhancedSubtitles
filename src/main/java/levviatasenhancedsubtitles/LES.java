@@ -70,6 +70,7 @@ public class LES
     @Mod.Instance(LES.MODID)
     public static LES instance;
 
+
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide="levviatasenhancedsubtitles.ClientOnlyProxy", serverSide="levviatasenhancedsubtitles.DedicatedServerProxy")
     public static CommonProxy proxy;
@@ -77,19 +78,19 @@ public class LES
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-      proxy.preInit();
+     proxy.preInit();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-      proxy.init();
+     proxy.init();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-      proxy.postInit();
+     proxy.postInit();
     }
 
     /**

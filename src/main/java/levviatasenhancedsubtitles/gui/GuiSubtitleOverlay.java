@@ -4,42 +4,54 @@ import com.google.common.collect.Lists;
 import java.util.Iterator;
 import java.util.List;
 
-import levviatasenhancedsubtitles.OverlayPosition;
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
-import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import org.lwjgl.opengl.Display;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber
 public class GuiSubtitleOverlay extends Gui
 {
 
-    private final Minecraft client;
-    private static final List<Subtitle> subtitles = Lists.<Subtitle>newArrayList();
+    public static void clientPreInit() {
+
+    }
+    public static void preInit() {
+        SoundHandler soundHandler = new SoundHandler();
+        MinecraftForge.EVENT_BUS.register(soundHandler);
+    }
+
+    static final List<Subtitle> subtitles = Lists.newArrayList();
     private boolean enabled;
+    @SubscribeEvent
+    public void onEvent(RenderGameOverlayEvent.Text event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
+            // This is where the magic happens
+            event.setCanceled(true);
+            render(Minecraft.getMinecraft(), event.getPartialTicks());
+        }
+    }
 
     public GuiSubtitleOverlay(Minecraft clientIn)
     {
-        this.client = clientIn;
     }
-    public void renderSubtitles(ScaledResolution resolution)
+    private void render(Minecraft minecraft, float partialTicks)
     {
-        if (!this.enabled && this.client.gameSettings.showSubtitles)
+        if (!this.enabled && minecraft.gameSettings.showSubtitles)
         {
-            this.client.getSoundHandler().addListener((ISoundEventListener) this);
+            minecraft.getSoundHandler().addListener((ISoundEventListener) this);
             this.enabled = true;
         }
-        else if (this.enabled && !this.client.gameSettings.showSubtitles)
+        else if (this.enabled && !minecraft.gameSettings.showSubtitles)
         {
-            this.client.getSoundHandler().removeListener((ISoundEventListener) this);
+            minecraft.getSoundHandler().removeListener((ISoundEventListener) this);
             this.enabled = false;
         }
 
@@ -48,9 +60,9 @@ public class GuiSubtitleOverlay extends Gui
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Vec3d vec3d = new Vec3d(this.client.player.posX, this.client.player.posY + (double)this.client.player.getEyeHeight(), this.client.player.posZ);
-            Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-this.client.player.rotationPitch * 0.017453292F).rotateYaw(-this.client.player.rotationYaw * 0.017453292F);
-            Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-this.client.player.rotationPitch * 0.017453292F).rotateYaw(-this.client.player.rotationYaw * 0.017453292F);
+            Vec3d vec3d = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double)minecraft.player.getEyeHeight(), minecraft.player.posZ);
+            Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
+            Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = vec3d1.crossProduct(vec3d2);
             int captionIndex = 0;
             int maxLength = 0;
@@ -66,13 +78,13 @@ public class GuiSubtitleOverlay extends Gui
                 }
                 else
                 {
-                    maxLength = Math.max(maxLength, this.client.fontRenderer.getStringWidth(guisubtitleoverlay$subtitle.getString()));
+                    maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(guisubtitleoverlay$subtitle.getString()));
                 }
             }
 
-            maxLength = maxLength + this.client.fontRenderer.getStringWidth("<") + this.client.fontRenderer.getStringWidth(" ") + this.client.fontRenderer.getStringWidth(">") + this.client.fontRenderer.getStringWidth(" ");
+            maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
 
-            for (Subtitle guisubtitleoverlay$subtitle1 : this.subtitles)
+            for (Subtitle guisubtitleoverlay$subtitle1 : subtitles)
             {
                 // We get the contents of the current sent subtitle
                 String Caption1 = guisubtitleoverlay$subtitle1.getString();
@@ -84,8 +96,8 @@ public class GuiSubtitleOverlay extends Gui
 
                 int halfMaxLength = maxLength / 2;
 
-                int subtitleHeight = this.client.fontRenderer.FONT_HEIGHT;
-                int subtitleWidth = this.client.fontRenderer.getStringWidth(Caption1);
+                int subtitleHeight = minecraft.fontRenderer.FONT_HEIGHT;
+                int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
 
                 int l1 = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - guisubtitleoverlay$subtitle1.getStartTime()) / 3000.0F));
                 int textColor = l1 << 16 | l1 << 8 | l1;
@@ -95,10 +107,11 @@ public class GuiSubtitleOverlay extends Gui
 
                 String position = LESConfiguration.overlayPosition;
 
-                float xTranslate, yTranslate;
-
                 int verticalSpacing = 10;
-                switch (position) {
+                float xTranslate = (float) minecraft.displayWidth - (float) halfMaxLength;
+                float yTranslate = (float) (captionIndex * verticalSpacing + 5);
+
+                /*switch (position) {
                     case "BOTTOM_CENTER":
                         xTranslate = (float) Display.getWidth() / 2;
                         yTranslate = (float) (Display.getHeight() - 50) - (float) (captionIndex * verticalSpacing);
@@ -131,7 +144,7 @@ public class GuiSubtitleOverlay extends Gui
                         xTranslate = (float) Display.getWidth() - (float) halfMaxLength - 2.0F;
                         yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing + 5);
                         break;
-                }
+                }*/
 
                 //"GlStateManager.translate" sets the position, parameters used: (x, y, z). Example of method with parameters: GlStateManager.translate(x, y, z)
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);
@@ -163,15 +176,15 @@ public class GuiSubtitleOverlay extends Gui
                 {
                     if (d0 > 0.0D)
                     {
-                        this.client.fontRenderer.drawString(">", halfMaxLength - this.client.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, textColor + -16777216);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, textColor + -16777216);
                     }
                     else if (d0 < 0.0D)
                     {
-                        this.client.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, textColor + -16777216);
+                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, textColor + -16777216);
                     }
                 }
 
-                this.client.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, textColor + -16777216);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, textColor + -16777216);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
@@ -180,29 +193,25 @@ public class GuiSubtitleOverlay extends Gui
             GlStateManager.popMatrix();
         }
     }
-    public static void clientPreInit() {
-        MinecraftForge.EVENT_BUS.register(new ISoundEventListener() {
-            @Override
-            public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
-                if (accessor.getSubtitle() != null) {
-                    String s = accessor.getSubtitle().getFormattedText();
 
-                    if (!GuiSubtitleOverlay.subtitles.isEmpty()) {
-                        for (Subtitle guisubtitleoverlay$subtitle : GuiSubtitleOverlay.subtitles) {
-                            if (guisubtitleoverlay$subtitle.getString().equals(s)) {
-                                guisubtitleoverlay$subtitle.refresh(new Vec3d((double)soundIn.getXPosF(), (double)soundIn.getYPosF(), (double)soundIn.getZPosF()));
-                                return;
-                            }
-                        }
+    /*
+    @Override
+    public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
+        if (accessor.getSubtitle() != null) {
+            String s = accessor.getSubtitle().getFormattedText();
+
+            if (!GuiSubtitleOverlay.subtitles.isEmpty()) {
+                for (Subtitle guisubtitleoverlay$subtitle : GuiSubtitleOverlay.subtitles) {
+                    if (guisubtitleoverlay$subtitle.getString().equals(s)) {
+                        guisubtitleoverlay$subtitle.refresh(new Vec3d((double)soundIn.getXPosF(), (double)soundIn.getYPosF(), (double)soundIn.getZPosF()));
+                        return;
                     }
-
-                    GuiSubtitleOverlay.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
                 }
             }
 
-        });
-    }
-
+            GuiSubtitleOverlay.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
+        }
+    }*/
     public static class Subtitle
     {
         private final String subtitle;

@@ -1,7 +1,6 @@
 package levviatasenhancedsubtitles.config;
 
 import levviatasenhancedsubtitles.LES;
-import levviatasenhancedsubtitles.OverlayPosition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -13,8 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static levviatasenhancedsubtitles.OverlayPosition.*;
 
 /**
  * Holds the configuration information and synchronises the various copies of it.
@@ -168,7 +165,7 @@ public class LESConfiguration {
 		 * the file, otherwise they will be assigned the default value.
 		 */
 		// overlayPosition
-		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_LEFT";
+		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
 		final String[] POSITION_CHOICES = {
 				"BOTTOM_RIGHT",
 				"BOTTOM_CENTER",
@@ -236,7 +233,6 @@ public class LESConfiguration {
 		// properties in the config file and GUI. This is defined on a per config-category basis.
 
 		List<String> propOrderGeneral = new ArrayList<String>();
-		propOrderGeneral.add(propOverlayPosition.getName());
 		propOrderGeneral.add(propMyInt.getName()); // push the config value's name into the ordered list
 		propOrderGeneral.add(propMyBool.getName());
 		propOrderGeneral.add(propMyDouble.getName());
@@ -245,6 +241,7 @@ public class LESConfiguration {
 		config.setCategoryPropertyOrder(CATEGORY_NAME_GENERAL, propOrderGeneral);
 
 		List<String> propOrderOther = new ArrayList<String>();
+		propOrderOther.add(propOverlayPosition.getName());
 		propOrderOther.add(propColour.getName());
 		config.setCategoryPropertyOrder(CATEGORY_NAME_OTHER, propOrderOther);
 
@@ -261,9 +258,7 @@ public class LESConfiguration {
 		if (readFieldsFromConfig)
 		{
 			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_RIGHT"
-			if (overlayPosition == null) {
-				overlayPosition = "BOTTOM_RIGHT";
-			}
+
 
 			myInteger = propMyInt.getInt(MY_INT_DEFAULT_VALUE);
 			if (myInteger > MY_INT_MAX_VALUE || myInteger < MY_INT_MIN_VALUE) {
@@ -276,10 +271,20 @@ public class LESConfiguration {
 			if (myDouble > MY_DOUBLE_MAX_VALUE || myDouble < MY_DOUBLE_MIN_VALUE) {
 				myDouble = MY_DOUBLE_DEFAULT_VALUE;
 			}
-
+			myIntList = propMyIntList.getIntList();
 			myString = propMyString.getString();
 			overlayPosition = propOverlayPosition.getString();
-			myIntList = propMyIntList.getIntList();
+			boolean overlayMatched = false;
+			for (String entry : POSITION_CHOICES) {
+				if (entry.equals(overlayPosition)) {
+					overlayMatched = true;
+					break;
+				}
+			}
+			if (!overlayMatched) {
+				overlayPosition = OVERLAY_POSITION_DEFAULT_VALUE;
+			}
+
 
 			myColour = propColour.getString();
 			boolean matched = false;

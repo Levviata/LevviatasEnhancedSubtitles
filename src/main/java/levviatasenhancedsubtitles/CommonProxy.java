@@ -17,7 +17,7 @@ public abstract class CommonProxy {
 	   //read config first
     levviatasenhancedsubtitles.config.StartupCommon.preInitCommon();
 
-    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
+    levviatasenhancedsubtitles.gui.StartupCommon.preInitCommon();
   }
 
   /**
@@ -28,7 +28,7 @@ public abstract class CommonProxy {
   {
     levviatasenhancedsubtitles.config.StartupCommon.initCommon();
 
-    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
+    levviatasenhancedsubtitles.gui.StartupCommon.InitCommon();
   }
 
   /**
@@ -38,7 +38,7 @@ public abstract class CommonProxy {
   {
     levviatasenhancedsubtitles.config.StartupCommon.postInitCommon();
 
-    levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
+    levviatasenhancedsubtitles.gui.StartupCommon.postInitCommon();
   }
 
   // helper to determine whether the given player is in creative mode

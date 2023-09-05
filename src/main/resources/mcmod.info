@@ -3,7 +3,7 @@
   "modid": "levviatasenhancedsubtitles",
   "name": "Levviata's Enhanced Subtitles (LES)",
   "description": "My own downport for my little silly modpack.",
-  "version": "1.12.2a",
+  "version": "1.12.2",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
