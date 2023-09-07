@@ -16,7 +16,7 @@ package levviatasenhancedsubtitles.gui;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-    GuiSubtitleOverlay.clientPreInit();// used to set up an event handler for the GUI so that the altered values are
+		SubtitleOverlayHandler.clientPreInit();// used to set up an event handler for the GUI so that the altered values are
                                     //  saved back to disk.
 	}
 	public static void InitClientOnly() {

@@ -6,52 +6,45 @@ import java.util.List;
 
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISoundEventListener;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.gui.GuiSubtitleOverlay;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
-public class GuiSubtitleOverlay extends Gui
+public class SubtitleOverlayHandler extends GuiSubtitleOverlay
 {
 
-    public static void clientPreInit() {
 
+    public SubtitleOverlayHandler(Minecraft clientIn, Minecraft client) {
+        super(clientIn);
+        this.minecraft = client;
+    }
+
+    public static void clientPreInit() {
+        SubtitleSoundHandler customSoundListener = new SubtitleSoundHandler();
+        MinecraftForge.EVENT_BUS.register(customSoundListener);
     }
     public static void preInit() {
-        SoundHandler soundHandler = new SoundHandler();
-        MinecraftForge.EVENT_BUS.register(soundHandler);
-    }
 
+    }
+    private final Minecraft minecraft;
     static final List<Subtitle> subtitles = Lists.newArrayList();
     private boolean enabled;
-    @SubscribeEvent
-    public void onEvent(RenderGameOverlayEvent.Text event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
-            // This is where the magic happens
-            event.setCanceled(true);
-            render(Minecraft.getMinecraft(), event.getPartialTicks());
-        }
-    }
 
-    public GuiSubtitleOverlay(Minecraft clientIn)
+    public void renderSubtitles(ScaledResolution scaledResolution)
     {
-    }
-    private void render(Minecraft minecraft, float partialTicks)
-    {
+        super.renderSubtitles(scaledResolution);
         if (!this.enabled && minecraft.gameSettings.showSubtitles)
         {
-            minecraft.getSoundHandler().addListener((ISoundEventListener) this);
+            minecraft.getSoundHandler().addListener(this);
             this.enabled = true;
         }
         else if (this.enabled && !minecraft.gameSettings.showSubtitles)
         {
-            minecraft.getSoundHandler().removeListener((ISoundEventListener) this);
+            minecraft.getSoundHandler().removeListener(this);
             this.enabled = false;
         }
 
@@ -109,7 +102,7 @@ public class GuiSubtitleOverlay extends Gui
 
                 int verticalSpacing = 10;
                 float xTranslate = (float) minecraft.displayWidth - (float) halfMaxLength;
-                float yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                float yTranslate = (float) (minecraft.displayHeight / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
 
                 /*switch (position) {
                     case "BOTTOM_CENTER":
@@ -194,24 +187,6 @@ public class GuiSubtitleOverlay extends Gui
         }
     }
 
-    /*
-    @Override
-    public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
-        if (accessor.getSubtitle() != null) {
-            String s = accessor.getSubtitle().getFormattedText();
-
-            if (!GuiSubtitleOverlay.subtitles.isEmpty()) {
-                for (Subtitle guisubtitleoverlay$subtitle : GuiSubtitleOverlay.subtitles) {
-                    if (guisubtitleoverlay$subtitle.getString().equals(s)) {
-                        guisubtitleoverlay$subtitle.refresh(new Vec3d((double)soundIn.getXPosF(), (double)soundIn.getYPosF(), (double)soundIn.getZPosF()));
-                        return;
-                    }
-                }
-            }
-
-            GuiSubtitleOverlay.subtitles.add(new Subtitle(s, new Vec3d((double) soundIn.getXPosF(), (double) soundIn.getYPosF(), (double) soundIn.getZPosF())));
-        }
-    }*/
     public static class Subtitle
     {
         private final String subtitle;

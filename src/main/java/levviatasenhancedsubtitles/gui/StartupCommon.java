@@ -20,7 +20,7 @@ public class StartupCommon
 {
 	public static void preInitCommon()
 	{
-    GuiSubtitleOverlay.preInit();
+    SubtitleOverlayHandler.preInit();
     }
     public static void InitCommon()
     {
