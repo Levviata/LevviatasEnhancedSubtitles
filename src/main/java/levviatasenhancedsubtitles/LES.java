@@ -1,7 +1,10 @@
 package levviatasenhancedsubtitles;
 
 import levviatasenhancedsubtitles.gui.ModEventSubscriber;
+import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -75,25 +78,24 @@ public class LES
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide="levviatasenhancedsubtitles.ClientOnlyProxy", serverSide="levviatasenhancedsubtitles.DedicatedServerProxy")
-    public static CommonProxy proxy;
-
+    public static CommonProxy commonProxy;
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-     MinecraftForge.EVENT_BUS.register(new ModEventSubscriber());
-     proxy.preInit();
+     commonProxy.preInit();
     }
+
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-     proxy.init();
+     commonProxy.init();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-     proxy.postInit();
+     commonProxy.postInit();
     }
 
     /**

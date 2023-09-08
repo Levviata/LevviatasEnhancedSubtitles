@@ -6,49 +6,62 @@ import java.util.List;
 
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.GuiSubtitleOverlay;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISoundEventListener;
+import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-
-public class SubtitleOverlayHandler extends GuiSubtitleOverlay
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+@Mod.EventBusSubscriber
+public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 {
 
-
-    public SubtitleOverlayHandler(Minecraft clientIn, Minecraft client) {
+    /*public SubtitleOverlayHandler(Minecraft clientIn, Minecraft client) {
         super(clientIn);
         this.minecraft = client;
-    }
+    }*/
+
+    private final Minecraft minecraft = Minecraft.getMinecraft();
+    static final List<Subtitle> subtitles = Lists.newArrayList();
+    private boolean isListening;
 
     public static void clientPreInit() {
-        SubtitleSoundHandler customSoundListener = new SubtitleSoundHandler();
-        MinecraftForge.EVENT_BUS.register(customSoundListener);
+        MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
     }
     public static void preInit() {
 
     }
-    private final Minecraft minecraft;
-    static final List<Subtitle> subtitles = Lists.newArrayList();
-    private boolean enabled;
+    @SubscribeEvent(receiveCanceled = true)
+    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
+        // Check if it's the subtitles overlay being rendered
+        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
 
-    public void renderSubtitles(ScaledResolution scaledResolution)
+            SubtitleOverlayHandler handler = new SubtitleOverlayHandler();
+            event.setCanceled(true);
+            handler.render();
+
+        }
+    }
+
+    public void render()
     {
-        super.renderSubtitles(scaledResolution);
-        if (!this.enabled && minecraft.gameSettings.showSubtitles)
+        if (!this.isListening && minecraft.gameSettings.showSubtitles)
         {
             minecraft.getSoundHandler().addListener(this);
-            this.enabled = true;
+            this.isListening = true;
         }
-        else if (this.enabled && !minecraft.gameSettings.showSubtitles)
+        else if (this.isListening && !minecraft.gameSettings.showSubtitles)
         {
             minecraft.getSoundHandler().removeListener(this);
-            this.enabled = false;
+            this.isListening = false;
         }
 
-        if (this.enabled && !subtitles.isEmpty())
+        if (this.isListening && !subtitles.isEmpty())
         {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
@@ -57,32 +70,32 @@ public class SubtitleOverlayHandler extends GuiSubtitleOverlay
             Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = vec3d1.crossProduct(vec3d2);
-            int captionIndex = 0;
             int maxLength = 0;
             Iterator<Subtitle> iterator = subtitles.iterator();
 
             while (iterator.hasNext())
             {
-                Subtitle guisubtitleoverlay$subtitle = iterator.next();
+                Subtitle caption = iterator.next();
 
-                if (guisubtitleoverlay$subtitle.getStartTime() + 3000L <= Minecraft.getSystemTime())
+                if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime())
                 {
                     iterator.remove();
                 }
                 else
                 {
-                    maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(guisubtitleoverlay$subtitle.getString()));
+                    maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(caption.getString()));
                 }
             }
 
             maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
 
-            for (Subtitle guisubtitleoverlay$subtitle1 : subtitles)
+            int captionIndex = 0;
+            for (Subtitle caption : subtitles)
             {
                 // We get the contents of the current sent subtitle
-                String Caption1 = guisubtitleoverlay$subtitle1.getString();
+                String Caption1 = caption.getString();
 
-                Vec3d vec3d4 = guisubtitleoverlay$subtitle1.getLocation().subtract(vec3d).normalize();
+                Vec3d vec3d4 = caption.getLocation().subtract(vec3d).normalize();
                 double d0 = -vec3d3.dotProduct(vec3d4);
                 double d1 = -vec3d1.dotProduct(vec3d4);
                 boolean flag = d1 > 0.5D;
@@ -92,7 +105,7 @@ public class SubtitleOverlayHandler extends GuiSubtitleOverlay
                 int subtitleHeight = minecraft.fontRenderer.FONT_HEIGHT;
                 int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
 
-                int l1 = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - guisubtitleoverlay$subtitle1.getStartTime()) / 3000.0F));
+                int l1 = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int textColor = l1 << 16 | l1 << 8 | l1;
                 GlStateManager.pushMatrix();
 
@@ -102,7 +115,7 @@ public class SubtitleOverlayHandler extends GuiSubtitleOverlay
 
                 int verticalSpacing = 10;
                 float xTranslate = (float) minecraft.displayWidth - (float) halfMaxLength;
-                float yTranslate = (float) (minecraft.displayHeight / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
+                float yTranslate = (float) (minecraft.displayHeight / 2) - (float) (captionIndex * verticalSpacing + 5);
 
                 /*switch (position) {
                     case "BOTTOM_CENTER":
@@ -169,15 +182,15 @@ public class SubtitleOverlayHandler extends GuiSubtitleOverlay
                 {
                     if (d0 > 0.0D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, textColor + -16777216);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, textColor + 16777216);
                     }
                     else if (d0 < 0.0D)
                     {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, textColor + -16777216);
+                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, textColor + 16777216);
                     }
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, textColor + -16777216);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, textColor + 16777216);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
@@ -186,8 +199,24 @@ public class SubtitleOverlayHandler extends GuiSubtitleOverlay
             GlStateManager.popMatrix();
         }
     }
+    @Override
+    public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
+        // Your custom implementation here
+        if (accessor.getSubtitle() != null) {
+            String subtitleText = accessor.getSubtitle().getFormattedText();
 
-    public static class Subtitle
+            if (!SubtitleOverlayHandler.subtitles.isEmpty()) {
+                for (Subtitle caption : SubtitleOverlayHandler.subtitles) {
+                    if (caption.getString().equals(subtitleText)) {
+                        caption.refresh(new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF()));
+                        return;
+                    }
+                }
+            }
+            SubtitleOverlayHandler.subtitles.add(new Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
+        }
+    }
+    public class Subtitle
     {
         private final String subtitle;
         private long startTime;

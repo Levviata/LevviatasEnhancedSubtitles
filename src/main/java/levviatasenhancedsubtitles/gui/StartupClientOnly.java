@@ -1,5 +1,8 @@
 package levviatasenhancedsubtitles.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+
 /*
  * User: TW
  * Date: 2/4/2015
@@ -16,8 +19,8 @@ package levviatasenhancedsubtitles.gui;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-		SubtitleOverlayHandler.clientPreInit();// used to set up an event handler for the GUI so that the altered values are
-                                    //  saved back to disk.
+
+		SubtitleOverlayHandler.clientPreInit();
 	}
 	public static void InitClientOnly() {
 	}
