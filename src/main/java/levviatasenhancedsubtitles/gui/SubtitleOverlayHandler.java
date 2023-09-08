@@ -118,41 +118,43 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 String position = LESConfiguration.propOverlayPosition.getString();
 
-                int verticalSpacing = 10;
+                int verticalSpacing = 1;
+                int horizontalSpacing = 2;
+                int subtitleSpacing = 10;
                 float xTranslate, yTranslate;
 
                 switch (position) {
                     case "BOTTOM_CENTER":
                         xTranslate = (float) resolution.getScaledWidth() / 2;
-                        yTranslate = (float) (resolution.getScaledHeight() - 50) - (float) (captionIndex * verticalSpacing);
+                        yTranslate = (float) (resolution.getScaledHeight() - 50) - (float) (captionIndex * subtitleSpacing);
                         break;
                     case "BOTTOM_LEFT":
-                        xTranslate = (float) halfMaxLength;
-                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * verticalSpacing);
+                        xTranslate = (float) halfMaxLength + horizontalSpacing;
+                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
                         break;
                     case "CENTER_LEFT":
-                        xTranslate = (float) halfMaxLength;
-                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (captionIndex * verticalSpacing - 10);
+                        xTranslate = (float) halfMaxLength + horizontalSpacing;
+                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (captionIndex * subtitleSpacing - 10);
                         break;
                     case "TOP_LEFT":
-                        xTranslate = (float) halfMaxLength;
-                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        xTranslate = (float) halfMaxLength + horizontalSpacing;
+                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_CENTER":
                         xTranslate = (float) resolution.getScaledWidth() / 2;
-                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_RIGHT":
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
-                        yTranslate = (float) (captionIndex * verticalSpacing + 5);
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "CENTER_RIGHT":
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
-                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((this.subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - horizontalSpacing;
+                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
                         break;
                     default: //if there's any invalid input just show it in the bottom right
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2.0F;
-                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * verticalSpacing);
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
                         break;
                 }
 
