@@ -10,6 +10,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
 import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -17,6 +18,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.settings.GameSettings;
+
 @Mod.EventBusSubscriber
 public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 {
@@ -43,12 +46,12 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
             SubtitleOverlayHandler handler = new SubtitleOverlayHandler();
             event.setCanceled(true);
-            handler.render();
+            handler.render(event.getResolution());
 
         }
     }
 
-    public void render()
+    public void render(ScaledResolution resolution)
     {
         if (!this.isListening && minecraft.gameSettings.showSubtitles)
         {
@@ -113,9 +116,12 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 String position = LESConfiguration.overlayPosition;
 
+                GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
+                float guiScale = gameSettings.guiScale;
+
                 int verticalSpacing = 10;
-                float xTranslate = (float) minecraft.displayWidth - (float) halfMaxLength;
-                float yTranslate = (float) (minecraft.displayHeight / 2) - (float) (captionIndex * verticalSpacing + 5);
+                float xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
+                float yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
 
                 /*switch (position) {
                     case "BOTTOM_CENTER":
