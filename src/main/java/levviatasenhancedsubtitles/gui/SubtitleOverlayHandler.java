@@ -2,7 +2,6 @@ package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,16 +19,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.settings.GameSettings;
 
 @Mod.EventBusSubscriber
 public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 {
-
-    /*public SubtitleOverlayHandler(Minecraft clientIn, Minecraft client) {
-        super(clientIn);
-        this.minecraft = client;
-    }*/
 
     private final Minecraft minecraft = Minecraft.getMinecraft();
     static final List<Subtitle> subtitles = Lists.newArrayList();
@@ -222,7 +215,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             SubtitleOverlayHandler.subtitles.add(new Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
         }
     }
-    public class Subtitle
+    public static class Subtitle
     {
         private final String subtitle;
         private long startTime;
