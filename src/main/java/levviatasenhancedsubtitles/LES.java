@@ -1,10 +1,5 @@
 package levviatasenhancedsubtitles;
 
-import levviatasenhancedsubtitles.gui.ModEventSubscriber;
-import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;

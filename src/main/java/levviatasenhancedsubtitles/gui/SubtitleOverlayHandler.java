@@ -1,6 +1,8 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -114,49 +116,45 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 //Change happens here
 
-                String position = LESConfiguration.overlayPosition;
-
-                GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
-                float guiScale = gameSettings.guiScale;
+                String position = LESConfiguration.propOverlayPosition.getString();
 
                 int verticalSpacing = 10;
-                float xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
-                float yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
+                float xTranslate, yTranslate;
 
-                /*switch (position) {
+                switch (position) {
                     case "BOTTOM_CENTER":
-                        xTranslate = (float) Display.getWidth() / 2;
-                        yTranslate = (float) (Display.getHeight() - 50) - (float) (captionIndex * verticalSpacing);
+                        xTranslate = (float) resolution.getScaledWidth() / 2;
+                        yTranslate = (float) (resolution.getScaledHeight() - 50) - (float) (captionIndex * verticalSpacing);
                         break;
                     case "BOTTOM_LEFT":
                         xTranslate = (float) halfMaxLength;
-                        yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing);
+                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * verticalSpacing);
                         break;
                     case "CENTER_LEFT":
                         xTranslate = (float) halfMaxLength;
-                        yTranslate = (float) (Display.getHeight() / 2) - (float) (captionIndex * verticalSpacing - 10);
+                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (captionIndex * verticalSpacing - 10);
                         break;
                     case "TOP_LEFT":
                         xTranslate = (float) halfMaxLength;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
                     case "TOP_CENTER":
-                        xTranslate = (float) Display.getWidth() / 2;
+                        xTranslate = (float) resolution.getScaledWidth() / 2;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
                     case "TOP_RIGHT":
-                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
                         yTranslate = (float) (captionIndex * verticalSpacing + 5);
                         break;
                     case "CENTER_RIGHT":
-                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength;
-                        yTranslate = (float) (Display.getHeight() / 2) - (float) (((this.subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength;
+                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((this.subtitles.size() - 1) / 2) - captionIndex) * verticalSpacing;
                         break;
                     default: //if there's any invalid input just show it in the bottom right
-                        xTranslate = (float) Display.getWidth() - (float) halfMaxLength - 2.0F;
-                        yTranslate = (float) (Display.getHeight() - 30) - (float) (captionIndex * verticalSpacing + 5);
+                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2.0F;
+                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * verticalSpacing);
                         break;
-                }*/
+                }
 
                 //"GlStateManager.translate" sets the position, parameters used: (x, y, z). Example of method with parameters: GlStateManager.translate(x, y, z)
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);

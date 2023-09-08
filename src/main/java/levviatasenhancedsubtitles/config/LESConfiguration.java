@@ -38,7 +38,6 @@ import java.util.List;
  *  => See ForgeModContainer for more examples.
  */
 public class LESConfiguration {
-
 	// Declare all configuration fields used by the mod here
 	public static int myInteger;
 	public static boolean myBoolean;
@@ -46,38 +45,23 @@ public class LESConfiguration {
 	public static int[] myIntList;
 	public static String myString;
 	public static String myColour;
-
 	public static String overlayPosition;
-
+	public static Property propOverlayPosition;
 	public static final String CATEGORY_NAME_GENERAL = "category_general";
 	public static final String CATEGORY_NAME_OTHER = "category_other";
 
 
 	public static void preInit()
 	{
-		/*
-		 * Here is where you specify the location from where your config file
-		 * will be read, or created if it is not present.
-		 *
-		 * Loader.instance().getConfigDir() returns the default config directory
-		 * and you specify the name of the config file, together this works
-		 * similar to the old getSuggestedConfigurationFile() function.
-		 */
+
 		File configFile = new File(Loader.instance().getConfigDir(), "LevviatasEnhancedSubtitles.cfg");
 
-		// initialize your configuration object with your configuration file values.
 		config = new Configuration(configFile);
 
-		// load config from file (see mbe70 package for more info)
 		syncFromFile();
 	}
 
 	public static void clientPreInit() {
-		/*
-		 * Register the save config handler to the Forge event bus, creates an
-		 * instance of the static class ConfigEventHandler and has it listen on
-		 * the core Forge event bus (see Notes and ConfigEventHandler for more information).
-		 */
 		MinecraftForge.EVENT_BUS.register(new ConfigEventHandler());
 	}
 
@@ -85,16 +69,10 @@ public class LESConfiguration {
 		return config;
 	}
 
-	/**
-	 * load the configuration values from the configuration file
-	 */
 	public static void syncFromFile() {
 		syncConfig(true, true);
 	}
 
-	/**
-	 * save the GUI-altered values to disk
-	 */
 	public static void syncFromGUI() {
 		syncConfig(false, true);
 	}
@@ -168,6 +146,18 @@ public class LESConfiguration {
 		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
 		final String[] POSITION_CHOICES = {
 				"BOTTOM_RIGHT",
+				"BOTTOM_LEFT",
+				"BOTTOM_CENTER",
+				"CENTER_LEFT",
+				"TOP_LEFT",
+				"TOP_CENTER",
+				"TOP_RIGHT",
+				"CENTER_RIGHT"
+		};
+
+		//final OverlayPosition OVERLAY_POSITION_DEFAULT_VALUE = OverlayPosition.valueOf(BOTTOM_RIGHT.name());
+		/*final String[] POSITION_CHOICES = {
+				BOTTOM_RIGHT,
 				"BOTTOM_CENTER",
 				"BOTTOM_LEFT",
 				"CENTER_LEFT",
@@ -175,13 +165,15 @@ public class LESConfiguration {
 				"TOP_CENTER",
 				"TOP_RIGHT",
 				"CENTER_RIGHT"
-				};
-		Property propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
+				};*/
+
+		propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
 				"overlayPosition", OVERLAY_POSITION_DEFAULT_VALUE,
 				"Configuration subtitle overlay position (overlayPosition): blue, red, yellow");
 				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
-
 		propOverlayPosition.setValidValues(POSITION_CHOICES);
+
+		//propOverlayPosition.setValidValues(POSITION_CHOICES);
 
 		// integer
 		final int MY_INT_MIN_VALUE = 3;
@@ -210,9 +202,7 @@ public class LESConfiguration {
 
 		// string
 		final String MY_STRING_DEFAULT_VALUE = "default";
-		Property propMyString = config.get(CATEGORY_NAME_GENERAL,
-				"myString", MY_STRING_DEFAULT_VALUE,
-				"Configuration string (myString)");
+		Property propMyString = config.get(CATEGORY_NAME_GENERAL, "myString", MY_STRING_DEFAULT_VALUE, "Configuration string (myString)");
 		propMyString.setLanguageKey("gui.config.myString").setRequiresWorldRestart(true);
 
 		// list of integer values
@@ -258,7 +248,17 @@ public class LESConfiguration {
 		if (readFieldsFromConfig)
 		{
 			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_RIGHT"
-
+			overlayPosition = propOverlayPosition.getString();
+			boolean overlayMatched = false;
+			for (String entry : POSITION_CHOICES) {
+				if (entry.equals(overlayPosition)) {
+					overlayMatched = true;
+					break;
+				}
+			}
+			if (!overlayMatched) {
+				overlayPosition = OVERLAY_POSITION_DEFAULT_VALUE;
+			}
 
 			myInteger = propMyInt.getInt(MY_INT_DEFAULT_VALUE);
 			if (myInteger > MY_INT_MAX_VALUE || myInteger < MY_INT_MIN_VALUE) {
@@ -273,28 +273,16 @@ public class LESConfiguration {
 			}
 			myIntList = propMyIntList.getIntList();
 			myString = propMyString.getString();
-			overlayPosition = propOverlayPosition.getString();
-			boolean overlayMatched = false;
-			for (String entry : POSITION_CHOICES) {
-				if (entry.equals(overlayPosition)) {
-					overlayMatched = true;
-					break;
-				}
-			}
-			if (!overlayMatched) {
-				overlayPosition = OVERLAY_POSITION_DEFAULT_VALUE;
-			}
-
 
 			myColour = propColour.getString();
-			boolean matched = false;
+			boolean colourMatched = false;
 			for (String entry : COLOUR_CHOICES) {
 				if (entry.equals(myColour)) {
-					matched = true;
+					colourMatched = true;
 					break;
 				}
 			}
-			if (!matched) {
+			if (!colourMatched) {
 				myColour = COLOUR_DEFAULT_VALUE;
 			}
 		}
