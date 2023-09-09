@@ -35,7 +35,7 @@ Then press **'OK'** in the window that just popped up and the installer should c
 
 ## Where to put the .jar file
 
-As usual, you should put the file on:
+As usual, you should put the file on (or in the folder you downloaded Minecraft):
 ~~~text
 C:\Users\YourUserHere\AppData\Roaming\.minecraft\mods
 ~~~ 
