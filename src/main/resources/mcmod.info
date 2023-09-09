@@ -2,13 +2,13 @@
 {
   "modid": "levviatasenhancedsubtitles",
   "name": "Levviata's Enhanced Subtitles (LES)",
-  "description": "My own downport for my little silly modpack.",
-  "version": "1.12.2",
+  "description": "Mod aimed at improving the way subtitles are displayed.",
+  "version": "1.0.0",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/yeahfrick/LevviatasEnhancedSubtitles",
   "updateUrl": "",
   "authorList": ["Levviata"],
-  "credits": "Elizabeth Sherrock for giving me this idea with their mod!",
+  "credits": "Elizabeth Sherrock for major reference and inspiration help with their mod.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
