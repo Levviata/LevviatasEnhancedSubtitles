@@ -90,6 +90,6 @@ Build: 1.12.2-14.23.5.2841 - Thu Aug 29 01:58:50 GMT 2019
 		Fix lightning not triggering EntityJoinWorldEvent (#5290)
 
 =========
-Build: 1.12.2-14.23.5.2840 - Thu Aug 29 01:19:55 GMT 2019
+Build: 1.12.2-14.23.5.2840 - Thu Aug 29 01:19:55 GMT 201
 	lexmanos:
 		Fix copy paste derp
