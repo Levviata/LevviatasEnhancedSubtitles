@@ -13,17 +13,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 public class LESConfiguration {
-	public static int myInteger;
-	public static boolean myBoolean;
-	public static double myDouble;
-	public static int[] myIntList;
-	public static String myString;
-	public static String myColour;
 	public static String overlayPosition;
 	public static Property propOverlayPosition;
 	public static final String CATEGORY_NAME_GENERAL = "category_general";
-	public static final String CATEGORY_NAME_OTHER = "category_other";
-
+	//public static final String CATEGORY_NAME_OTHER = "category_other";
 	public static void preInit()
 	{
 
@@ -77,9 +70,10 @@ public class LESConfiguration {
 				"TOP_RIGHT",
 				"CENTER_RIGHT"
 		};
-		propOverlayPosition = config.get(CATEGORY_NAME_OTHER,
+		propOverlayPosition = config.get(CATEGORY_NAME_GENERAL,
 				"overlayPosition", OVERLAY_POSITION_DEFAULT_VALUE,
-				"Configuration subtitle overlay position (overlayPosition): blue, red, yellow");
+				"The position for the subtitle overlay.\nAcceptable values: BOTTOM_RIGHT, " +
+		"BOTTOM_CENTER, BOTTOM_LEFT, CENTER_LEFT, TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_RIGHT");
 				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
 		propOverlayPosition.setValidValues(POSITION_CHOICES);
 
@@ -87,9 +81,9 @@ public class LESConfiguration {
 		propOrderGeneral.add(propOverlayPosition.getName());
 		config.setCategoryPropertyOrder(CATEGORY_NAME_GENERAL, propOrderGeneral);
 
-		List<String> propOrderOther = new ArrayList<String>();
+		//List<String> propOrderOther = new ArrayList<String>();
 
-		config.setCategoryPropertyOrder(CATEGORY_NAME_OTHER, propOrderOther);
+		//config.setCategoryPropertyOrder(CATEGORY_NAME_OTHER, propOrderOther);
 
 
 		if (readFieldsFromConfig)
@@ -124,7 +118,7 @@ public class LESConfiguration {
 		{
 			if (LES.MODID.equals(event.getModID()) && !event.isWorldRunning())
 			{
-				if (event.getConfigID().equals(CATEGORY_NAME_GENERAL) || event.getConfigID().equals(CATEGORY_NAME_OTHER))
+				if (event.getConfigID().equals(CATEGORY_NAME_GENERAL) /*|| event.getConfigID().equals(CATEGORY_NAME_OTHER)*/)
 				{
 					syncFromGUI();
 				}

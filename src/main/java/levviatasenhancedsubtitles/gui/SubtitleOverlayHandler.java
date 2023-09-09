@@ -119,7 +119,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 switch (position) {
                     case "BOTTOM_CENTER":
                         xTranslate = (float) resolution.getScaledWidth() / 2;
-                        yTranslate = (float) (resolution.getScaledHeight() - 50) - (float) (captionIndex * subtitleSpacing);
+                        yTranslate = (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
                         break;
                     case "BOTTOM_LEFT":
                         xTranslate = (float) halfMaxLength + horizontalSpacing;
@@ -127,7 +127,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         break;
                     case "CENTER_LEFT":
                         xTranslate = (float) halfMaxLength + horizontalSpacing;
-                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (captionIndex * subtitleSpacing - 10);
+                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
                         break;
                     case "TOP_LEFT":
                         xTranslate = (float) halfMaxLength + horizontalSpacing;

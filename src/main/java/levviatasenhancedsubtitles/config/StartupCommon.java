@@ -18,25 +18,15 @@ public class StartupCommon
 	public static void preInitCommon()
 	{
     LESConfiguration.preInit();
-    System.out.println("Config: myInteger=" + LESConfiguration.myInteger
-                               + "; myBoolean=" + LESConfiguration.myBoolean
-                               + "; myString=" + LESConfiguration.myString);
-    System.out.println("Config: myDouble=" + LESConfiguration.myDouble
-                               + "; myColour=" + LESConfiguration.myColour);
-    System.out.print("Config: myIntList=");
-    for (int value : LESConfiguration.myIntList) {
-      System.out.print(value + "; ");
     }
-    System.out.println();
-
-  }
 
 	public static void initCommon()
 	{
+
 	}
 
 	public static void postInitCommon()
 	{
-	}
 
+	}
 }

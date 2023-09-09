@@ -61,7 +61,7 @@ public class LESGuiFactory implements IModGuiFactory
             List<IConfigElement> list = new ArrayList<IConfigElement>();
             //Add the two buttons that will go to each config category edit screen
             list.add(new DummyCategoryElement("mainCfg", "gui.config.ctgy.general", CategoryEntryGeneral.class));
-            list.add(new DummyCategoryElement("miscCfg", "gui.config.ctgy.other", CategoryEntryOther.class));
+            //list.add(new DummyCategoryElement("miscCfg", "gui.config.ctgy.other", CategoryEntryOther.class));
             return list;
         }
 
@@ -99,7 +99,7 @@ public class LESGuiFactory implements IModGuiFactory
             }
         }
 
-        public static class CategoryEntryOther extends CategoryEntry
+        /*public static class CategoryEntryOther extends CategoryEntry
         {
             public CategoryEntryOther(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
             {
@@ -123,6 +123,6 @@ public class LESGuiFactory implements IModGuiFactory
                 //this is a complicated object that specifies the category's gui screen, to better understand
                 // how it works, look into the definitions of the called functions and objects
             }
-        }
+        }*/
     }
 }
