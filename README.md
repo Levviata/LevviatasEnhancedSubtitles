@@ -7,7 +7,7 @@ A 1.12.2 Minecraft client mod made, with and for, the Forge Modloader which aims
 
 - **Windows 7, 8, 10, or 11 / Linux Ubuntu, Debian, etc. / Any other compatible operational system with the Forge Modloader.**
     - _Mod as only been tested on Windows 10 and will only receive support for window's versions._
-    - _Guide only covers Window usage, if you are on Linux I will take it as you already know how to do the things below, if not, Youtube is your friend_.
+    - _Guide only covers Windows usage, if you are on Linux I will take it as you already know how to do the things below, if not, online guides are your friend_.
 
 - **Basic computer knowledge:**
   * Basic knowledge about **_folder directories_**.
