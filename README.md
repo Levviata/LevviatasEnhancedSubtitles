@@ -41,7 +41,7 @@ C:\Users\YourUserHere\AppData\Roaming\.minecraft\mods
 ~~~ 
 - _'**YourUserHere**' referring to the name of the user you have just signed in your pc._
 - _**'C:\ '** is your disk's letter._
-- _You can access this directory by pressing **WIN + R** (the big key with the window's logo), then inputting **'%appdata%'** and pressing **ENTER**. '**.minecraft'** is a hidden file so you will not be able to see it naturally, follow [this guide](https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5#WindowsVersion=Windows_11) as to be able to see them (Windows 7 and 8 are pretty much the same as far as I'm aware).
+- _You can access this directory by pressing **WIN + R** (the big key with the window's logo), then inputting **'%appdata%'** and pressing **ENTER**. '**.minecraft'** is a hidden file so you will not be able to see it naturally, follow [this guide](https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5#WindowsVersion=Windows_11) as to be able to see them (Windows 7 and 8 are pretty much the same as far as I'm aware)._
 
 If the folder does not exist in that directory, create a folder _EXACTLY_ named '**mods**' in the directory '**.minecraft**' or in other words in:
 ~~~text
