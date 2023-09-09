@@ -1,7 +1,7 @@
 
 # Levviata's Enhanced Subtitles
 
-A 1.12.2 Minecraft mod made, with and for, the Forge Modloader which aims at improving the user experience of Minecraft's subtitles.
+A 1.12.2 Minecraft client mod made, with and for, the Forge Modloader which aims at improving the user experience of Minecraft's subtitles.
 
 # Requirements
 
