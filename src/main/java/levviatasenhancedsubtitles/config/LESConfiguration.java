@@ -133,10 +133,15 @@ public class LESConfiguration {
 				BACKGROUND_ALPHA_MAX_VALUE);
 		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
 
-		final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = true;
+		final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
-		propBackgroundBlackOn.setComment("Configuration boolean (myBoolean)");
-		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundBlackOn").setRequiresMcRestart(true);
+		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
+		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundBlackOn");
+
+		final boolean BACKGROUND_WHITE_ON_DEFAULT_VALUE = false;
+		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_WHITE_ON_DEFAULT_VALUE);
+		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
+		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundWhiteOn");
 
 
 		List<String> propOrderPosition = new ArrayList<String>();

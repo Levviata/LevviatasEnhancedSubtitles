@@ -192,22 +192,22 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 GlStateManager.enableBlend();
 
                 if (!flag) {
-                    if (d0 > 0.05D)
+                    if (d0 > 0.00D)
                     {
                         minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
                     }
-                    else if (d0 < -0.05D)
+                    else if (d0 < -0.00D)
                     {
                         minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                     }
-                    else if (d0 <= 0.00D || d0 >= -0.00D)
+                    /*else if (d0 <= 0.00D || d0 >= -0.00D)
                     {
                         minecraft.fontRenderer.drawString("B", halfMaxLength - minecraft.fontRenderer.getStringWidth("B"), -subtitleHeight / 2, fadeAway + 16777216);
                         minecraft.fontRenderer.drawString("B", halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                     }
                 } else if (d0 <= 0.01D || d0 >= -0.01D) {
                     minecraft.fontRenderer.drawString("F", halfMaxLength - minecraft.fontRenderer.getStringWidth("B"), -subtitleHeight / 2, fadeAway + 16777216);
-                    minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
+                    minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);*/
                 }
 
                 minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);

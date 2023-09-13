@@ -8,3 +8,5 @@ gui.les_configuration.backgroundRed=Red
 gui.les_configuration.backgroundGreen=Green
 gui.les_configuration.backgroundBlue=Blue
 gui.les_configuration.backgroundAlpha=Alpha
+gui.les_configuration.backgroundBlackOn=All Black
+gui.les_configuration.backgroundWhiteOn=All White
