@@ -19,13 +19,12 @@ import net.minecraftforge.common.MinecraftForge;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-
 		SubtitleOverlayHandler.clientPreInit();
 	}
 	public static void InitClientOnly() {
 	}
 	public static void postInitClientOnly()
 	{
-
+		RadarOverlayHandler.clientPostInit();
 	}
 }

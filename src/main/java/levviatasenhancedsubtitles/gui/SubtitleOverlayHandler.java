@@ -28,10 +28,12 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     static final List<Subtitle> subtitles = Lists.newArrayList();
     private boolean isListening;
 
-    public static void clientPreInit() {
+    public static void clientPreInit()
+    {
         MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
     }
-    public static void preInit() {
+    public static void preInit()
+    {
 
     }
     @SubscribeEvent(receiveCanceled = true)
@@ -64,10 +66,10 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Vec3d vec3d = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double)minecraft.player.getEyeHeight(), minecraft.player.posZ);
-            Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
-            Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
-            Vec3d vec3d3 = vec3d1.crossProduct(vec3d2);
+            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double)minecraft.player.getEyeHeight(), minecraft.player.posZ);
+            Vec3d zPlayerDirection = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
+            Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
+            Vec3d vec3d3 = zPlayerDirection.crossProduct(yPlayerDirection);
             int maxLength = 0;
             Iterator<Subtitle> iterator = subtitles.iterator();
 
@@ -93,9 +95,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 // We get the contents of the current sent subtitle
                 String Caption1 = caption.getString();
 
-                Vec3d vec3d4 = caption.getLocation().subtract(vec3d).normalize();
+                Vec3d vec3d4 = caption.getLocation().subtract(playerPosition).normalize();
                 double d0 = -vec3d3.dotProduct(vec3d4);
-                double d1 = -vec3d1.dotProduct(vec3d4);
+                double d1 = -zPlayerDirection.dotProduct(vec3d4);
                 boolean flag = d1 > 0.5D;
 
                 int halfMaxLength = maxLength / 2;
@@ -103,8 +105,20 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int subtitleHeight = minecraft.fontRenderer.FONT_HEIGHT;
                 int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
 
-                int l1 = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
-                int textColor = l1 << 16 | l1 << 8 | l1;
+                /*
+                + Calculates the alpha value of the current caption based on the time it
+                + has been on screen
+                */
+                int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
+                int fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
+
+                int red = LESConfiguration.propBackgroundRed.getInt();
+                int green = LESConfiguration.propBackgroundGreen.getInt();
+                int blue = LESConfiguration.propBackgroundBlue.getInt();
+                int backgroundSubtitleAlphaCalculation = LESConfiguration.propBackgroundAlpha.getInt();
+                // Combine the red, green, and blue components into a single decimal color value
+                int backgroundSubtitleColor = (backgroundSubtitleAlphaCalculation << 24) | (red << 16) | (green << 8) | blue;
+
                 GlStateManager.pushMatrix();
 
                 //Change happens here
@@ -173,23 +187,30 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 These parameters specify the position and dimensions of the rectangle to be drawn. The x1 and y1 coordinates represent the top-left corner of the rectangle, while x2 and y2 represent the bottom-right corner. The color parameter determines the color of the filled rectangle.
 
                 In summary, the drawRect method is used in the provided code to draw a filled rectangle on the screen with specified dimensions and color.*/
-                drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, -872415232);
+                drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, backgroundSubtitleColor);
 
                 GlStateManager.enableBlend();
 
-                if (!flag)
-                {
-                    if (d0 > 0.0D)
+                if (!flag) {
+                    if (d0 > 0.05D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, textColor + 16777216);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
                     }
-                    else if (d0 < 0.0D)
+                    else if (d0 < -0.05D)
                     {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, textColor + 16777216);
+                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                     }
+                    else if (d0 <= 0.00D || d0 >= -0.00D)
+                    {
+                        minecraft.fontRenderer.drawString("B", halfMaxLength - minecraft.fontRenderer.getStringWidth("B"), -subtitleHeight / 2, fadeAway + 16777216);
+                        minecraft.fontRenderer.drawString("B", halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
+                    }
+                } else if (d0 <= 0.01D || d0 >= -0.01D) {
+                    minecraft.fontRenderer.drawString("F", halfMaxLength - minecraft.fontRenderer.getStringWidth("B"), -subtitleHeight / 2, fadeAway + 16777216);
+                    minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, textColor + 16777216);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }

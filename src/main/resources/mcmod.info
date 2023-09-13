@@ -3,7 +3,7 @@
   "modid": "levviatasenhancedsubtitles",
   "name": "Levviata's Enhanced Subtitles (LES)",
   "description": "Mod aimed at improving the way subtitles are displayed.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "mcversion": "${mcversion}",
   "url": "https://github.com/yeahfrick/LevviatasEnhancedSubtitles",
   "updateUrl": "",

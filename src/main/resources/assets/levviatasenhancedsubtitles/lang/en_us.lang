@@ -1,6 +1,10 @@
 gui.config.mainTitle=Levviata's Enhanced Subtitles Configuration
-gui.config.ctgy.general=General Configuration
-gui.config.ctgy.general.tooltip=Main Config Options
-gui.config.ctgy.other=Other Configuration
-gui.config.ctgy.other.tooltip=Other minor config options...
+gui.config.ctgy.position=Position Options
+gui.config.ctgy.position.tooltip=Options for changing the subtitle's position
+gui.config.ctgy.background=Background Options
+gui.config.ctgy.background.tooltip=Options for changing the subtitle's background in various ways
 gui.config.overlayPosition=Subtitle Overlay Position
+gui.config.backgroundRed=Red
+gui.config.backgroundGreen=Green
+gui.config.backgroundBlue=Blue
+gui.config.backgroundAlpha=Alpha
