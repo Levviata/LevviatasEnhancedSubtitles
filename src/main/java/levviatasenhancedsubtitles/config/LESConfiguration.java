@@ -19,6 +19,7 @@ public class LESConfiguration {
 	public static Property propBackgroundGreen;
 	public static Property propBackgroundBlue;
 	public static Property propBackgroundAlpha;
+	public static Property propBackgroundBlackOn;
 	public static int backgroundRed;
 	public static int backgroundGreen;
 	public static int backgroundBlue;
@@ -85,7 +86,7 @@ public class LESConfiguration {
 				"overlayPosition", OVERLAY_POSITION_DEFAULT_VALUE,
 				"The position for the subtitle overlay.\nAcceptable values: BOTTOM_RIGHT, " +
 		"BOTTOM_CENTER, BOTTOM_LEFT, CENTER_LEFT, TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_RIGHT");
-				propOverlayPosition.setLanguageKey("gui.config.overlayPosition");
+				propOverlayPosition.setLanguageKey("gui.les_configuration.overlayPosition");
 		propOverlayPosition.setValidValues(POSITION_CHOICES);
 
 		final int BACKGROUND_RED_MIN_VALUE = 0;
@@ -97,7 +98,7 @@ public class LESConfiguration {
 				"The RGB red value (in decimals) for the subtitle's background.",
 				BACKGROUND_RED_MIN_VALUE,
 				BACKGROUND_RED_MAX_VALUE);
-		propBackgroundRed.setLanguageKey("gui.config.backgroundRed");
+		propBackgroundRed.setLanguageKey("gui.les_configuration.backgroundRed");
 
 		final int BACKGROUND_GREEN_MIN_VALUE = 0;
 		final int BACKGROUND_GREEN_MAX_VALUE = 255;
@@ -108,7 +109,7 @@ public class LESConfiguration {
 				"The RGB green value (in decimals) for the subtitle's background.",
 				BACKGROUND_GREEN_MIN_VALUE,
 				BACKGROUND_GREEN_MAX_VALUE);
-		propBackgroundGreen.setLanguageKey("gui.config.backgroundGreen");
+		propBackgroundGreen.setLanguageKey("gui.les_configuration.backgroundGreen");
 
 		final int BACKGROUND_BLUE_MIN_VALUE = 0;
 		final int BACKGROUND_BLUE_MAX_VALUE = 255;
@@ -119,7 +120,7 @@ public class LESConfiguration {
 				"The RGB blue value (in decimals) for the subtitle's background.",
 				BACKGROUND_BLUE_MIN_VALUE,
 				BACKGROUND_BLUE_MAX_VALUE);
-		propBackgroundBlue.setLanguageKey("gui.config.backgroundBlue");
+		propBackgroundBlue.setLanguageKey("gui.les_configuration.backgroundBlue");
 
 		final int BACKGROUND_ALPHA_MIN_VALUE = 0;
 		final int BACKGROUND_ALPHA_MAX_VALUE = 255;
@@ -130,7 +131,13 @@ public class LESConfiguration {
 				"The RGB alpha value (in decimals) for the subtitle's background.",
 				BACKGROUND_ALPHA_MIN_VALUE,
 				BACKGROUND_ALPHA_MAX_VALUE);
-		propBackgroundAlpha.setLanguageKey("gui.config.backgroundAlpha");
+		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
+
+		final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = true;
+		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
+		propBackgroundBlackOn.setComment("Configuration boolean (myBoolean)");
+		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundBlackOn").setRequiresMcRestart(true);
+
 
 		List<String> propOrderPosition = new ArrayList<String>();
 		propOrderPosition.add(propOverlayPosition.getName());

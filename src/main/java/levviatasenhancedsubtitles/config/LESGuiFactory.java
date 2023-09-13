@@ -53,15 +53,15 @@ public class LESGuiFactory implements IModGuiFactory
         {
             //I18n function basically "translates" or localizes the given key using the appropriate .lang file
             super(parentScreen, getConfigElements(), LES.MODID,
-                    false, false, I18n.format("gui.config.mainTitle"));
+                    false, false, I18n.format("gui.les_configuration.mainTitle"));
         }
 
         private static List<IConfigElement> getConfigElements()
         {
             List<IConfigElement> list = new ArrayList<IConfigElement>();
             //Add the two buttons that will go to each config category edit screen
-            list.add(new DummyCategoryElement("mainCfg", "gui.config.ctgy.position", CategoryEntryPosition.class));
-            list.add(new DummyCategoryElement("mainCfg", "gui.config.ctgy.background", CategoryEntryBackground.class));
+            list.add(new DummyCategoryElement("mainCfg", "gui.les_configuration.ctgy.position", CategoryEntryPosition.class));
+            list.add(new DummyCategoryElement("mainCfg", "gui.les_configuration.ctgy.background", CategoryEntryBackground.class));
             //list.add(new DummyCategoryElement("miscCfg", "gui.config.ctgy.other", CategoryEntryOther.class));
             return list;
         }
