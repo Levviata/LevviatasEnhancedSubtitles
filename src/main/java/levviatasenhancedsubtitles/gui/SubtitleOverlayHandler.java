@@ -112,12 +112,24 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
 
-                int red = LESConfiguration.propBackgroundRed.getInt();
-                int green = LESConfiguration.propBackgroundGreen.getInt();
-                int blue = LESConfiguration.propBackgroundBlue.getInt();
-                int backgroundSubtitleAlphaCalculation = LESConfiguration.propBackgroundAlpha.getInt();
+
+                int backgroundRed = LESConfiguration.propBackgroundRed.getInt();
+                int backgroundGreen = LESConfiguration.propBackgroundGreen.getInt();
+                int backgroundBlue = LESConfiguration.propBackgroundBlue.getInt();
+                int backgroundAlpha = 255;
+                //int backgroundSubtitleAlphaCalculation = LESConfiguration.propBackgroundAlpha.getInt();
+
                 // Combine the red, green, and blue components into a single decimal color value
-                int backgroundSubtitleColor = (backgroundSubtitleAlphaCalculation << 24) | (red << 16) | (green << 8) | blue;
+                int backgroundSubtitleColor = (backgroundAlpha << 24) | (backgroundRed << 16) | (backgroundGreen << 8) | backgroundBlue;
+
+                int fontRed = LESConfiguration.propFontRed.getInt();
+                int fontGreen = LESConfiguration.propFontGreen.getInt();
+                int fontBlue = LESConfiguration.propFontBlue.getInt();
+                int fontAlpha = 255;
+
+                int fontSubtitleColor = (fontAlpha << 24) | (fontRed << 16) | (fontGreen << 8) | fontBlue;
+
+                int fadeAwayWithColor = (fadeAwayCalculation << 16) | (fadeAwayCalculation << 8) | fadeAwayCalculation | (fontSubtitleColor & 0x00FFFFFF);
 
                 GlStateManager.pushMatrix();
 
@@ -194,11 +206,11 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 if (!flag) {
                     if (d0 > 0.00D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
                     }
                     else if (d0 < -0.00D)
                     {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
+                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
                     }
                     /*else if (d0 <= 0.00D || d0 >= -0.00D)
                     {
@@ -210,7 +222,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                     minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);*/
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }

@@ -60,8 +60,9 @@ public class LESGuiFactory implements IModGuiFactory
         {
             List<IConfigElement> list = new ArrayList<IConfigElement>();
             //Add the two buttons that will go to each config category edit screen
-            list.add(new DummyCategoryElement("mainCfg", "gui.les_configuration.ctgy.position", CategoryEntryPosition.class));
-            list.add(new DummyCategoryElement("mainCfg", "gui.les_configuration.ctgy.background", CategoryEntryBackground.class));
+            list.add(new DummyCategoryElement("positionCfg", "gui.les_configuration.ctgy.position", CategoryEntryPosition.class));
+            list.add(new DummyCategoryElement("backgroundCfg", "gui.les_configuration.ctgy.background", CategoryEntryBackground.class));
+            list.add(new DummyCategoryElement("fontCfg", "gui.les_configuration.ctgy.font", CategoryEntryFont.class));
             //list.add(new DummyCategoryElement("miscCfg", "gui.config.ctgy.other", CategoryEntryOther.class));
             return list;
         }
@@ -100,6 +101,36 @@ public class LESGuiFactory implements IModGuiFactory
                 // how it works, look into the definitions of the called functions and objects
             }
         }
+        public static class CategoryEntryFont extends CategoryEntry {
+            public CategoryEntryFont(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+                super(owningScreen, owningEntryList, prop);
+            }
+
+            @Override
+            protected GuiScreen buildChildScreen()
+            {
+                //The following GuiConfig object specifies the configID of the object and thus will force-save
+                // when closed.
+                //Parent GuiConfig object's entryList will also be refreshed to reflect the changes.
+                // --see GuiFactory of Forge for more info
+                //Additionally, Forge best practices say to put the path to the config file for the category as
+                // the title for the category config screen
+
+                Configuration configuration = LESConfiguration.getConfig();
+                ConfigElement cat_general = new ConfigElement(configuration.getCategory(LESConfiguration.CATEGORY_NAME_FONT));
+                List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
+                String windowTitle = configuration.toString();
+
+                return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
+                        this.owningScreen.modID,
+                        LESConfiguration.CATEGORY_NAME_FONT,
+                        this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                        windowTitle);
+                //this is a complicated object that specifies the category's gui screen, to better understand
+                // how it works, look into the definitions of the called functions and objects
+            }
+        }
         public static class CategoryEntryBackground extends CategoryEntry {
             public CategoryEntryBackground(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
                 super(owningScreen, owningEntryList, prop);
@@ -130,6 +161,7 @@ public class LESGuiFactory implements IModGuiFactory
             // how it works, look into the definitions of the called functions and objects
         }
     }
+
         /*public static class CategoryEntryOther extends CategoryEntry
         {
             public CategoryEntryOther(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
