@@ -122,7 +122,7 @@ public class LESConfiguration {
 
         final int FONT_RED_MIN_VALUE = 0;
         final int FONT_RED_MAX_VALUE = 255;
-        final int FONT_RED_DEFAULT_VALUE = 0;
+        final int FONT_RED_DEFAULT_VALUE = 255;
         propFontRed = config.get(
 				CATEGORY_NAME_FONT,
                 "fontRed", FONT_RED_DEFAULT_VALUE,
@@ -133,7 +133,7 @@ public class LESConfiguration {
 
         final int FONT_GREEN_MIN_VALUE = 0;
         final int FONT_GREEN_MAX_VALUE = 255;
-        final int FONT_GREEN_DEFAULT_VALUE = 0;
+        final int FONT_GREEN_DEFAULT_VALUE = 255;
         propFontGreen = config.get(
                 CATEGORY_NAME_FONT,
                 "fontGreen", FONT_GREEN_DEFAULT_VALUE,
@@ -144,7 +144,7 @@ public class LESConfiguration {
 
         final int FONT_BLUE_MIN_VALUE = 0;
         final int FONT_BLUE_MAX_VALUE = 255;
-        final int FONT_BLUE_DEFAULT_VALUE = 0;
+        final int FONT_BLUE_DEFAULT_VALUE = 255;
         propFontBlue = config.get(
 				CATEGORY_NAME_FONT,
                 "fontBlue", FONT_BLUE_DEFAULT_VALUE,

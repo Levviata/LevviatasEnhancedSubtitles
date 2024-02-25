@@ -1,9 +1,11 @@
 package levviatasenhancedsubtitles;
 
+import levviatasenhancedsubtitles.commands.CommandOpenGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.client.ClientCommandHandler;
 
 /**
  * ClientProxy is used to set up the mod and start it running on normal minecraft.  It contains all the code that should run on the
@@ -19,6 +21,7 @@ public class ClientOnlyProxy extends CommonProxy
   public void preInit()
   {
     super.preInit();
+
     levviatasenhancedsubtitles.config.StartupClientOnly.preInitClientOnly();
 
     levviatasenhancedsubtitles.gui.StartupClientOnly.preInitClientOnly();
@@ -31,6 +34,8 @@ public class ClientOnlyProxy extends CommonProxy
   public void init()
   {
     super.init();
+    ClientCommandHandler.instance.registerCommand(new CommandOpenGui());
+
     levviatasenhancedsubtitles.config.StartupClientOnly.initClientOnly();
 
     levviatasenhancedsubtitles.gui.StartupClientOnly.InitClientOnly();

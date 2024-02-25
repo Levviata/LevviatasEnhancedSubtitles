@@ -110,6 +110,29 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 + has been on screen
                 */
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
+                // Assuming caption.getStartTime() returns the time when the subtitle was first displayed
+                long elapsedTime = Minecraft.getSystemTime() - caption.getStartTime();
+
+                // User-defined starting and ending alpha values
+                int startAlpha = 255; // Fully opaque
+                int endAlpha = 75; // Fully transparent
+
+                // Calculate the new alpha value based on the elapsed time
+                int newAlpha = MathHelper.floor(MathHelper.clampedLerp(startAlpha, endAlpha, (float)elapsedTime / 3000.0F));
+
+                // Ensure the new alpha value is clamped between 0 and 255
+                newAlpha = MathHelper.clamp(newAlpha, 0, 255);
+
+                // User-defined RGB color values
+                int userRed = LESConfiguration.propFontRed.getInt();
+                int userGreen = LESConfiguration.propFontGreen.getInt();
+                int userBlue = LESConfiguration.propFontBlue.getInt();
+
+                // Combine the new alpha value with the RGB color values
+                int fadedColor = (newAlpha << 24) | (userRed << 16) | (userGreen << 8) | userBlue;
+
+                // Now you can use fadedColor as the color for your subtitles
+
                 int fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
 
 
@@ -206,7 +229,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 if (!flag) {
                     if (d0 > 0.00D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAwayWithColor);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway);
                     }
                     else if (d0 < -0.00D)
                     {
@@ -222,7 +245,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                     minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);*/
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2,  fadeAwayWithColor);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2,  fadedColor);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }

@@ -1,11 +1,23 @@
 package levviatasenhancedsubtitles;
 
+import levviatasenhancedsubtitles.commands.CommandOpenGui;
+import levviatasenhancedsubtitles.gui.ClickGUI;
+import levviatasenhancedsubtitles.module.Category;
+import levviatasenhancedsubtitles.module.ClickGUIModule;
+import levviatasenhancedsubtitles.module.HUDEditorModule;
+import levviatasenhancedsubtitles.module.TabGUIModule;
+import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import org.lwjgl.input.Keyboard;
 
 /*
    Each mod has a main class which is used by Forge to interact with the mod during startup.
@@ -67,6 +79,7 @@ public class LES
     public static final String GUIFACTORY = "levviatasenhancedsubtitles.config.LESGuiFactory"; //delete if MBE70 not present
 
     // The instance of your mod that Forge uses.  Optional.
+    private static ClickGUI gui;
     @Mod.Instance(LES.MODID)
     public static LES instance;
 
@@ -82,9 +95,14 @@ public class LES
 
 
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-     commonProxy.init();
+    public void init(FMLInitializationEvent event) {
+        Category.init();
+        Category.OTHER.modules.add(new ClickGUIModule());
+        Category.OTHER.modules.add(new HUDEditorModule());
+        Category.HUD.modules.add(new TabGUIModule());
+        gui=new ClickGUI();
+        MinecraftForge.EVENT_BUS.register(this);
+        commonProxy.init();
     }
 
     @EventHandler
@@ -93,6 +111,16 @@ public class LES
      commonProxy.postInit();
     }
 
+    @SubscribeEvent
+    public void onKeyInput (InputEvent.KeyInputEvent event) {
+    if (Keyboard.isKeyDown(ClickGUIModule.keybind.getKey())) gui.enterGUI();
+    if (Keyboard.isKeyDown(HUDEditorModule.keybind.getKey())) gui.enterHUDEditor();
+    if (Keyboard.getEventKeyState()) gui.handleKeyEvent(Keyboard.getEventKey());
+    }
+    @SubscribeEvent
+    public void onRender (RenderGameOverlayEvent.Post event) {
+        if (event.getType()== RenderGameOverlayEvent.ElementType.HOTBAR) gui.render();
+    }
     /**
      * Prepend the name with the mod ID, suitable for ResourceLocations such as textures.
      * @param name
