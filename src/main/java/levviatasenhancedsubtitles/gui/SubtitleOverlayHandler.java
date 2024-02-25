@@ -206,11 +206,11 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 if (!flag) {
                     if (d0 > 0.00D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
+                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAwayWithColor);
                     }
                     else if (d0 < -0.00D)
                     {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
+                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAwayWithColor);
                     }
                     /*else if (d0 <= 0.00D || d0 >= -0.00D)
                     {
@@ -222,7 +222,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                     minecraft.fontRenderer.drawString("F", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);*/
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAwayWithColor - fontSubtitleColor);
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2,  fadeAwayWithColor);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
