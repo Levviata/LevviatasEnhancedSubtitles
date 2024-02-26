@@ -13,6 +13,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
+import com.lukflug.panelstudio.component.*;
 import levviatasenhancedsubtitles.module.Category;
 import levviatasenhancedsubtitles.module.ClickGUIModule;
 import levviatasenhancedsubtitles.module.ClickGUIModule.Theme;
@@ -30,10 +31,6 @@ import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.base.IToggleable;
 import com.lukflug.panelstudio.base.SettingsAnimation;
 import com.lukflug.panelstudio.base.SimpleToggleable;
-import com.lukflug.panelstudio.component.IComponent;
-import com.lukflug.panelstudio.component.IFixedComponent;
-import com.lukflug.panelstudio.component.IResizable;
-import com.lukflug.panelstudio.component.IScrollSize;
 import com.lukflug.panelstudio.container.IContainer;
 import com.lukflug.panelstudio.hud.HUDGUI;
 import com.lukflug.panelstudio.layout.CSGOLayout;
@@ -124,8 +121,8 @@ public class ClickGUI extends MinecraftHUDGUI {
 				return gui.removeComponent(component);
 			}
 		},animation),TabGUIModule.getToggle(),animation.get(),theme,BORDER);
-		
-		// Creating popup types ...
+
+				// Creating popup types ...
 		BiFunction<Context,Integer,Integer> scrollHeight=(context,componentHeight)->Math.min(componentHeight,Math.max(HEIGHT*4,ClickGUI.this.height-context.getPos().y-HEIGHT));
 		PopupTuple popupType=new PopupTuple(new PanelPositioner(new Point(0,0)),false,new IScrollSize() {
 			@Override
@@ -324,6 +321,7 @@ public class ClickGUI extends MinecraftHUDGUI {
 		};
 		ILayout draggablePanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->level==0?ChildMode.DRAG_POPUP:ChildMode.DOWN,level->ChildMode.DOWN,popupType);
 		draggablePanelLayout.populateGUI(draggablePanelAdder,generator,client,theme);
+
 		// Single Panel
 		IComponentAdder singlePanelAdder=new SinglePanelAdder(gui,new Labeled("Example Menu",null,()->true),theme,new Point(10,10),WIDTH*Category.values().length,animation,()->ClickGUIModule.layout.getValue()==ClickGUIModule.Layout.SinglePanel,"singlePanel") {
 			@Override
