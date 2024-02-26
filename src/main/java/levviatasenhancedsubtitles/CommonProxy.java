@@ -1,9 +1,6 @@
 package levviatasenhancedsubtitles;
 
-import levviatasenhancedsubtitles.commands.CommandOpenGui;
-import levviatasenhancedsubtitles.gui.PositionOverlayHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.ClientCommandHandler;
 
 /**
  * CommonProxy is used to set up the mod and start it running.  It contains all the code that should run on both the

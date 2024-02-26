@@ -1,20 +1,15 @@
-package levviatasenhancedsubtitles.gui;
+package levviatasenhancedsubtitles.unused;
 
 import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.base.IToggleable;
 import com.lukflug.panelstudio.base.SimpleToggleable;
-import com.lukflug.panelstudio.component.*;
 import com.lukflug.panelstudio.hud.HUDGUI;
-import com.lukflug.panelstudio.layout.IComponentAdder;
-import com.lukflug.panelstudio.layout.ILayout;
-import com.lukflug.panelstudio.layout.PanelAdder;
-import com.lukflug.panelstudio.layout.PanelLayout;
 import com.lukflug.panelstudio.mc12.MinecraftHUDGUI;
 import com.lukflug.panelstudio.popup.IPopupPositioner;
 import com.lukflug.panelstudio.popup.MousePositioner;
 import com.lukflug.panelstudio.setting.IClient;
 import com.lukflug.panelstudio.theme.*;
-import levviatasenhancedsubtitles.component.DraggableButton;
+import levviatasenhancedsubtitles.gui.Category;
 import levviatasenhancedsubtitles.module.ClickGUIModule;
 import levviatasenhancedsubtitles.module.HUDEditorModule;
 import levviatasenhancedsubtitles.setting.BooleanSetting;
@@ -22,11 +17,7 @@ import levviatasenhancedsubtitles.setting.ColorSetting;
 import levviatasenhancedsubtitles.setting.IntegerSetting;
 import net.minecraft.util.text.TextFormatting;
 import com.lukflug.panelstudio.theme.ITheme;
-import com.lukflug.panelstudio.base.IInterface;
-import com.lukflug.panelstudio.base.SimpleToggleable;
-import com.lukflug.panelstudio.component.IComponent;
-import com.lukflug.panelstudio.setting.Labeled;
-import com.lukflug.panelstudio.widget.ToggleButton;
+
 import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,7 +26,7 @@ public class DraggableHUDGUI extends MinecraftHUDGUI {
     private final GUIInterface inter;
     private final HUDGUI gui;
     public DraggableHUDGUI () {
-        IClient client=Category.getClient();
+        IClient client= Category.getClient();
 
         inter=new GUIInterface(true) {
             @Override

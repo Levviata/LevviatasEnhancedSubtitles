@@ -1,6 +1,6 @@
 package levviatasenhancedsubtitles;
 
-import levviatasenhancedsubtitles.commands.CommandOpenGui;
+import levviatasenhancedsubtitles.unused.CommandOpenGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;

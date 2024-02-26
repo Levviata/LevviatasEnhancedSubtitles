@@ -1,9 +1,13 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
+import com.lukflug.panelstudio.base.IToggleable;
+import com.lukflug.panelstudio.base.SimpleToggleable;
 import com.lukflug.panelstudio.container.GUI;
 import com.lukflug.panelstudio.mc12.MinecraftGUI;
 import levviatasenhancedsubtitles.config.LESConfiguration;
+import levviatasenhancedsubtitles.module.HUDEditorModule;
+import levviatasenhancedsubtitles.setting.KeybindSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
@@ -16,6 +20,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -25,7 +30,32 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
     private final Minecraft minecraft = Minecraft.getMinecraft();
     private static final List<Subtitle> subtitles = Lists.newArrayList();
     private boolean isListening;
+    private int xTranslate, yTranslate;
+    private int width, height;
+    private int maxLength = 0;
+    private final int halfMaxLength = maxLength / 2;
+    private int buttonX;
+    private int buttonY;
+    private boolean dragging = false;
+    private int lastMouseX;
+    private int lastMouseY;
+    private static int mouseXRef, mouseYRef;
+    private static float partialTicksRef;
+    public static final KeybindSetting keybindGUI=new KeybindSetting("Keybind","keybind","The key to toggle the module.",()->true, Keyboard.KEY_P);
 
+    public static final KeybindSetting keybindHUD=new KeybindSetting("Keybind","keybind","The key to toggle the module.",()->true, Keyboard.KEY_P);
+    IToggleable guiToggle=new SimpleToggleable(false) {
+        @Override
+        public boolean isOn() {
+            return HUDEditorModule.showHUD.isOn();
+        }
+    };
+    IToggleable hudToggle=new SimpleToggleable(false) {
+        @Override
+        public boolean isOn() {
+            return guiToggle.isOn()? HUDEditorModule.showHUD.isOn():super.isOn();
+        }
+    };
     public static void clientPreInit() {
         MinecraftForge.EVENT_BUS.register(new NewSubtitleOverlayHandler());
     }
@@ -41,13 +71,28 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
 
             NewSubtitleOverlayHandler handler = new NewSubtitleOverlayHandler();
             event.setCanceled(true);
-            handler.enterGUI();
-
+            handler.drawScreen(mouseXRef, mouseYRef, partialTicksRef);
         }
     }
 
     @Override
     protected void renderGUI() {
+        drawButton();
+    }
+    /*@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        partialTicksRef = partialTicks;
+        mouseXRef = mouseX;
+        mouseYRef = mouseY;
+    }*/
+
+    @Override
+    protected int getScrollSpeed() {
+        return 0;
+    }
+
+    private void drawButton() {
         ScaledResolution resolution = new ScaledResolution(minecraft);
         if (!this.isListening && minecraft.gameSettings.showSubtitles) {
             minecraft.getSoundHandler().addListener(this);
@@ -61,19 +106,23 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double) minecraft.player.getEyeHeight(), minecraft.player.posZ);
+            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double)minecraft.player.getEyeHeight(), minecraft.player.posZ);
             Vec3d zPlayerDirection = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = zPlayerDirection.crossProduct(yPlayerDirection);
             int maxLength = 0;
             Iterator<Subtitle> iterator = subtitles.iterator();
 
-            while (iterator.hasNext()) {
+            while (iterator.hasNext())
+            {
                 Subtitle caption = iterator.next();
 
-                if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime()) {
+                if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime())
+                {
                     iterator.remove();
-                } else {
+                }
+                else
+                {
                     maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(caption.getString()));
                 }
             }
@@ -81,7 +130,8 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
             maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
 
             int captionIndex = 0;
-            for (Subtitle caption : subtitles) {
+            for (Subtitle caption : subtitles)
+            {
                 // We get the contents of the current sent subtitle
                 String Caption1 = caption.getString();
 
@@ -95,8 +145,11 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 int subtitleHeight = minecraft.fontRenderer.FONT_HEIGHT;
                 int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
 
-
-                int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float) (Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
+                /*
+                + Calculates the alpha value of the current caption based on the time it
+                + has been on screen
+                */
+                int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 // Assuming caption.getStartTime() returns the time when the subtitle was first displayed
                 long elapsedTime = Minecraft.getSystemTime() - caption.getStartTime();
 
@@ -105,7 +158,7 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 int endAlpha = 75; // Fully transparent
 
                 // Calculate the new alpha value based on the elapsed time
-                int newAlpha = MathHelper.floor(MathHelper.clampedLerp(startAlpha, endAlpha, (float) elapsedTime / 3000.0F));
+                int newAlpha = MathHelper.floor(MathHelper.clampedLerp(startAlpha, endAlpha, (float)elapsedTime / 3000.0F));
 
                 // Ensure the new alpha value is clamped between 0 and 255
                 newAlpha = MathHelper.clamp(newAlpha, 0, 255);
@@ -118,7 +171,6 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 // Combine the new alpha value with the RGB color values
                 int fadedColor = (newAlpha << 24) | (userRed << 16) | (userGreen << 8) | userBlue;
 
-                // Now you can use fadedColor as the color for your subtitles
 
                 int fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
 
@@ -127,9 +179,7 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 int backgroundGreen = LESConfiguration.propBackgroundGreen.getInt();
                 int backgroundBlue = LESConfiguration.propBackgroundBlue.getInt();
                 int backgroundAlpha = 255;
-                //int backgroundSubtitleAlphaCalculation = LESConfiguration.propBackgroundAlpha.getInt();
 
-                // Combine the red, green, and blue components into a single decimal color value
                 int backgroundSubtitleColor = (backgroundAlpha << 24) | (backgroundRed << 16) | (backgroundGreen << 8) | backgroundBlue;
 
                 int fontRed = LESConfiguration.propFontRed.getInt();
@@ -142,6 +192,8 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 int fadeAwayWithColor = (fadeAwayCalculation << 16) | (fadeAwayCalculation << 8) | fadeAwayCalculation | (fontSubtitleColor & 0x00FFFFFF);
 
                 GlStateManager.pushMatrix();
+
+                //Change happens here
 
                 String position = LESConfiguration.propOverlayPosition.getString();
 
@@ -186,7 +238,7 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 }
 
                 //"GlStateManager.translate" sets the position, parameters used: (x, y, z). Example of method with parameters: GlStateManager.translate(x, y, z)
-                GlStateManager.translate(xTranslate, yTranslate, 0.0F);
+                GlStateManager.translate(xTranslate - buttonX, yTranslate - buttonY, 0.0F);
 
                 GlStateManager.scale(1.0F, 1.0F, 1.0F);
 
@@ -195,25 +247,60 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
                 GlStateManager.enableBlend();
 
                 if (!flag) {
-                    if (d0 > 0.00D) {
+                    if (d0 > 0.00D)
+                    {
                         minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway);
-                    } else if (d0 < -0.00D) {
+                    }
+                    else if (d0 < -0.00D)
+                    {
                         minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAwayWithColor);
                     }
-
-                    minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadedColor);
-                    GlStateManager.popMatrix();
-                    ++captionIndex;
                 }
 
-                GlStateManager.disableBlend();
+                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2,  fadedColor);
                 GlStateManager.popMatrix();
+                ++captionIndex;
+            }
+
+            GlStateManager.disableBlend();
+            GlStateManager.popMatrix();
+        }
+    }
+    @Override
+    public boolean doesGuiPauseGame() {
+        return true;
+    }
+
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton == 0) { // Left click
+            if (isMouseOverButton(mouseX, mouseY)) {
+                this.dragging = true;
+                this.lastMouseX = mouseX;
+                this.lastMouseY = mouseY;
             }
         }
     }
-        public boolean isHovered() {
-            return (new Rectangle(new Point(this.position), new Dimension(this.size))).contains(this.inter.getMouse()) && this.onTop;
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        this.dragging = false;
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        if (this.dragging) {
+            this.buttonX += mouseX - this.lastMouseX;
+            this.buttonY += mouseY - this.lastMouseY;
+            this.lastMouseX = mouseX;
+            this.lastMouseY = mouseY;
         }
+    }
+
+    private boolean isMouseOverButton(int mouseX, int mouseY) {
+        return mouseX >= this.buttonX && mouseX < this.buttonX + this.width &&
+                mouseY >= this.buttonY && mouseY < this.buttonY + this.height;
+    }
         @Override
         public void soundPlay(ISound soundIn, SoundEventAccessor accessor){
             // Your custom implementation here
@@ -232,7 +319,6 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
             }
         }
 
-
     @Override
     protected GUI getGUI() {
         return null;
@@ -244,9 +330,10 @@ public class NewSubtitleOverlayHandler extends MinecraftGUI implements ISoundEve
     }
 
     @Override
-    protected int getScrollSpeed() {
-        return 0;
+    public void enterGUI() {
+        super.enterGUI();
     }
+
     private static class Subtitle {
         private final String subtitle;
         private long startTime;

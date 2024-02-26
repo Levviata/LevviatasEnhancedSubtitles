@@ -1,6 +1,5 @@
-package levviatasenhancedsubtitles.commands;
+package levviatasenhancedsubtitles.unused;
 
-import levviatasenhancedsubtitles.gui.PositionOverlayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

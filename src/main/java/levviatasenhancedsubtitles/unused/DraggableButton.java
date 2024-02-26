@@ -1,4 +1,4 @@
-package levviatasenhancedsubtitles.component;
+package levviatasenhancedsubtitles.unused;
 
 import com.google.common.collect.Lists;
 import com.lukflug.panelstudio.component.IComponent;

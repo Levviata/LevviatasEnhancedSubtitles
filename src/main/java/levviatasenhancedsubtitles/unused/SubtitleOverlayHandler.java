@@ -1,4 +1,4 @@
-package levviatasenhancedsubtitles.gui;
+package levviatasenhancedsubtitles.unused;
 
 import com.google.common.collect.Lists;
 

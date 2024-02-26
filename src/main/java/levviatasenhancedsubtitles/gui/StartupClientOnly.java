@@ -1,7 +1,5 @@
 package levviatasenhancedsubtitles.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
 
 /*
  * User: TW
@@ -19,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-		SubtitleOverlayHandler.clientPreInit();
+		NewSubtitleOverlayHandler.clientPreInit();
 	}
 	public static void InitClientOnly() {
 	}

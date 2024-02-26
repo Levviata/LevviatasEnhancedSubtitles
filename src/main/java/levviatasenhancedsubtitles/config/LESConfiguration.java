@@ -259,7 +259,7 @@ public class LESConfiguration {
 		@SubscribeEvent(priority = EventPriority.NORMAL)
 		public void onEvent(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
-			if (LES.MODID.equals(event.getModID()) && !event.isWorldRunning())
+			if (LES.MODID.equals(event.getModID()))
 			{
 				if (event.getConfigID().equals(CATEGORY_NAME_BACKGROUND) || event.getConfigID().equals(CATEGORY_NAME_POSITION) || event.getConfigID().equals(CATEGORY_NAME_FONT)/*|| event.getConfigID().equals(CATEGORY_NAME_OTHER)*/)
 				{

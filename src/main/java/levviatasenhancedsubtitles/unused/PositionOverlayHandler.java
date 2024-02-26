@@ -1,4 +1,4 @@
-package levviatasenhancedsubtitles.gui;
+package levviatasenhancedsubtitles.unused;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

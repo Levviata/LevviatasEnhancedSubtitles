@@ -1,4 +1,4 @@
-package levviatasenhancedsubtitles.gui;
+package levviatasenhancedsubtitles.unused;
 
 import java.awt.Color;
 import java.awt.Dimension;
