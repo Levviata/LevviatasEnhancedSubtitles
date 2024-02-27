@@ -17,7 +17,7 @@ public class StartupCommon
 {
 	public static void preInitCommon()
 	{
-    SubtitleOverlayHandler.preInit();
+    SubtitleDragGui.preInit();
     }
     public static void InitCommon()
     {
