@@ -1,8 +1,5 @@
 package levviatasenhancedsubtitles.gui;
 
-import levviatasenhancedsubtitles.config.LESConfiguration;
-import net.minecraft.client.gui.Gui;
-
 /*
  * User: TW
  * Date: 2/4/2015
@@ -20,7 +17,7 @@ public class StartupCommon
 {
 	public static void preInitCommon()
 	{
-    SubtitleOverlayHandler.preInit();
+    SubtitleDragGui.preInit();
     }
     public static void InitCommon()
     {

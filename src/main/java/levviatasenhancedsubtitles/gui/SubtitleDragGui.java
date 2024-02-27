@@ -11,24 +11,54 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+@Mod.EventBusSubscriber
 public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
     private final Minecraft minecraft = Minecraft.getMinecraft();
     static final List<SubtitleOverlayHandler.Subtitle> subtitles = Lists.newArrayList();
     private boolean isListening;
-    private final SubtitleOverlayHandler subtitleOverlayHandler;
     private boolean isDragging = false;
     private int dragX = 0;
     private int dragY = 0;
     private int lastMouseX = 0;
     private int lastMouseY = 0;
+    private SubtitleOverlayHandler.Subtitle selectedSubtitle = null;
+    public static void clientPreInit()
+    {
+        MinecraftForge.EVENT_BUS.register(new SubtitleDragGui());
+    }
+    public static void preInit()
+    {
 
-    public SubtitleDragGui(SubtitleOverlayHandler subtitleOverlayHandler) {
-        this.subtitleOverlayHandler = subtitleOverlayHandler;
+    }
+    @SubscribeEvent(receiveCanceled = true)
+    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
+        // Check if it's the subtitles overlay being rendered
+        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
+
+            Minecraft mc = Minecraft.getMinecraft();
+            float partialTicks = event.getPartialTicks();
+
+            // Get the current mouse position
+            ScaledResolution scaled = new ScaledResolution(mc);
+            int mouseX = Mouse.getX() * scaled.getScaledWidth() / mc.displayWidth;
+            int mouseY = scaled.getScaledHeight() - Mouse.getY() * scaled.getScaledHeight() / mc.displayHeight - 1;
+
+            // Instantiate your handler with the necessary context if required
+            SubtitleDragGui handler = new SubtitleDragGui(/* pass any required parameters */);
+            event.setCanceled(true);
+            handler.drawScreen(mouseX, mouseY, partialTicks);
+
+        }
     }
 
     @Override
@@ -105,70 +135,83 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
                 int subtitleSpacing = 10;
-                float xTranslate, yTranslate;
+                float xTranslate = 0;
+                float yTranslate = 0;
 
-                switch (position) {
-                    case "BOTTOM_CENTER":
+                // ... existing switch statement ...
 
-                        xTranslate = (float) resolution.getScaledWidth() / 2;
-                        yTranslate = (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
-                        break;
-                    case "BOTTOM_LEFT":
-                        xTranslate = (float) halfMaxLength + horizontalSpacing;
-                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
-                        break;
-                    case "CENTER_LEFT":
-                        xTranslate = (float) halfMaxLength + horizontalSpacing;
-                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
-                        break;
-                    case "TOP_LEFT":
-                        xTranslate = (float) halfMaxLength + horizontalSpacing;
-                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                        break;
-                    case "TOP_CENTER":
-                        xTranslate = (float) resolution.getScaledWidth() / 2;
+                // Check if the subtitle is being dragged and update its position
+                if (caption.isDragging()) {
+                    xTranslate = mouseX - ((float) subtitleWidth / 2);
+                    yTranslate = mouseY - ((float) subtitleHeight / 2);
+                    caption.setPosition((int) xTranslate, (int) yTranslate);
+                } else {
+                    switch (position) {
+                        case "BOTTOM_CENTER":
+                            xTranslate = (float) resolution.getScaledWidth() / 2;
+                            yTranslate = (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
+                            break;
+                        case "BOTTOM_LEFT":
+                            xTranslate = (float) halfMaxLength + horizontalSpacing;
+                            yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
+                            break;
+                        case "CENTER_LEFT":
+                            xTranslate = (float) halfMaxLength + horizontalSpacing;
+                            yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                            break;
+                        case "TOP_LEFT":
+                            xTranslate = (float) halfMaxLength + horizontalSpacing;
+                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                            break;
+                        case "TOP_CENTER":
+                            xTranslate = (float) resolution.getScaledWidth() / 2;
 
-                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                        break;
-                    case "TOP_RIGHT":
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
-                        yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                        break;
-                    case "CENTER_RIGHT":
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - horizontalSpacing;
-                        yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
-                        break;
-                    default: //if there's any invalid input just show it in the bottom right
-                        xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
-                        yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
-                        break;
+                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                            break;
+                        case "TOP_RIGHT":
+                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                            break;
+                        case "CENTER_RIGHT":
+                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - horizontalSpacing;
+                            yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                            break;
+                        default: //if there's any invalid input just show it in the bottom right
+                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                            yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
+                            break;
+                    }
                 }
-                if (mouseX >= xTranslate && mouseX <= xTranslate +
-                        subtitleWidth && mouseY >= yTranslate && mouseY <= yTranslate + subtitleHeight)
-                {
 
-                }
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);
 
                 GlStateManager.scale(1.0F, 1.0F, 1.0F);
 
-                drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, backgroundSubtitleColor);
+                //drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1, backgroundSubtitleColor);
 
+                drawRect((int) xTranslate - halfMaxLength - 1, (int) yTranslate - subtitleHeight / 2 - 1,
+                        (int) xTranslate + halfMaxLength + 1, (int) yTranslate + subtitleHeight / 2 + 1,
+                        backgroundSubtitleColor);
                 GlStateManager.enableBlend();
 
                 if (!flag) {
-                    if (d0 > 0.00D)
-                    {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
+                    if (d0 > 0.00D) {
+                        minecraft.fontRenderer.drawString(">",
+                                (int) xTranslate + halfMaxLength - minecraft.fontRenderer.getStringWidth(">"),
+                                (int) yTranslate - subtitleHeight / 2,
+                                fadeAway + 16777216);
+                    } else if (d0 < -0.00D) {
+                        minecraft.fontRenderer.drawString("<",
+                                (int) xTranslate - halfMaxLength,
+                                (int) yTranslate - subtitleHeight / 2,
+                                fadeAway + 16777216);
                     }
-                    else if (d0 < -0.00D)
-                    {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
-                    }
-
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
+                minecraft.fontRenderer.drawString(Caption1,
+                        (int) xTranslate - subtitleWidth / 2,
+                        (int) yTranslate - subtitleHeight / 2,
+                        fadeAway + 16777216);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
@@ -183,46 +226,47 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
         if (accessor.getSubtitle() != null) {
             String subtitleText = accessor.getSubtitle().getFormattedText();
 
-            if (!SubtitleOverlayHandler.subtitles.isEmpty()) {
-                for (SubtitleOverlayHandler.Subtitle caption : SubtitleOverlayHandler.subtitles) {
+                if (!SubtitleDragGui.subtitles.isEmpty()) {
+                for (SubtitleOverlayHandler.Subtitle caption : SubtitleDragGui.subtitles) {
                     if (caption.getString().equals(subtitleText)) {
                         caption.refresh(new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF()));
                         return;
                     }
                 }
             }
-            SubtitleOverlayHandler.subtitles.add(new SubtitleOverlayHandler.Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
+            SubtitleDragGui.subtitles.add(new SubtitleOverlayHandler.Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
         }
     }
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (mouseButton == 0) { // Check if the left mouse button was pressed
-            this.isDragging = true;
-            this.lastMouseX = mouseX;
-            this.lastMouseY = mouseY;
+        if (mouseButton == 0) {
+            for (SubtitleOverlayHandler.Subtitle subtitle : subtitles) {
+                if (subtitle.isMouseOver(mouseX, mouseY)) {
+                    this.selectedSubtitle = subtitle;
+                    subtitle.isDragging = true;
+                    break;
+                }
+            }
         }
     }
+
     @Override
-    // Call this method when the mouse is released
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-        super.mouseReleased(mouseX, mouseY, mouseButton);
-        if (mouseButton == 0) { // Check if the left mouse button was released
-            this.isDragging = false;
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        if (this.selectedSubtitle != null) {
+            this.selectedSubtitle.isDragging = false;
+            this.selectedSubtitle = null;
         }
     }
+
     @Override
-    // Call this method when the mouse is clicked and moved
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-
-        if (this.isDragging) {
-            this.dragX += mouseX - this.lastMouseX;
-            this.dragY += mouseY - this.lastMouseY;
-            this.lastMouseX = mouseX;
-            this.lastMouseY = mouseY;
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        if (this.selectedSubtitle != null && this.selectedSubtitle.isDragging) {
+            this.selectedSubtitle.setPosition(mouseX - this.selectedSubtitle.width / 2, mouseY - this.selectedSubtitle.height / 2);
         }
     }
-
     @Override
     public boolean doesGuiPauseGame() {
         return true;
