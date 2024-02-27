@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
 import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,12 +23,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.ibm.java.diagnostics.utils.Context.logger;
+import static levviatasenhancedsubtitles.gui.DraggableGuiButton.*;
 
 @Mod.EventBusSubscriber
 public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
+    private boolean dragging;
+    private int lastMouseX;
+    private int lastMouseY;
+    private boolean isListening;
+    static float xTranslate;
+    static float yTranslate;
     private SubtitleOverlayHandler.Subtitle selectedSubtitle = null;
     static boolean shouldPauseGame;
-    private final Minecraft minecraft = Minecraft.getMinecraft();
+    public static boolean shouldCloseGui = false;
+    public static DraggableGuiButton handler;
     public static final List<SubtitleOverlayHandler.Subtitle> subtitles = Lists.newArrayList();
     private static final List<SubtitleOverlayHandler.Subtitle> previewSubtitles = Lists.newArrayList();
     static {
@@ -37,18 +46,7 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
         previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Astronomoussssssssssssssssssssssssssssssss Example Subtitle", new Vec3d(0, 0, 0)));
     }
     public static boolean isGuiOpen = false;
-    private boolean isListening;
-    float xTranslateSaved;
-    float yTranslateSaved;
-
-    public static void clientPreInit()
-    {
-        MinecraftForge.EVENT_BUS.register(new SubtitleDragGui());
-    }
-    public static void preInit()
-    {
-
-    }
+    private final DraggableGuiButton draggableButton;
     @SubscribeEvent(receiveCanceled = true)
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
         // Check if it's the subtitles overlay being rendered
@@ -63,23 +61,34 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
             int mouseY = scaled.getScaledHeight() - Mouse.getY() * scaled.getScaledHeight() / mc.displayHeight - 1;
 
             // Instantiate your handler with the necessary context if required
-            SubtitleDragGui handler = new SubtitleDragGui(/* pass any required parameters */);
             event.setCanceled(true);
-            handler.drawScreen(mouseX, mouseY, partialTicks);
+            drawScreen(mouseX, mouseY, partialTicks);
         }
     }
+
+    public SubtitleDragGui() {
+        // Initialize your draggable button here with id, x, y, and text
+        this.draggableButton = new DraggableGuiButton(0, (int) xTranslate, (int) yTranslate, "");
+    }
+
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        ScaledResolution resolution = new ScaledResolution(minecraft);
-        if (!this.isListening && minecraft.gameSettings.showSubtitles)
+    public void initGui() {
+        super.initGui();
+        this.buttonList.add(draggableButton);
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        ScaledResolution resolution = new ScaledResolution(mc);
+        if (!this.isListening && mc.gameSettings.showSubtitles)
         {
-            minecraft.getSoundHandler().addListener(this);
+            mc.getSoundHandler().addListener(this);
             this.isListening = true;
         }
-        else if (this.isListening && !minecraft.gameSettings.showSubtitles)
+        else if (this.isListening && !mc.gameSettings.showSubtitles)
         {
-            minecraft.getSoundHandler().removeListener(this);
+            mc.getSoundHandler().removeListener(this);
             this.isListening = false;
         }
 
@@ -87,9 +96,9 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double) minecraft.player.getEyeHeight(), minecraft.player.posZ);
-            Vec3d zPlayerDirection = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
-            Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
+            Vec3d playerPosition = new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ);
+            Vec3d zPlayerDirection = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-mc.player.rotationPitch * 0.017453292F).rotateYaw(-mc.player.rotationYaw * 0.017453292F);
+            Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-mc.player.rotationPitch * 0.017453292F).rotateYaw(-mc.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = zPlayerDirection.crossProduct(yPlayerDirection);
             int maxLength = 0;
             Iterator<SubtitleOverlayHandler.Subtitle> iterator = subtitles.iterator();
@@ -101,17 +110,17 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
 
                         iterator.remove();
                     } else {
-                        maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(caption.getString()));
+                        maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(caption.getString()));
 
                     }
                 }
             } else {
                 Lists.<SubtitleOverlayHandler.Subtitle>newArrayList(subtitles).forEach(subtitles::remove);
                 subtitles.addAll(previewSubtitles);
-                maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(previewSubtitles.get(3).getString()));
+                maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(previewSubtitles.get(3).getString()));
             }
 
-            maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
+            maxLength = maxLength + mc.fontRenderer.getStringWidth("<") + mc.fontRenderer.getStringWidth(" ") + mc.fontRenderer.getStringWidth(">") + mc.fontRenderer.getStringWidth(" ");
 
             int captionIndex = 0;
             for (SubtitleOverlayHandler.Subtitle caption : subtitles)
@@ -125,8 +134,8 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
 
                 int halfMaxLength = maxLength / 2;
 
-                int subtitleHeight = minecraft.fontRenderer.FONT_HEIGHT;
-                int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
+                int subtitleHeight = mc.fontRenderer.FONT_HEIGHT;
+                int subtitleWidth = mc.fontRenderer.getStringWidth(Caption1);
 
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int fadeAway = 0;
@@ -148,9 +157,6 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
                 int subtitleSpacing = 10;
-
-                float xTranslate = xTranslateSaved;
-                float yTranslate = yTranslateSaved;
 
                 // ... existing switch statement ...
                 switch (position) {
@@ -198,16 +204,8 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
                 xTranslate =  MathHelper.clamp(caption.getX(), 0, resolution.getScaledWidth() - (subtitleWidth / 2));
                 yTranslate =  MathHelper.clamp(caption.getY(), 0, resolution.getScaledHeight() - (subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position
-                if (caption.isDragging()) {
-                    xTranslate += mouseX - ((float) subtitleWidth / 2);
-                    yTranslate += mouseY - ((float) subtitleHeight / 2);
-                    logger.info("X: " + xTranslate + " Y: " + yTranslate);
-                    caption.setPosition((int) xTranslate, (int) yTranslate);
-                    xTranslateSaved = xTranslate;
-                    yTranslateSaved = yTranslate;
-                }
 
-                GlStateManager.translate(caption.x, caption.y, 0.0F);
+                GlStateManager.translate(xTranslate, yTranslate, 0.0F);
 
                 GlStateManager.scale(1.0F, 1.0F, 1.0F);
 
@@ -217,15 +215,15 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
                 if (!flag) {
                     if (d0 > 0.00D)
                     {
-                        minecraft.fontRenderer.drawString(">", halfMaxLength - minecraft.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
+                        mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
                     }
                     else if (d0 < -0.00D)
                     {
-                        minecraft.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
+                        mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                     }
                 }
 
-                minecraft.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
+                mc.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
@@ -252,50 +250,34 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
             }
         }
     }
+
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (mouseButton == 0) {
-            for (SubtitleOverlayHandler.Subtitle subtitle : subtitles) {
-                if (subtitle.isMouseOver(mouseX, mouseY)) {
-                    this.selectedSubtitle = subtitle;
-                    subtitle.isDragging = true;
-                    break;
-                }
-            }
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        if (clickedMouseButton == 0) { // 0 is the left mouse button
+            draggableButton.mouseDragged(this.mc, mouseX, mouseY);
         }
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        if (this.selectedSubtitle != null) {
-            this.selectedSubtitle.isDragging = false;
-            this.selectedSubtitle = null;
-        }
+        draggableButton.mouseReleased(mouseX, mouseY);
     }
 
-    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        if (this.selectedSubtitle != null && this.selectedSubtitle.isDragging) {
-            this.selectedSubtitle.setPosition(mouseX - this.selectedSubtitle.width / 2, mouseY - this.selectedSubtitle.height / 2);
-        }
-    }
-    public static boolean setPauseGame(boolean shouldPauseGame) {
-        return SubtitleDragGui.shouldPauseGame = shouldPauseGame;
-
+    public static void exitGui() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        minecraft.displayGuiScreen(null);
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        isGuiOpen = false;
+        DraggableGuiButton.isGuiOpen = false;
     }
 
     @Override
     public boolean doesGuiPauseGame() {
 
-        return shouldPauseGame;
+        return false;
     }
 }

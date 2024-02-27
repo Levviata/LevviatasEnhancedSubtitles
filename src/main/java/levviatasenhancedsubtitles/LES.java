@@ -1,6 +1,5 @@
 package levviatasenhancedsubtitles;
 
-import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
 import levviatasenhancedsubtitles.handlers.KeybindPressHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

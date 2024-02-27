@@ -1,6 +1,7 @@
 package levviatasenhancedsubtitles.handlers;
 
 import levviatasenhancedsubtitles.ClientOnlyProxy;
+import levviatasenhancedsubtitles.gui.DraggableGuiButton;
 import levviatasenhancedsubtitles.gui.SubtitleDragGui;
 import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
 import net.minecraft.client.Minecraft;
@@ -25,9 +26,9 @@ public class KeybindPressHandler {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             if (ClientOnlyProxy.myKeyBinding.isPressed()) {
-            Minecraft.getMinecraft().displayGuiScreen(new SubtitleDragGui());
-            logger.info("Subtitle GUI opened");
-            SubtitleDragGui.isGuiOpen = true;
+
+                logger.info("Subtitle GUI opened");
+                DraggableGuiButton.isGuiOpen = true;
             }
         }
     }
