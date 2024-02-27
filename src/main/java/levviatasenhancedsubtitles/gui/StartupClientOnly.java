@@ -16,7 +16,7 @@ package levviatasenhancedsubtitles.gui;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-		SubtitleDragGui.clientPreInit();
+		SubtitleOverlayHandler.clientPreInit();
 	}
 	public static void InitClientOnly() {
 	}
