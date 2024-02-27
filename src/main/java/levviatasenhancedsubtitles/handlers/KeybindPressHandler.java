@@ -11,22 +11,26 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static levviatasenhancedsubtitles.gui.SubtitleOverlayHandler.isGuiOpen;
+
 @Mod.EventBusSubscriber
 public class KeybindPressHandler {
     private static final Logger logger = LogManager.getLogger("SubtitleOverlayHandler");
-    @SubscribeEvent
+   /* @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (ClientOnlyProxy.myKeyBinding.isPressed()) {
-            Minecraft.getMinecraft().displayGuiScreen(new SubtitleDragGui());
-            logger.info("Subtitle GUI opened");
+
+
+            ; // Switches between false and true
         }
-    }
+    }*/
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             if (ClientOnlyProxy.myKeyBinding.isPressed()) {
-                Minecraft.getMinecraft().displayGuiScreen(new SubtitleDragGui());
-                logger.info("Subtitle GUI opened");
+            Minecraft.getMinecraft().displayGuiScreen(new SubtitleDragGui());
+            logger.info("Subtitle GUI opened");
+            isGuiOpen = true;
             }
         }
     }

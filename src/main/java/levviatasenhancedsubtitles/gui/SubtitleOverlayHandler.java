@@ -21,11 +21,23 @@ import org.lwjgl.input.Mouse;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.ibm.java.diagnostics.utils.Context.logger;
+
 public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 {
     private final Minecraft minecraft = Minecraft.getMinecraft();
     public static final List<Subtitle> subtitles = Lists.newArrayList();
+    private static final List<Subtitle> previewSubtitles = Lists.newArrayList();
+    static {
+        previewSubtitles.add(new Subtitle("Example Subtitle", new Vec3d(0, 0, 0)));
+        previewSubtitles.add(new Subtitle("Big ol' Example Subtitle", new Vec3d(0, 0, 0)));
+        previewSubtitles.add(new Subtitle("Longgggggggggggggggggggggggg Boy Example Subtitle", new Vec3d(0, 0, 0)));
+        previewSubtitles.add(new Subtitle("Astronomoussssssssssssssssssssssssssssssss Example Subtitle", new Vec3d(0, 0, 0)));
+    }
+    public static boolean isGuiOpen = false;
     private boolean isListening;
+    float xTranslateSaved;
+    float yTranslateSaved;
 
     public static void clientPreInit()
     {
@@ -62,30 +74,32 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             this.isListening = false;
         }
 
-        if (this.isListening && !subtitles.isEmpty())
-        {
+        if (this.isListening && !subtitles.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double)minecraft.player.getEyeHeight(), minecraft.player.posZ);
+            Vec3d playerPosition = new Vec3d(minecraft.player.posX, minecraft.player.posY + (double) minecraft.player.getEyeHeight(), minecraft.player.posZ);
             Vec3d zPlayerDirection = (new Vec3d(0.0D, 0.0D, -1.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = zPlayerDirection.crossProduct(yPlayerDirection);
             int maxLength = 0;
             Iterator<SubtitleOverlayHandler.Subtitle> iterator = subtitles.iterator();
+            if (!isGuiOpen) {
+                while (iterator.hasNext()) {
+                    SubtitleOverlayHandler.Subtitle caption = iterator.next();
 
-            while (iterator.hasNext())
-            {
-                SubtitleOverlayHandler.Subtitle caption = iterator.next();
+                    if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime()) {
 
-                if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime())
-                {
-                    iterator.remove();
+                        iterator.remove();
+                    } else {
+                        maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(caption.getString()));
+
+                    }
                 }
-                else
-                {
-                    maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(caption.getString()));
-                }
+            } else {
+                Lists.<Subtitle>newArrayList(subtitles).forEach(subtitles::remove);
+                subtitles.addAll(previewSubtitles);
+                maxLength = Math.max(maxLength, minecraft.fontRenderer.getStringWidth(previewSubtitles.get(3).getString()));
             }
 
             maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
@@ -106,8 +120,13 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int subtitleWidth = minecraft.fontRenderer.getStringWidth(Caption1);
 
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
-                int fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
-
+                int fadeAway = 0;
+                if (!isGuiOpen) {
+                    fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
+                }
+                if (isGuiOpen) {
+                    fadeAway = 255 << 16 | 255 << 8 | 255; //sets alpha to 255 (aRGB)
+                }
                 int red = LESConfiguration.propBackgroundRed.getInt();
                 int green = LESConfiguration.propBackgroundGreen.getInt();
                 int blue = LESConfiguration.propBackgroundBlue.getInt();
@@ -120,59 +139,63 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
                 int subtitleSpacing = 10;
-                float xTranslate = 0;
-                float yTranslate = 0;
+
+                float xTranslate = xTranslateSaved;
+                float yTranslate = yTranslateSaved;
 
                 // ... existing switch statement ...
-
+                switch (position) {
+                    case "BOTTOM_CENTER":
+                        xTranslate += (float) resolution.getScaledWidth() / 2;
+                        yTranslate += (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "BOTTOM_LEFT":
+                        xTranslate += (float) halfMaxLength + horizontalSpacing;
+                        yTranslate += (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "CENTER_LEFT":
+                        xTranslate += (float) halfMaxLength + horizontalSpacing;
+                        yTranslate += (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "TOP_LEFT":
+                        xTranslate += (float) halfMaxLength + horizontalSpacing;
+                        yTranslate += (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "TOP_CENTER":
+                        xTranslate += (float) resolution.getScaledWidth() / 2;
+                        yTranslate += (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "TOP_RIGHT":
+                        xTranslate += (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                        yTranslate += (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    case "CENTER_RIGHT":
+                        xTranslate += (float) resolution.getScaledWidth() - (float) halfMaxLength - horizontalSpacing;
+                        yTranslate += (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                    default: //if there's any invalid input just show it in the bottom right
+                        xTranslate += (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
+                        yTranslate += (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
+                        caption.setPosition((int) xTranslate, (int) yTranslate);
+                        break;
+                }
+                xTranslate =  MathHelper.clamp(caption.getX(), 0, resolution.getScaledWidth() - (subtitleWidth / 2));
+                yTranslate =  MathHelper.clamp(caption.getY(), 0, resolution.getScaledHeight() - (subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position
                 if (caption.isDragging()) {
-                    xTranslate = mouseX - ((float) subtitleWidth / 2);
-                    yTranslate = mouseY - ((float) subtitleHeight / 2);
+                    xTranslate += mouseX - ((float) subtitleWidth / 2);
+                    yTranslate += mouseY - ((float) subtitleHeight / 2);
+                    logger.info("X: " + xTranslate + " Y: " + yTranslate);
                     caption.setPosition((int) xTranslate, (int) yTranslate);
-                } else {
-                    switch (position) {
-                        case "BOTTOM_CENTER":
-                            xTranslate = (float) resolution.getScaledWidth() / 2;
-                            yTranslate = (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "BOTTOM_LEFT":
-                            xTranslate = (float) halfMaxLength + horizontalSpacing;
-                            yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "CENTER_LEFT":
-                            xTranslate = (float) halfMaxLength + horizontalSpacing;
-                            yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "TOP_LEFT":
-                            xTranslate = (float) halfMaxLength + horizontalSpacing;
-                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "TOP_CENTER":
-                            xTranslate = (float) resolution.getScaledWidth() / 2;
-                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "TOP_RIGHT":
-                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
-                            yTranslate = (float) (captionIndex * subtitleSpacing + 5 + verticalSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        case "CENTER_RIGHT":
-                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - horizontalSpacing;
-                            yTranslate = (float) (resolution.getScaledHeight() / 2) - (float) (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                        default: //if there's any invalid input just show it in the bottom right
-                            xTranslate = (float) resolution.getScaledWidth() - (float) halfMaxLength - 2;
-                            yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
-                            caption.setPosition((int) xTranslate, (int) yTranslate);
-                            break;
-                    }
+                    xTranslateSaved = xTranslate;
+                    yTranslateSaved = yTranslate;
                 }
 
                 GlStateManager.translate(caption.x, caption.y, 0.0F);
@@ -207,16 +230,17 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         // Your custom implementation here
         if (accessor.getSubtitle() != null) {
             String subtitleText = accessor.getSubtitle().getFormattedText();
-
-            if (!SubtitleOverlayHandler.subtitles.isEmpty()) {
-                for (Subtitle caption : SubtitleOverlayHandler.subtitles) {
-                    if (caption.getString().equals(subtitleText)) {
-                        caption.refresh(new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF()));
-                        return;
+            if(!isGuiOpen) {
+                if (!SubtitleOverlayHandler.subtitles.isEmpty()) {
+                    for (Subtitle caption : SubtitleOverlayHandler.subtitles) {
+                        if (caption.getString().equals(subtitleText)) {
+                            caption.refresh(new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF()));
+                            return;
+                        }
                     }
                 }
-            }
             SubtitleOverlayHandler.subtitles.add(new Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
+            }
         }
     }
     public static class Subtitle
@@ -238,6 +262,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         public void setPosition(int x, int y) {
             this.x = x;
             this.y = y;
+        }
+        public void setText(String textIn) {
+            this.text = textIn;
         }
 
         public int getHeight() {
