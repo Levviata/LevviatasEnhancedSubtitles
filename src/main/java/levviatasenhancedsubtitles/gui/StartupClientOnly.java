@@ -25,6 +25,6 @@ public class StartupClientOnly {
 	}
 	public static void postInitClientOnly()
 	{
-		RadarOverlayHandler.clientPostInit();
+		//RadarOverlayHandler.clientPostInit();
 	}
 }

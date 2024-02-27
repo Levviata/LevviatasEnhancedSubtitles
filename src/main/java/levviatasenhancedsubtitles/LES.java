@@ -1,11 +1,23 @@
 package levviatasenhancedsubtitles;
 
+import levviatasenhancedsubtitles.gui.SubtitleDragGui;
+import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
+import levviatasenhancedsubtitles.handlers.KeybindPressHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.input.Keyboard;
 
 /*
    Each mod has a main class which is used by Forge to interact with the mod during startup.
@@ -69,7 +81,7 @@ public class LES
     // The instance of your mod that Forge uses.  Optional.
     @Mod.Instance(LES.MODID)
     public static LES instance;
-
+    Logger logger = LogManager.getLogger(LES.class);
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide="levviatasenhancedsubtitles.ClientOnlyProxy", serverSide="levviatasenhancedsubtitles.DedicatedServerProxy")
@@ -77,7 +89,9 @@ public class LES
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-     commonProxy.preInit();
+        KeybindPressHandler KeybindPressHandler = new KeybindPressHandler();
+        MinecraftForge.EVENT_BUS.register(KeybindPressHandler);
+        commonProxy.preInit();
     }
 
 

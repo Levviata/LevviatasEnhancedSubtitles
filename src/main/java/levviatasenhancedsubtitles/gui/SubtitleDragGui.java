@@ -1,76 +1,38 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
-
-import java.util.Iterator;
-import java.util.List;
-
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
 import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
-public class SubtitleOverlayHandler
-{
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
-    /*private final Minecraft minecraft = Minecraft.getMinecraft();
-    static final List<Subtitle> subtitles = Lists.newArrayList();
+public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
+    private final Minecraft minecraft = Minecraft.getMinecraft();
+    static final List<SubtitleOverlayHandler.Subtitle> subtitles = Lists.newArrayList();
     private boolean isListening;
-
-    public static void clientPreInit()
-    {
-        MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
-    }
-    public static void preInit()
-    {
-
-    }private boolean isDragging = false;
+    private final SubtitleOverlayHandler subtitleOverlayHandler;
+    private boolean isDragging = false;
     private int dragX = 0;
     private int dragY = 0;
     private int lastMouseX = 0;
     private int lastMouseY = 0;
 
-    // ... existing code ...
-
-    // Call this method when the mouse is clicked
-    /*@SubscribeEvent
-    public static void onMouseEvent(MouseEvent event) {
-        SubtitleOverlayHandler handler = new SubtitleOverlayHandler();
-        if (event.getButton() == 0 && event.isButtonstate()) {
-            handler.mouseClicked(event.getX(), event.getY(), event.getButton());
-        } else if (event.getButton() == 0 && !event.isButtonstate()) {
-            handler.mouseReleased(event.getX(), event.getY(), event.getButton());
-        }
-        if (event.getDx() != 0 || event.getDy() != 0) {
-            handler.mouseClickMove(event.getX(), event.getY(), event.getButton(), event.getNanoseconds());
-        }
+    public SubtitleDragGui(SubtitleOverlayHandler subtitleOverlayHandler) {
+        this.subtitleOverlayHandler = subtitleOverlayHandler;
     }
 
-    @SubscribeEvent(receiveCanceled = true)
-    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
-        // Check if it's the subtitles overlay being rendered
-        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
-
-            SubtitleOverlayHandler handler = new SubtitleOverlayHandler();
-            event.setCanceled(true);
-            handler.render(event.getResolution());
-
-        }
-    }
-    public void render(ScaledResolution resolution)
-    {
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (!this.isListening && minecraft.gameSettings.showSubtitles)
         {
             minecraft.getSoundHandler().addListener(this);
@@ -92,11 +54,11 @@ public class SubtitleOverlayHandler
             Vec3d yPlayerDirection = (new Vec3d(0.0D, 1.0D, 0.0D)).rotatePitch(-minecraft.player.rotationPitch * 0.017453292F).rotateYaw(-minecraft.player.rotationYaw * 0.017453292F);
             Vec3d vec3d3 = zPlayerDirection.crossProduct(yPlayerDirection);
             int maxLength = 0;
-            Iterator<Subtitle> iterator = subtitles.iterator();
+            Iterator<SubtitleOverlayHandler.Subtitle> iterator = subtitles.iterator();
 
             while (iterator.hasNext())
             {
-                Subtitle caption = iterator.next();
+                SubtitleOverlayHandler.Subtitle caption = iterator.next();
 
                 if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime())
                 {
@@ -111,7 +73,7 @@ public class SubtitleOverlayHandler
             maxLength = maxLength + minecraft.fontRenderer.getStringWidth("<") + minecraft.fontRenderer.getStringWidth(" ") + minecraft.fontRenderer.getStringWidth(">") + minecraft.fontRenderer.getStringWidth(" ");
 
             int captionIndex = 0;
-            for (Subtitle caption : subtitles)
+            for (SubtitleOverlayHandler.Subtitle caption : subtitles)
             {
                 String Caption1 = caption.getString();
 
@@ -139,7 +101,7 @@ public class SubtitleOverlayHandler
                 //Change happens here
 
                 String position = LESConfiguration.propOverlayPosition.getString();
-
+                ScaledResolution resolution = new ScaledResolution(minecraft);
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
                 int subtitleSpacing = 10;
@@ -147,6 +109,7 @@ public class SubtitleOverlayHandler
 
                 switch (position) {
                     case "BOTTOM_CENTER":
+
                         xTranslate = (float) resolution.getScaledWidth() / 2;
                         yTranslate = (float) (resolution.getScaledHeight() - 75) - (float) (captionIndex * subtitleSpacing);
                         break;
@@ -180,8 +143,11 @@ public class SubtitleOverlayHandler
                         yTranslate = (float) (resolution.getScaledHeight() - 30) - (float) (captionIndex * subtitleSpacing);
                         break;
                 }
-                xTranslate += this.dragX;
-                yTranslate += this.dragY;
+                if (mouseX >= xTranslate && mouseX <= xTranslate +
+                        subtitleWidth && mouseY >= yTranslate && mouseY <= yTranslate + subtitleHeight)
+                {
+
+                }
                 GlStateManager.translate(xTranslate, yTranslate, 0.0F);
 
                 GlStateManager.scale(1.0F, 1.0F, 1.0F);
@@ -218,60 +184,47 @@ public class SubtitleOverlayHandler
             String subtitleText = accessor.getSubtitle().getFormattedText();
 
             if (!SubtitleOverlayHandler.subtitles.isEmpty()) {
-                for (Subtitle caption : SubtitleOverlayHandler.subtitles) {
+                for (SubtitleOverlayHandler.Subtitle caption : SubtitleOverlayHandler.subtitles) {
                     if (caption.getString().equals(subtitleText)) {
                         caption.refresh(new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF()));
                         return;
                     }
                 }
             }
-            SubtitleOverlayHandler.subtitles.add(new Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
+            SubtitleOverlayHandler.subtitles.add(new SubtitleOverlayHandler.Subtitle(subtitleText, new Vec3d(soundIn.getXPosF(), soundIn.getYPosF(), soundIn.getZPosF())));
         }
-    }*/
-    public static class Subtitle
-    {
-        private final String subtitle;
-        private long startTime;
-        private Vec3d location;
-        private String text;
-        private int x, y;
-        private int width, height;
-        private boolean isDragging;
+    }
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (mouseButton == 0) { // Check if the left mouse button was pressed
+            this.isDragging = true;
+            this.lastMouseX = mouseX;
+            this.lastMouseY = mouseY;
+        }
+    }
+    @Override
+    // Call this method when the mouse is released
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        super.mouseReleased(mouseX, mouseY, mouseButton);
+        if (mouseButton == 0) { // Check if the left mouse button was released
+            this.isDragging = false;
+        }
+    }
+    @Override
+    // Call this method when the mouse is clicked and moved
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 
-        public Subtitle(String subtitleIn, Vec3d locationIn)
-        {
-            this.subtitle = subtitleIn;
-            this.location = locationIn;
-            this.startTime = Minecraft.getSystemTime();
+        if (this.isDragging) {
+            this.dragX += mouseX - this.lastMouseX;
+            this.dragY += mouseY - this.lastMouseY;
+            this.lastMouseX = mouseX;
+            this.lastMouseY = mouseY;
         }
-        public void setPosition(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
+    }
 
-        public boolean isMouseOver(int mouseX, int mouseY) {
-            return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
-        }
-
-        public String getString()
-        {
-            return this.subtitle;
-        }
-
-        public long getStartTime()
-        {
-            return this.startTime;
-        }
-
-        public Vec3d getLocation()
-        {
-            return this.location;
-        }
-
-        public void refresh(Vec3d locationIn)
-        {
-            this.location = locationIn;
-            this.startTime = Minecraft.getSystemTime();
-        }
+    @Override
+    public boolean doesGuiPauseGame() {
+        return true;
     }
 }
