@@ -1,27 +1,19 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
-import levviatasenhancedsubtitles.config.LESConfiguration;
+import levviatasenhancedsubtitles.unused.SubtitleDragGui;
+import levviatasenhancedsubtitles.unused.SubtitleOverlayHandler;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
 import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.ibm.java.diagnostics.utils.Context.logger;
 
 public class DraggableGuiButton extends GuiButton implements ISoundEventListener {
     private boolean dragging;
@@ -59,8 +51,6 @@ public class DraggableGuiButton extends GuiButton implements ISoundEventListener
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        SubtitleDragGui.exitGui();
-
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

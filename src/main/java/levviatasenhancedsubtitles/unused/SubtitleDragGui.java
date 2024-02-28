@@ -1,8 +1,8 @@
-package levviatasenhancedsubtitles.gui;
+package levviatasenhancedsubtitles.unused;
 
 import com.google.common.collect.Lists;
 import levviatasenhancedsubtitles.config.LESConfiguration;
-import levviatasenhancedsubtitles.unused.SubtitleOverlayHandler;
+import levviatasenhancedsubtitles.gui.DraggableGuiButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
@@ -61,7 +61,7 @@ public class SubtitleDragGui extends GuiScreen implements ISoundEventListener {
         }
     }
 
-    public SubtitleDragGuiCopy() {
+    public SubtitleDragGui() {
         // Initialize your draggable button here with id, x, y, and text
         this.draggableButton = new DraggableGuiButton(0, (int) xTranslate, (int) yTranslate, "");
     }
