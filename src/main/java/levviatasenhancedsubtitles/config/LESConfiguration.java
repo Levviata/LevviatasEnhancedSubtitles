@@ -25,10 +25,16 @@ public class LESConfiguration {
 	public static Property propFontBlue;
 	public static Property propFontAlpha;
 	public static Property propBackgroundBlackOn;
+	public static Property propXposition;
+	public static Property propYposition;
+	public static int xPosition;
+	public static int scale = 1;
+	public static boolean showSubtitles = true;
+	public static int yPosition;
 	public static int backgroundRed;
 	public static int backgroundGreen;
 	public static int backgroundBlue;
-	public static int backgroundAlpha;
+	public static int backgroundAlpha = 255;
 	public static int fontRed;
 	public static int fontGreen;
 	public static int fontBlue;
@@ -153,7 +159,7 @@ public class LESConfiguration {
 				FONT_BLUE_MAX_VALUE);
 		propFontBlue.setLanguageKey("gui.les_configuration.fontBlue");
 
-		/*final int BACKGROUND_ALPHA_MIN_VALUE = 0;
+		final int BACKGROUND_ALPHA_MIN_VALUE = 0;
 		final int BACKGROUND_ALPHA_MAX_VALUE = 255;
 		final int BACKGROUND_ALPHA_DEFAULT_VALUE = 255;
 		propBackgroundAlpha = config.get(
@@ -162,7 +168,7 @@ public class LESConfiguration {
 				"The RGB alpha value (in decimals) for the subtitle's background.",
 				BACKGROUND_ALPHA_MIN_VALUE,
 				BACKGROUND_ALPHA_MAX_VALUE);
-		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");*/
+		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
 
 		/*final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
@@ -173,7 +179,9 @@ public class LESConfiguration {
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_WHITE_ON_DEFAULT_VALUE);
 		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
 		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundWhiteOn");*/
-
+		List<String> propOrderGeneral = new ArrayList<String>();
+		propOrderGeneral.add(propOverlayPosition.getName());
+		config.setCategoryPropertyOrder(null, propOrderGeneral);
 
 		List<String> propOrderPosition = new ArrayList<String>();
 		propOrderPosition.add(propOverlayPosition.getName());
@@ -183,7 +191,7 @@ public class LESConfiguration {
 		propOrderBackground.add(propBackgroundRed.getName());
 		propOrderBackground.add(propBackgroundGreen.getName());
 		propOrderBackground.add(propBackgroundBlue.getName());
-		//propOrderBackground.add(propBackgroundAlpha.getName());
+		propOrderBackground.add(propBackgroundAlpha.getName());
 		config.setCategoryPropertyOrder(CATEGORY_NAME_BACKGROUND, propOrderBackground);
 
 		List<String> propOrderFont = new ArrayList<String>();
@@ -206,6 +214,7 @@ public class LESConfiguration {
 			if (backgroundBlue > BACKGROUND_BLUE_MAX_VALUE || backgroundBlue < BACKGROUND_BLUE_MIN_VALUE) {
 				backgroundBlue = BACKGROUND_BLUE_DEFAULT_VALUE;
 			}
+			backgroundAlpha = propBackgroundAlpha.getInt(BACKGROUND_BLUE_DEFAULT_VALUE);
 			fontRed = propFontRed.getInt(FONT_RED_DEFAULT_VALUE);
 			if (fontRed > FONT_RED_MAX_VALUE || fontRed < FONT_RED_MIN_VALUE) {
 				fontRed = FONT_RED_DEFAULT_VALUE;

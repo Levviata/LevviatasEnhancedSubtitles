@@ -17,7 +17,6 @@ public class StartupCommon
 {
 	public static void preInitCommon()
 	{
-        DraggableGuiButton.preInit();
     }
     public static void InitCommon()
     {

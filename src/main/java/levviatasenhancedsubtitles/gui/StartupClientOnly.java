@@ -1,5 +1,7 @@
 package levviatasenhancedsubtitles.gui;
 
+import net.minecraftforge.common.MinecraftForge;
+
 /*
  * User: TW
  * Date: 2/4/2015
@@ -16,7 +18,7 @@ package levviatasenhancedsubtitles.gui;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-		DraggableGuiButton.clientPreInit();
+		MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
 	}
 	public static void InitClientOnly() {
 	}
