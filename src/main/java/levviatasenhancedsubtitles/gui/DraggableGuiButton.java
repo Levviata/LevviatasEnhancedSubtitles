@@ -1,27 +1,29 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
-import levviatasenhancedsubtitles.unused.SubtitleDragGui;
-import levviatasenhancedsubtitles.unused.SubtitleOverlayHandler;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
 import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Iterator;
 import java.util.List;
+
+import static com.ibm.java.diagnostics.utils.Context.logger;
 
 public class DraggableGuiButton extends GuiButton implements ISoundEventListener {
     private boolean dragging;
     private int lastMouseX;
     private int lastMouseY;
     private boolean isListening;
-    static float xTranslate;
-    static float yTranslate;
     private SubtitleOverlayHandler.Subtitle selectedSubtitle = null;
     static boolean shouldPauseGame;
     public static final List<SubtitleOverlayHandler.Subtitle> subtitles = Lists.newArrayList();
@@ -37,20 +39,21 @@ public class DraggableGuiButton extends GuiButton implements ISoundEventListener
 
     public static void clientPreInit()
     {
+        MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
         MinecraftForge.EVENT_BUS.register(new SubtitleDragGui());
     }
     public static void preInit()
     {
 
     }
-
-
     public DraggableGuiButton(int buttonId, int x, int y, String buttonText) {
         super(buttonId, x, y, buttonText);
+        this.dragging = false;
     }
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        ScaledResolution resolution = new ScaledResolution(mc);
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -79,8 +82,9 @@ public class DraggableGuiButton extends GuiButton implements ISoundEventListener
             int subtitleWidth = mc.fontRenderer.getStringWidth(subtitle.getText());
 
             GlStateManager.pushMatrix();
-
-            GlStateManager.translate(xTranslate + x, yTranslate + y, 0);
+            x =  MathHelper.clamp(subtitle.getX(), 0, resolution.getScaledWidth() - (subtitleWidth / 2));
+            y =  MathHelper.clamp(subtitle.getY(), 0, resolution.getScaledHeight() - (subtitleHeight / 2));
+            GlStateManager.translate(x, y, 0);
 
             GlStateManager.scale(1.0F, 1.0F, 1.0F);
 
@@ -117,31 +121,13 @@ public class DraggableGuiButton extends GuiButton implements ISoundEventListener
         }
     }
 
-    @Override
-    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible) {
-            if (this.dragging) {
-                this.x += mouseX - this.lastMouseX;
-                this.y += mouseY - this.lastMouseY;
-            }
-            this.lastMouseX = mouseX;
-            this.lastMouseY = mouseY;
+   /* @Override
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        if (this.visible && this.dragging && clickedMouseButton == 0) {
+            this.x = mouseX - this.lastMouseX;
+            this.y = mouseY - this.lastMouseY;
         }
-    }
+    }*/
 
-    @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (super.mousePressed(mc, mouseX, mouseY)) {
-            this.dragging = true;
-            this.lastMouseX = mouseX;
-            this.lastMouseY = mouseY;
-            return true;
-        }
-        return false;
-    }
 
-    @Override
-    public void mouseReleased(int mouseX, int mouseY) {
-        this.dragging = false;
-    }
 }
