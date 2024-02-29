@@ -1,15 +1,18 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
+import levviatasenhancedsubtitles.LES;
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static levviatasenhancedsubtitles.config.LESConfiguration.*;
 
@@ -26,21 +29,26 @@ public class SubtitleDragGui extends GuiScreen {
     private boolean dragging;
     private int lastMouseX;
     private int lastMouseY;
+    private int getValueAndSetValue;
+    public void setGetValueAndSetValue(int inInt) {
+        this.getValueAndSetValue = inInt;
+    }
+    private Logger logger = Logger.getLogger("SubtitleDragGui");
 
     @Override
     public void initGui() {
         super.initGui();
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-        buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, "Mod Status: " + (LESConfiguration.showSubtitles ? "Enabled" : "Disabled")));
+        buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, "Mod Status: " +
+                (propShowSubtitles.getBoolean(true) ? "Enabled" : "Disabled")));
         buttonList.add(new GuiSlider(new GuiPageButtonList.GuiResponder() {
             @Override
             public void setEntryValue(int id, boolean value) {
 
             }
-
             @Override
             public void setEntryValue(int id, float value) {
-                value = backgroundAlpha;
+                value = propScale.getInt();
             }
 
             @Override
@@ -50,7 +58,17 @@ public class SubtitleDragGui extends GuiScreen {
 
         }, 3, res.getScaledWidth() / 2 - 100, 40,
                 "Scale: ", 0, 10, 1,
-                (GuiSlider.FormatHelper) (id, name, value) -> "Scale: " + value + "%"));
+                new GuiSlider.FormatHelper() {
+
+                    @Override
+                    public String getText(int id, String name, float value) {
+                        propScale.set(value);
+                        return "Scale: " + value + "x";
+                    }
+                }
+                ));
+
+
         buttonList.add(new GuiSlider(new GuiPageButtonList.GuiResponder() {
             @Override
             public void setEntryValue(int id, boolean value) {
@@ -59,7 +77,7 @@ public class SubtitleDragGui extends GuiScreen {
 
             @Override
             public void setEntryValue(int id, float value) {
-                value = scale;
+                value = propBackgroundAlpha.getInt();
             }
 
             @Override
@@ -67,9 +85,18 @@ public class SubtitleDragGui extends GuiScreen {
 
             }
         }, 4, res.getScaledWidth() / 2 - 100, 80,
-                "Opacity: ", 0, 255, 255,
-                (GuiSlider.FormatHelper) (id, name, value) -> "Opacity: " + value + "%"));
-        buttonList.add(new GuiButton(5, res.getScaledWidth() / 2 - 100, 110, "Set Values To Default"));
+                "Alpha: ", 0, 255, 255,
+                new GuiSlider.FormatHelper() {
+                    @Override
+                    public String getText(int id, String name, float value) {
+                        propBackgroundAlpha.set(value);
+                        return "Alpha: " + value + "%";
+                    }
+                }));
+
+
+        buttonList.add(new GuiButton(5, res.getScaledWidth() / 2 - 100, 120, "Set Values To Default"));
+        buttonList.add(new GuiButton(6, res.getScaledWidth() / 2 - 100, 100, "Apply Changes"));
     }
     @Override
     public void updateScreen() {
@@ -115,21 +142,35 @@ public class SubtitleDragGui extends GuiScreen {
         if (button == null) return;
         switch (button.id) {
             case 1: {
-                LESConfiguration.showSubtitles = !LESConfiguration.showSubtitles;
-                button.displayString = "Mod Status: " + (LESConfiguration.showSubtitles ? "Enabled" : "Disabled");
+                boolean getShowSubtitles = propShowSubtitles.getBoolean();
+                getShowSubtitles = !getShowSubtitles;
+                propShowSubtitles.set(getShowSubtitles);
+                button.displayString = "Mod Status: " + (propShowSubtitles.getBoolean() ? "Enabled" : "Disabled");
                 break;
             }
             case 5: {
-                LESConfiguration.showSubtitles = true;
+                boolean setShowSubtitles = true;
+                propShowSubtitles.set(setShowSubtitles);
                 xPosition = 5;
                 yPosition = 5;
-                LESConfiguration.scale = 1;
-                backgroundAlpha = 200;
+                int setScale = 1;
+                propScale.set(setScale);
+                int setBackgroundAlpha = 255;
+                propBackgroundAlpha.set(setBackgroundAlpha);
+                getConfig().save();
                 buttonList.clear();
                 initGui();
                 break;
             }
+            case 6: {
+                Configuration config = LESConfiguration.getConfig();
 
+                if (config == null) {
+                    logger.info("SubtitleDragGui: No config found, cannot save values");
+                    return;
+                }
+                break;
+            }
         }
     }
     @Override
@@ -141,8 +182,9 @@ public class SubtitleDragGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        super.onGuiClosed();
+        getConfig().save();
         isGuiOpen = false;
+        super.onGuiClosed();
     }
     @Override
     public boolean doesGuiPauseGame() {

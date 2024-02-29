@@ -15,7 +15,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Mouse;
 import scala.collection.parallel.ParIterableLike;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -67,8 +66,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             Iterator<Subtitle> iterator = subtitles.iterator();
             if (!isGuiOpen) {
                 while (iterator.hasNext()) {
-                    Subtitle caption = iterator.next();
-
+                    SubtitleOverlayHandler.Subtitle caption = iterator.next();
                     if (caption.getStartTime() + 3000L <= Minecraft.getSystemTime()) {
 
                         iterator.remove();
@@ -76,6 +74,12 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(caption.getString()));
 
                     }
+                }
+            } else {
+                while (iterator.hasNext()) {
+                    SubtitleOverlayHandler.Subtitle caption = iterator.next();
+
+                    maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(caption.getString()));
                 }
             }
 
@@ -96,13 +100,15 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int subtitleHeight = mc.fontRenderer.FONT_HEIGHT;
                 int subtitleWidth = mc.fontRenderer.getStringWidth(Caption1);
 
+                int backgroundAlpha = LESConfiguration.propBackgroundAlpha.getInt();
+
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int fadeAway = 0;
                 if (!isGuiOpen) {
                     fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
                 }
                 if (isGuiOpen) {
-                    fadeAway = 255 << 16 | 255 << 8 | 255; //sets alpha to 255 (aRGB)
+                    fadeAway = backgroundAlpha << 16 | backgroundAlpha << 8 | backgroundAlpha; //sets alpha to 255 (aRGB)
                 }
                 int red = LESConfiguration.propBackgroundRed.getInt();
                 int green = LESConfiguration.propBackgroundGreen.getInt();
@@ -158,9 +164,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 yPos =  MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position
 
-                GlStateManager.translate(xPos, yPos, 0.0F);
+                GlStateManager.translate(xPos, yPos, -1);
 
-                GlStateManager.scale(LESConfiguration.scale, LESConfiguration.scale, 1.0F);
+                GlStateManager.scale(LESConfiguration.propScale.getInt(), LESConfiguration.propScale.getInt(), 1.0F);
 
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
                         0xFF000000);

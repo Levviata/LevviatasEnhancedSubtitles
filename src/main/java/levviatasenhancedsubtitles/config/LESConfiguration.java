@@ -25,16 +25,18 @@ public class LESConfiguration {
 	public static Property propFontBlue;
 	public static Property propFontAlpha;
 	public static Property propBackgroundBlackOn;
+	public static Property propShowSubtitles;
+	public static Property propScale;
 	public static Property propXposition;
 	public static Property propYposition;
 	public static int xPosition;
-	public static int scale = 1;
-	public static boolean showSubtitles = true;
+	private static int scale;
+	private static boolean showSubtitles = true;
 	public static int yPosition;
 	public static int backgroundRed;
 	public static int backgroundGreen;
 	public static int backgroundBlue;
-	public static int backgroundAlpha = 255;
+	private static int backgroundAlpha;
 	public static int fontRed;
 	public static int fontGreen;
 	public static int fontBlue;
@@ -71,6 +73,8 @@ public class LESConfiguration {
 		if (loadConfigFromFile) {
 			config.load();
 		}
+
+		propShowSubtitles = config.get("mainTitle" , "showSubtitles", true);
 
 		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
 		final String[] POSITION_CHOICES = {
@@ -124,6 +128,17 @@ public class LESConfiguration {
 				BACKGROUND_BLUE_MAX_VALUE);
 		propBackgroundBlue.setLanguageKey("gui.les_configuration.backgroundBlue");
 
+		final int BACKGROUND_ALPHA_MIN_VALUE = 0;
+		final int BACKGROUND_ALPHA_MAX_VALUE = 255;
+		final int BACKGROUND_ALPHA_DEFAULT_VALUE = 255;
+		propBackgroundAlpha = config.get(
+				CATEGORY_NAME_BACKGROUND,
+				"backgroundAlpha", BACKGROUND_ALPHA_DEFAULT_VALUE,
+				"The RGB alpha value (in decimals) for the subtitle's background.",
+				BACKGROUND_ALPHA_MIN_VALUE,
+				BACKGROUND_ALPHA_MAX_VALUE);
+		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
+
 		// Font
 
 		final int FONT_RED_MIN_VALUE = 0;
@@ -159,16 +174,17 @@ public class LESConfiguration {
 				FONT_BLUE_MAX_VALUE);
 		propFontBlue.setLanguageKey("gui.les_configuration.fontBlue");
 
-		final int BACKGROUND_ALPHA_MIN_VALUE = 0;
-		final int BACKGROUND_ALPHA_MAX_VALUE = 255;
-		final int BACKGROUND_ALPHA_DEFAULT_VALUE = 255;
-		propBackgroundAlpha = config.get(
+		final int SUBTITLE_SCALE_MIN_VALUE = 1;
+		final int SUBTITLE_SCALE_MAX_VALUE = 10;
+		final int SUBTITLE_SCALE_DEFAULT_VALUE = 1;
+		propScale = config.get(
 				CATEGORY_NAME_BACKGROUND,
-				"backgroundAlpha", BACKGROUND_ALPHA_DEFAULT_VALUE,
-				"The RGB alpha value (in decimals) for the subtitle's background.",
-				BACKGROUND_ALPHA_MIN_VALUE,
-				BACKGROUND_ALPHA_MAX_VALUE);
-		propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
+				"subtitleScale", SUBTITLE_SCALE_DEFAULT_VALUE,
+				"The scale that the subtitle should be rendered at.",
+				SUBTITLE_SCALE_MIN_VALUE,
+				SUBTITLE_SCALE_MAX_VALUE);
+		propScale.setLanguageKey("gui.les_configuration.subtitleScale");
+
 
 		/*final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
@@ -179,9 +195,6 @@ public class LESConfiguration {
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_WHITE_ON_DEFAULT_VALUE);
 		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
 		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundWhiteOn");*/
-		List<String> propOrderGeneral = new ArrayList<String>();
-		propOrderGeneral.add(propOverlayPosition.getName());
-		config.setCategoryPropertyOrder(null, propOrderGeneral);
 
 		List<String> propOrderPosition = new ArrayList<String>();
 		propOrderPosition.add(propOverlayPosition.getName());
@@ -202,6 +215,7 @@ public class LESConfiguration {
 
 		if (readFieldsFromConfig)
 		{
+			showSubtitles = propShowSubtitles.getBoolean(true);
 			backgroundRed = propBackgroundRed.getInt(BACKGROUND_RED_DEFAULT_VALUE);
 			if (backgroundRed > BACKGROUND_RED_MAX_VALUE || backgroundRed < BACKGROUND_RED_MIN_VALUE) {
 				backgroundRed = BACKGROUND_RED_DEFAULT_VALUE;
@@ -214,7 +228,10 @@ public class LESConfiguration {
 			if (backgroundBlue > BACKGROUND_BLUE_MAX_VALUE || backgroundBlue < BACKGROUND_BLUE_MIN_VALUE) {
 				backgroundBlue = BACKGROUND_BLUE_DEFAULT_VALUE;
 			}
-			backgroundAlpha = propBackgroundAlpha.getInt(BACKGROUND_BLUE_DEFAULT_VALUE);
+			backgroundAlpha = propBackgroundAlpha.getInt(BACKGROUND_ALPHA_DEFAULT_VALUE);
+			if (backgroundAlpha > BACKGROUND_ALPHA_MAX_VALUE || backgroundAlpha < BACKGROUND_ALPHA_MIN_VALUE) {
+				backgroundAlpha = BACKGROUND_ALPHA_DEFAULT_VALUE;
+			}
 			fontRed = propFontRed.getInt(FONT_RED_DEFAULT_VALUE);
 			if (fontRed > FONT_RED_MAX_VALUE || fontRed < FONT_RED_MIN_VALUE) {
 				fontRed = FONT_RED_DEFAULT_VALUE;
@@ -227,11 +244,11 @@ public class LESConfiguration {
 			if (fontBlue > FONT_BLUE_MAX_VALUE || fontBlue < FONT_BLUE_MIN_VALUE) {
 				fontBlue = FONT_BLUE_DEFAULT_VALUE;
 			}
-			/*backgroundAlpha = propBackgroundAlpha.getInt(BACKGROUND_ALPHA_DEFAULT_VALUE);
-			if (backgroundAlpha > BACKGROUND_ALPHA_MAX_VALUE || backgroundAlpha < BACKGROUND_ALPHA_MIN_VALUE) {
-				backgroundAlpha = BACKGROUND_ALPHA_DEFAULT_VALUE;
-			}*/
 
+			scale = propScale.getInt(SUBTITLE_SCALE_DEFAULT_VALUE);
+			if (scale > SUBTITLE_SCALE_MAX_VALUE || scale < SUBTITLE_SCALE_MIN_VALUE) {
+				scale = SUBTITLE_SCALE_DEFAULT_VALUE;
+			}
 			// If overlayPosition can't get any config it just simply defaults to "BOTTOM_RIGHT"
 			overlayPosition = propOverlayPosition.getString();
 			boolean overlayMatched = false;
@@ -246,6 +263,7 @@ public class LESConfiguration {
 			}
 		}
 
+		propShowSubtitles.set(showSubtitles);
 		propOverlayPosition.set(overlayPosition);
 		propBackgroundRed.set(backgroundRed);
 		propBackgroundGreen.set(backgroundGreen);
@@ -253,8 +271,9 @@ public class LESConfiguration {
 		propFontRed.set(fontRed);
 		propFontGreen.set(fontGreen);
 		propFontBlue.set(fontBlue);
+		propScale.set(scale);
 
-		//propBackgroundAlpha.set(backgroundAlpha);
+		propBackgroundAlpha.set(backgroundAlpha);
 
 		if (config.hasChanged()) {
 			config.save();
@@ -268,12 +287,13 @@ public class LESConfiguration {
 		@SubscribeEvent(priority = EventPriority.NORMAL)
 		public void onEvent(ConfigChangedEvent.OnConfigChangedEvent event)
 		{
-			if (LES.MODID.equals(event.getModID()) && !event.isWorldRunning())
+			if (LES.MODID.equals(event.getModID()))
 			{
-				if (event.getConfigID().equals(CATEGORY_NAME_BACKGROUND) || event.getConfigID().equals(CATEGORY_NAME_POSITION) || event.getConfigID().equals(CATEGORY_NAME_FONT)/*|| event.getConfigID().equals(CATEGORY_NAME_OTHER)*/)
+				syncFromGUI();
+				/*if (event.getConfigID().equals(CATEGORY_NAME_BACKGROUND) || event.getConfigID().equals(CATEGORY_NAME_POSITION) || event.getConfigID().equals(CATEGORY_NAME_FONT))
 				{
 					syncFromGUI();
-				}
+				}*/
 			}
 		}
 	}
