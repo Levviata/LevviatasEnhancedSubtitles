@@ -2,6 +2,7 @@ package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
 import levviatasenhancedsubtitles.config.LESConfiguration;
+import levviatasenhancedsubtitles.utils.ColorConverter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
@@ -102,16 +103,23 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float) (Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int fadeAway = 0;
-                int alpha = backgroundAlpha << 16 | backgroundAlpha << 8 | backgroundAlpha;
+
                 if (!isGuiOpen) {
                     fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
                 }
                 if (isGuiOpen) {
                     fadeAway = backgroundAlpha << 16 | backgroundAlpha << 8 | backgroundAlpha; //sets alpha to 255 (aRGB)
                 }
-                int red = LESConfiguration.propBackgroundRed.getInt();
-                int green = LESConfiguration.propBackgroundGreen.getInt();
-                int blue = LESConfiguration.propBackgroundBlue.getInt();
+                int backgroundRed = LESConfiguration.propBackgroundRed.getInt();
+                int backgroundGreen = LESConfiguration.propBackgroundGreen.getInt();
+                int backgroundBlue = LESConfiguration.propBackgroundBlue.getInt();
+
+                int fontRed = LESConfiguration.propFontRed.getInt();
+                int fontGreen = LESConfiguration.propFontGreen.getInt();
+                int fontBlue = LESConfiguration.propFontBlue.getInt();
+
+                int backgroundColor = ColorConverter.colorToDecimalWithAlpha(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha);
+                int fontColor = ColorConverter.colorToDecimal(fontRed, fontGreen, fontBlue);
 
                 GlStateManager.pushMatrix();
 
@@ -120,7 +128,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 String position = LESConfiguration.propOverlayPosition.getString();
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
-                int subtitleSpacing = 10;
+                int subtitleSpacing = 10 * propSubtitleScale.getInt();
                 int xPos = LESConfiguration.xPosition;
                 int yPos = LESConfiguration.yPosition;
 
@@ -168,16 +176,16 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 GlStateManager.scale(LESConfiguration.propSubtitleScale.getInt(), LESConfiguration.propSubtitleScale.getInt(), 1.0F);
 
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
-                        alpha + 0xFF000000);
+                        backgroundColor);
                 GlStateManager.enableBlend();
                 if (!flag) {
                     if (d0 > 0.00D) {
-                        mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
+                        mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + fontColor);
                     } else if (d0 < -0.00D) {
-                        mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
+                        mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + fontColor);
                     }
                 }
-                mc.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + 16777216);
+                mc.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + fontColor);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
