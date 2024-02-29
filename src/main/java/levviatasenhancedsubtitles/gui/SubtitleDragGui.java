@@ -1,14 +1,12 @@
 package levviatasenhancedsubtitles.gui;
 
 import com.google.common.collect.Lists;
-import levviatasenhancedsubtitles.LES;
 import levviatasenhancedsubtitles.config.LESConfiguration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,70 +27,66 @@ public class SubtitleDragGui extends GuiScreen {
     private boolean dragging;
     private int lastMouseX;
     private int lastMouseY;
-    private int getValueAndSetValue;
-    public void setGetValueAndSetValue(int inInt) {
-        this.getValueAndSetValue = inInt;
-    }
+    private boolean initialShowSubtitles;
+    private int initialScale;
+    private int initialBackgroundAlpha;
+
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
     @Override
     public void initGui() {
         super.initGui();
+        buttonList.clear();
+        //Store values for later
+        initialShowSubtitles = propShowSubtitles.getBoolean();
+        initialScale = propSubtitleScale.getInt();
+        initialBackgroundAlpha = propBackgroundAlpha.getInt();
+
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, "Mod Status: " +
                 (propShowSubtitles.getBoolean(true) ? "Enabled" : "Disabled")));
         buttonList.add(new GuiSlider(new GuiPageButtonList.GuiResponder() {
             @Override
             public void setEntryValue(int id, boolean value) {
-
             }
             @Override
             public void setEntryValue(int id, float value) {
-                value = propScale.getInt();
+                if (id == 3) {
+                    propSubtitleScale.set((int) value);
+                } else if (id == 4) {
+                    propBackgroundAlpha.set((int) value);
+                }
             }
 
             @Override
             public void setEntryValue(int id, String value) {
-
             }
 
         }, 3, res.getScaledWidth() / 2 - 100, 40,
-                "Scale: ", 0, 10, 1,
-                new GuiSlider.FormatHelper() {
-
-                    @Override
-                    public String getText(int id, String name, float value) {
-                        propScale.set(value);
-                        return "Scale: " + value + "x";
-                    }
-                }
-                ));
+                "Scale: ", 0, 10, initialScale,
+                (id, name, value) -> "Scale: " + propSubtitleScale.getInt() + "x"
+        ));
 
 
         buttonList.add(new GuiSlider(new GuiPageButtonList.GuiResponder() {
             @Override
             public void setEntryValue(int id, boolean value) {
-
             }
 
             @Override
             public void setEntryValue(int id, float value) {
-                value = propBackgroundAlpha.getInt();
+                if (id == 4) {
+                    propBackgroundAlpha.set((int) value);
+                }
             }
 
             @Override
             public void setEntryValue(int id, String value) {
-
             }
         }, 4, res.getScaledWidth() / 2 - 100, 80,
-                "Alpha: ", 0, 255, 255,
-                new GuiSlider.FormatHelper() {
-                    @Override
-                    public String getText(int id, String name, float value) {
-                        propBackgroundAlpha.set(value);
-                        return "Alpha: " + value + "%";
-                    }
-                }));
+                "Alpha: ", 0, 255, initialBackgroundAlpha,
+                (id, name, value) -> "Alpha: " + propBackgroundAlpha.getInt() + "%"
+        ));
 
 
         buttonList.add(new GuiButton(5, res.getScaledWidth() / 2 - 100, 120, "Set Values To Default"));
@@ -149,26 +143,22 @@ public class SubtitleDragGui extends GuiScreen {
                 break;
             }
             case 5: {
-                boolean setShowSubtitles = true;
-                propShowSubtitles.set(setShowSubtitles);
-                xPosition = 5;
-                yPosition = 5;
-                int setScale = 1;
-                propScale.set(setScale);
-                int setBackgroundAlpha = 255;
-                propBackgroundAlpha.set(setBackgroundAlpha);
-                getConfig().save();
+                // Reset values to default
+                Configuration config = LESConfiguration.getConfig();
+                config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true).set(true);
+                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1).set(1);
+                config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(255);
+                config.save();
                 buttonList.clear();
                 initGui();
                 break;
             }
             case 6: {
-                Configuration config = LESConfiguration.getConfig();
-
-                if (config == null) {
-                    logger.info("SubtitleDragGui: No config found, cannot save values");
-                    return;
-                }
+                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("showSubtitles").set(propShowSubtitles.getBoolean());
+                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("subtitleScale").set(propSubtitleScale.getInt());
+                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_BACKGROUND).get("backgroundAlpha").set(propBackgroundAlpha.getInt());
+                LESConfiguration.getConfig().save();
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Changes applied!"));
                 break;
             }
         }
@@ -182,7 +172,24 @@ public class SubtitleDragGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        getConfig().save();
+        if (initialShowSubtitles != propShowSubtitles.getBoolean() ||
+                initialScale != propSubtitleScale.getInt() ||
+                initialBackgroundAlpha != propBackgroundAlpha.getInt()) {
+            // Values have changed, save the changes to the config
+
+            Configuration config = LESConfiguration.getConfig();
+            if (config != null) {
+                // Set the new values
+                config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true).set(propShowSubtitles.getBoolean());
+                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1).set(propSubtitleScale.getInt());
+                config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(propBackgroundAlpha.getInt());
+
+                // Save the config
+                config.save();
+            } else {
+                logger.info("SubtitleDragGui: No config found, cannot save values");
+            }
+        }
         isGuiOpen = false;
         super.onGuiClosed();
     }

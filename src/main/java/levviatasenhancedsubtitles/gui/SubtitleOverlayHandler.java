@@ -13,11 +13,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Mouse;
-import scala.collection.parallel.ParIterableLike;
+
 import java.util.Iterator;
 import java.util.List;
 
+import static levviatasenhancedsubtitles.config.LESConfiguration.*;
 import static levviatasenhancedsubtitles.gui.SubtitleDragGui.isGuiOpen;
 
 public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
@@ -42,14 +42,13 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         }
     }
     public void render() {
+        boolean showSubtitles = getConfig().get(CATEGORY_NAME_GENERAL, "showSubtitles", true).getBoolean();
+        if (showSubtitles) {
         ScaledResolution resolution = new ScaledResolution(mc);
-        if (!this.isListening && mc.gameSettings.showSubtitles)
-        {
+        if (!this.isListening && mc.gameSettings.showSubtitles) {
             mc.getSoundHandler().addListener(this);
             this.isListening = true;
-        }
-        else if (this.isListening && !mc.gameSettings.showSubtitles)
-        {
+        } else if (this.isListening && !mc.gameSettings.showSubtitles) {
             mc.getSoundHandler().removeListener(this);
             this.isListening = false;
         }
@@ -86,8 +85,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             maxLength = maxLength + mc.fontRenderer.getStringWidth("<") + mc.fontRenderer.getStringWidth(" ") + mc.fontRenderer.getStringWidth(">") + mc.fontRenderer.getStringWidth(" ");
 
             int captionIndex = 0;
-            for (Subtitle caption : subtitles)
-            {
+            for (Subtitle caption : subtitles) {
                 String Caption1 = caption.getString();
 
                 Vec3d vec3d4 = caption.getLocation().subtract(playerPosition).normalize();
@@ -102,8 +100,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 int backgroundAlpha = LESConfiguration.propBackgroundAlpha.getInt();
 
-                int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float)(Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
+                int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float) (Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
                 int fadeAway = 0;
+                int alpha = backgroundAlpha << 16 | backgroundAlpha << 8 | backgroundAlpha;
                 if (!isGuiOpen) {
                     fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
                 }
@@ -132,8 +131,8 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         yPos += (resolution.getScaledHeight() - 75) - (captionIndex * subtitleSpacing);
                         break;
                     case "BOTTOM_LEFT":
-                        xPos +=  halfMaxLength + horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() - 30) -(captionIndex * subtitleSpacing);
+                        xPos += halfMaxLength + horizontalSpacing;
+                        yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
                         break;
                     case "CENTER_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
@@ -160,24 +159,21 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
                         break;
                 }
-                xPos =  MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - (subtitleWidth / 2));
-                yPos =  MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
+                xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - (subtitleWidth / 2));
+                yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position
 
-                GlStateManager.translate(xPos, yPos, -1);
+                GlStateManager.translate(xPos, yPos, 0);
 
-                GlStateManager.scale(LESConfiguration.propScale.getInt(), LESConfiguration.propScale.getInt(), 1.0F);
+                GlStateManager.scale(LESConfiguration.propSubtitleScale.getInt(), LESConfiguration.propSubtitleScale.getInt(), 1.0F);
 
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
-                        0xFF000000);
+                        alpha + 0xFF000000);
                 GlStateManager.enableBlend();
                 if (!flag) {
-                    if (d0 > 0.00D)
-                    {
+                    if (d0 > 0.00D) {
                         mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + 16777216);
-                    }
-                    else if (d0 < -0.00D)
-                    {
+                    } else if (d0 < -0.00D) {
                         mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + 16777216);
                     }
                 }
@@ -190,11 +186,13 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             GlStateManager.popMatrix();
         }
     }
+    }
     @Override
     public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
         // Your custom implementation here
         if (accessor.getSubtitle() != null) {
             String subtitleText = accessor.getSubtitle().getFormattedText();
+
             if(!isGuiOpen) {
                 if (!subtitles.isEmpty()) {
                     for (SubtitleOverlayHandler.Subtitle caption : subtitles) {

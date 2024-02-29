@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 public class LESConfiguration {
+
 	public static String overlayPosition;
 	public static Property propOverlayPosition;
 	public static Property propBackgroundRed;
@@ -26,7 +27,7 @@ public class LESConfiguration {
 	public static Property propFontAlpha;
 	public static Property propBackgroundBlackOn;
 	public static Property propShowSubtitles;
-	public static Property propScale;
+	public static Property propSubtitleScale;
 	public static Property propXposition;
 	public static Property propYposition;
 	public static int xPosition;
@@ -43,6 +44,7 @@ public class LESConfiguration {
 	public static final String CATEGORY_NAME_POSITION = "category_position";
 	public static final String CATEGORY_NAME_BACKGROUND = "category_background";
 	public static final String CATEGORY_NAME_FONT = "category_font";
+	public static final String CATEGORY_NAME_GENERAL = "category_name_general";
 	public static void preInit()
 	{
 
@@ -74,7 +76,7 @@ public class LESConfiguration {
 			config.load();
 		}
 
-		propShowSubtitles = config.get("mainTitle" , "showSubtitles", true);
+		propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true);
 
 		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
 		final String[] POSITION_CHOICES = {
@@ -177,13 +179,13 @@ public class LESConfiguration {
 		final int SUBTITLE_SCALE_MIN_VALUE = 1;
 		final int SUBTITLE_SCALE_MAX_VALUE = 10;
 		final int SUBTITLE_SCALE_DEFAULT_VALUE = 1;
-		propScale = config.get(
-				CATEGORY_NAME_BACKGROUND,
+		propSubtitleScale = config.get(
+				CATEGORY_NAME_GENERAL,
 				"subtitleScale", SUBTITLE_SCALE_DEFAULT_VALUE,
 				"The scale that the subtitle should be rendered at.",
 				SUBTITLE_SCALE_MIN_VALUE,
 				SUBTITLE_SCALE_MAX_VALUE);
-		propScale.setLanguageKey("gui.les_configuration.subtitleScale");
+		propSubtitleScale.setLanguageKey("gui.les_configuration.subtitleScale");
 
 
 		/*final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
@@ -245,7 +247,7 @@ public class LESConfiguration {
 				fontBlue = FONT_BLUE_DEFAULT_VALUE;
 			}
 
-			scale = propScale.getInt(SUBTITLE_SCALE_DEFAULT_VALUE);
+			scale = propSubtitleScale.getInt(SUBTITLE_SCALE_DEFAULT_VALUE);
 			if (scale > SUBTITLE_SCALE_MAX_VALUE || scale < SUBTITLE_SCALE_MIN_VALUE) {
 				scale = SUBTITLE_SCALE_DEFAULT_VALUE;
 			}
@@ -271,7 +273,7 @@ public class LESConfiguration {
 		propFontRed.set(fontRed);
 		propFontGreen.set(fontGreen);
 		propFontBlue.set(fontBlue);
-		propScale.set(scale);
+		propSubtitleScale.set(scale);
 
 		propBackgroundAlpha.set(backgroundAlpha);
 
