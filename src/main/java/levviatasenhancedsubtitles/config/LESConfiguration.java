@@ -25,15 +25,14 @@ public class LESConfiguration {
 	public static Property propFontGreen;
 	public static Property propFontBlue;
 	public static Property propFontAlpha;
-	public static Property propBackgroundBlackOn;
 	public static Property propShowSubtitles;
 	public static Property propSubtitleScale;
 	public static Property propXposition;
 	public static Property propYposition;
-	public static int xPosition;
+	private static int xPosition;
 	private static int scale;
 	private static boolean showSubtitles = true;
-	public static int yPosition;
+	private static int yPosition;
 	public static int backgroundRed;
 	public static int backgroundGreen;
 	public static int backgroundBlue;
@@ -44,7 +43,7 @@ public class LESConfiguration {
 	public static final String CATEGORY_NAME_POSITION = "category_position";
 	public static final String CATEGORY_NAME_BACKGROUND = "category_background";
 	public static final String CATEGORY_NAME_FONT = "category_font";
-	public static final String CATEGORY_NAME_GENERAL = "category_name_general";
+	public static final String CATEGORY_NAME_GENERAL = "category_general";
 	public static void preInit()
 	{
 
@@ -187,6 +186,27 @@ public class LESConfiguration {
 				SUBTITLE_SCALE_MAX_VALUE);
 		propSubtitleScale.setLanguageKey("gui.les_configuration.subtitleScale");
 
+		final int X_POSITION_MIN_VALUE = 0;
+		final int X_POSITION_MAX_VALUE = 10000;
+		final int X_POSITION_DEFAULT_VALUE = 0;
+		propXposition = config.get(
+				CATEGORY_NAME_GENERAL,
+				"xOffset", X_POSITION_DEFAULT_VALUE,
+				"The offset of the subtitle's position on the X axis.",
+				X_POSITION_MIN_VALUE,
+				X_POSITION_MAX_VALUE);
+		propXposition.setLanguageKey("gui.les_configuration.xOffset");
+
+		final int Y_POSITION_MIN_VALUE = 0;
+		final int Y_POSITION_MAX_VALUE = 10000;
+		final int Y_POSITION_DEFAULT_VALUE = 0;
+		propYposition = config.get(
+				CATEGORY_NAME_GENERAL,
+				"yOffset", Y_POSITION_DEFAULT_VALUE,
+				"The offset of the subtitle's position on the Y axis.",
+				Y_POSITION_MIN_VALUE,
+				Y_POSITION_MAX_VALUE);
+		propYposition.setLanguageKey("gui.les_configuration.yOffset");
 
 		/*final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
 		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
@@ -199,6 +219,8 @@ public class LESConfiguration {
 		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundWhiteOn");*/
 
 		List<String> propOrderPosition = new ArrayList<String>();
+		propOrderPosition.add(propXposition.getName());
+		propOrderPosition.add(propYposition.getName());
 		propOrderPosition.add(propOverlayPosition.getName());
 		config.setCategoryPropertyOrder(CATEGORY_NAME_POSITION, propOrderPosition);
 
@@ -217,6 +239,7 @@ public class LESConfiguration {
 
 		if (readFieldsFromConfig)
 		{
+
 			showSubtitles = propShowSubtitles.getBoolean(true);
 			backgroundRed = propBackgroundRed.getInt(BACKGROUND_RED_DEFAULT_VALUE);
 			if (backgroundRed > BACKGROUND_RED_MAX_VALUE || backgroundRed < BACKGROUND_RED_MIN_VALUE) {
@@ -263,6 +286,15 @@ public class LESConfiguration {
 			if (!overlayMatched) {
 				overlayPosition = OVERLAY_POSITION_DEFAULT_VALUE;
 			}
+
+			xPosition = propXposition.getInt(X_POSITION_DEFAULT_VALUE);
+			if (xPosition > X_POSITION_MAX_VALUE || xPosition < X_POSITION_MIN_VALUE) {
+				xPosition = X_POSITION_DEFAULT_VALUE;
+			}
+			yPosition = propYposition.getInt(Y_POSITION_DEFAULT_VALUE);
+			if (yPosition > Y_POSITION_MAX_VALUE || yPosition < Y_POSITION_MIN_VALUE) {
+				yPosition = Y_POSITION_DEFAULT_VALUE;
+			}
 		}
 
 		propShowSubtitles.set(showSubtitles);
@@ -274,6 +306,8 @@ public class LESConfiguration {
 		propFontGreen.set(fontGreen);
 		propFontBlue.set(fontBlue);
 		propSubtitleScale.set(scale);
+		propXposition.set(xPosition);
+		propYposition.set(yPosition);
 
 		propBackgroundAlpha.set(backgroundAlpha);
 
@@ -291,11 +325,10 @@ public class LESConfiguration {
 		{
 			if (LES.MODID.equals(event.getModID()))
 			{
-				syncFromGUI();
-				/*if (event.getConfigID().equals(CATEGORY_NAME_BACKGROUND) || event.getConfigID().equals(CATEGORY_NAME_POSITION) || event.getConfigID().equals(CATEGORY_NAME_FONT))
+				if (event.getConfigID().equals(CATEGORY_NAME_BACKGROUND) || event.getConfigID().equals(CATEGORY_NAME_POSITION) || event.getConfigID().equals(CATEGORY_NAME_FONT) || event.getConfigID().equals(CATEGORY_NAME_GENERAL))
 				{
 					syncFromGUI();
-				}*/
+				}
 			}
 		}
 	}

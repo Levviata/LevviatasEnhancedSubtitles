@@ -30,9 +30,11 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     static {
         previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Example Subtitle", new Vec3d(0, 0, 0)));
         previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Big ol' Example Subtitle", new Vec3d(0, 0, 0)));
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Longgggggggggggggggggggggggg Boy Example Subtitle", new Vec3d(0, 0, 0)));
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Astronomoussssssssssssssssssssssssssssssss Example Subtitle", new Vec3d(0, 0, 0)));
+        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Hi from Example Subtitle 9876", new Vec3d(0, 0, 0)));
+        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Example Subtitle 12345 Example Subtitle", new Vec3d(0, 0, 0)));
     }
+    public static int lastPosX;
+    public static int lastPosY;
     @SubscribeEvent(receiveCanceled = true)
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
         // Check if it's the subtitles overlay being rendered
@@ -44,7 +46,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     }
     public void render() {
         boolean showSubtitles = getConfig().get(CATEGORY_NAME_GENERAL, "showSubtitles", true).getBoolean();
-        if (showSubtitles) {
+        if (showSubtitles && !isGuiOpen) {
         ScaledResolution resolution = new ScaledResolution(mc);
         if (!this.isListening && mc.gameSettings.showSubtitles) {
             mc.getSoundHandler().addListener(this);
@@ -71,15 +73,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                         iterator.remove();
                     } else {
+
                         maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(caption.getString()));
-
                     }
-                }
-            } else {
-                while (iterator.hasNext()) {
-                    SubtitleOverlayHandler.Subtitle caption = iterator.next();
-
-                    maxLength = Math.max(maxLength, mc.fontRenderer.getStringWidth(caption.getString()));
                 }
             }
 
@@ -102,14 +98,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int backgroundAlpha = LESConfiguration.propBackgroundAlpha.getInt();
 
                 int fadeAwayCalculation = MathHelper.floor(MathHelper.clampedLerp(255.0D, 75.0D, (float) (Minecraft.getSystemTime() - caption.getStartTime()) / 3000.0F));
-                int fadeAway = 0;
 
-                if (!isGuiOpen) {
-                    fadeAway = fadeAwayCalculation << 16 | fadeAwayCalculation << 8 | fadeAwayCalculation;
-                }
-                if (isGuiOpen) {
-                    fadeAway = backgroundAlpha << 16 | backgroundAlpha << 8 | backgroundAlpha; //sets alpha to 255 (aRGB)
-                }
                 int backgroundRed = LESConfiguration.propBackgroundRed.getInt();
                 int backgroundGreen = LESConfiguration.propBackgroundGreen.getInt();
                 int backgroundBlue = LESConfiguration.propBackgroundBlue.getInt();
@@ -118,7 +107,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int fontGreen = LESConfiguration.propFontGreen.getInt();
                 int fontBlue = LESConfiguration.propFontBlue.getInt();
 
-                int backgroundColor = ColorConverter.colorToDecimalWithAlpha(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha);
+                int backgroundColor = ColorConverter.colorToDecimal(backgroundRed, backgroundGreen, backgroundBlue);
                 int fontColor = ColorConverter.colorToDecimal(fontRed, fontGreen, fontBlue);
 
                 GlStateManager.pushMatrix();
@@ -129,8 +118,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 int verticalSpacing = 1;
                 int horizontalSpacing = 2;
                 int subtitleSpacing = 10 * propSubtitleScale.getInt();
-                int xPos = LESConfiguration.xPosition;
-                int yPos = LESConfiguration.yPosition;
+                int xPos = propXposition.getInt();
+                int yPos = propYposition.getInt();
+
 
                 // ... existing switch statement ...
                 switch (position) {
@@ -174,18 +164,17 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 GlStateManager.translate(xPos, yPos, 0);
 
                 GlStateManager.scale(LESConfiguration.propSubtitleScale.getInt(), LESConfiguration.propSubtitleScale.getInt(), 1.0F);
-
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
-                        backgroundColor);
+                        backgroundAlpha << 24 | backgroundColor);
                 GlStateManager.enableBlend();
                 if (!flag) {
                     if (d0 > 0.00D) {
-                        mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAway + fontColor);
+                        mc.fontRenderer.drawString(">", halfMaxLength - mc.fontRenderer.getStringWidth(">"), -subtitleHeight / 2, fadeAwayCalculation << 24 | fontColor);
                     } else if (d0 < -0.00D) {
-                        mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAway + fontColor);
+                        mc.fontRenderer.drawString("<", -halfMaxLength, -subtitleHeight / 2, fadeAwayCalculation << 24 | fontColor);
                     }
                 }
-                mc.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAway + fontColor);
+                mc.fontRenderer.drawString(Caption1, -subtitleWidth / 2, -subtitleHeight / 2, fadeAwayCalculation << 24 | fontColor);
                 GlStateManager.popMatrix();
                 ++captionIndex;
             }
@@ -193,8 +182,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();
         }
-    }
-    }
+    }}
     @Override
     public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
         // Your custom implementation here
