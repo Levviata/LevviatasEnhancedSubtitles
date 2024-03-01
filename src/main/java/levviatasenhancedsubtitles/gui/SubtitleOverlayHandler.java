@@ -157,6 +157,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
                         break;
                 }
+
                 xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - (subtitleWidth / 2));
                 yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position

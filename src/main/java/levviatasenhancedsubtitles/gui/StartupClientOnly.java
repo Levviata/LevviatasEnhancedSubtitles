@@ -1,5 +1,6 @@
 package levviatasenhancedsubtitles.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 
 /*
@@ -18,12 +19,12 @@ import net.minecraftforge.common.MinecraftForge;
 public class StartupClientOnly {
 	public static void preInitClientOnly()
 	{
-		MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
+
 	}
 	public static void InitClientOnly() {
 	}
 	public static void postInitClientOnly()
 	{
-		//RadarOverlayHandler.clientPostInit();
+
 	}
 }

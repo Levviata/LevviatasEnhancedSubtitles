@@ -129,6 +129,8 @@ public class SubtitleDragGui extends GuiScreen {
     protected void mouseReleased(int mouseX, int mouseY, int action) {
         super.mouseReleased(mouseX, mouseY, action);
         this.dragging = false;
+        Configuration config = LESConfiguration.getConfig();
+        config.save();
     }
 
     @Override

@@ -1,10 +1,12 @@
 package levviatasenhancedsubtitles;
 
+import levviatasenhancedsubtitles.gui.SubtitleOverlayHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 
@@ -23,6 +25,7 @@ public class ClientOnlyProxy extends CommonProxy
   public void preInit()
   {
     super.preInit();
+    MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
     myKeyBinding = new KeyBinding("key.mykeybinding.desc", Keyboard.KEY_P, "key.categories.myMod");
     ClientRegistry.registerKeyBinding(myKeyBinding);
     levviatasenhancedsubtitles.config.StartupClientOnly.preInitClientOnly();

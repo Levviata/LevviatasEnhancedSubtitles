@@ -186,7 +186,7 @@ public class LESConfiguration {
 				SUBTITLE_SCALE_MAX_VALUE);
 		propSubtitleScale.setLanguageKey("gui.les_configuration.subtitleScale");
 
-		final int X_POSITION_MIN_VALUE = 0;
+		final int X_POSITION_MIN_VALUE = -10000;
 		final int X_POSITION_MAX_VALUE = 10000;
 		final int X_POSITION_DEFAULT_VALUE = 0;
 		propXposition = config.get(
@@ -197,7 +197,7 @@ public class LESConfiguration {
 				X_POSITION_MAX_VALUE);
 		propXposition.setLanguageKey("gui.les_configuration.xOffset");
 
-		final int Y_POSITION_MIN_VALUE = 0;
+		final int Y_POSITION_MIN_VALUE = -10000;
 		final int Y_POSITION_MAX_VALUE = 10000;
 		final int Y_POSITION_DEFAULT_VALUE = 0;
 		propYposition = config.get(
