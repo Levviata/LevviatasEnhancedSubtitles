@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,6 +36,7 @@ public class SubtitleDragGui extends GuiScreen {
     private boolean initialShowSubtitles;
     private int initialScale;
     private int initialBackgroundAlpha;
+    private int index = 1;
 
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
@@ -97,7 +99,16 @@ public class SubtitleDragGui extends GuiScreen {
         alpha.width = 200;
         buttonList.add(alpha);
 
-        buttonList.add(new GuiButton(5, res.getScaledWidth() / 2 - 100, 95,  TextFormatting.YELLOW + "Set Values To Default"));
+        GuiButton overlayPosition = new GuiButton(6,
+                res.getScaledWidth() / 2 - 100,
+                95,
+                TextFormatting.YELLOW + "Overlay Position: " + propOverlayPosition.getString());
+        buttonList.add(overlayPosition);
+
+        buttonList.add(new GuiButton(5,
+                res.getScaledWidth() / 2 - 100,
+                110,
+                TextFormatting.YELLOW + "Set Values To Default"));
     }
     @Override
     public void updateScreen() {
@@ -173,6 +184,21 @@ public class SubtitleDragGui extends GuiScreen {
                 config.save();
                 buttonList.clear();
                 initGui();
+                break;
+            }
+            case 6: {
+
+                String[] positions = Arrays.stream(propOverlayPosition.getStringList()).toArray(String[]::new);
+                if (index >= 0 && index < positions.length) {
+                    propOverlayPosition.set(positions[index]);
+                    button.displayString = "Overlay Position: " + positions[index];
+                } else {
+                    // Handle the case where the index is out of bounds
+                    // For example, reset the index to 0 or log an error
+                    index = 0; // Resetting index to 0 as an example
+                    propOverlayPosition.set(positions[index]);
+                    button.displayString = "Overlay Position: " + positions[index];
+                }
                 break;
             }
             /*case 6: {
