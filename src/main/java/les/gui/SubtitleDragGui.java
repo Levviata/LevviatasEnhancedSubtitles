@@ -119,12 +119,12 @@ public class SubtitleDragGui extends GuiScreen {
                  "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
 
-        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 115, "Clear Buttons");
+        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 120, TextFormatting.YELLOW +"Clear Buttons");
         buttonList.add(showButtons);
 
         buttonList.add(new GuiButton(5,
                 res.getScaledWidth() / 2 - 100,
-                135,
+                145,
                 TextFormatting.YELLOW + "Set Values To Default"));
     }
 
@@ -200,16 +200,20 @@ public class SubtitleDragGui extends GuiScreen {
                 break;
             }
             case 6: {
-                if (index >= 0 && index < POSITION_CHOICES.length) {
+                if (index >= 0 && index < POSITION_CHOICES.length - 1) { // Ensure index is within array bounds
                     propOverlayPosition.set(POSITION_CHOICES[index]);
+                    propXposition.set(0);
+                    propYposition.set(0);
+                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
+                    index++; // Increment index
+                } else {
+                    // Reset index to 0 when it reaches the end of the array
+                    index = 0;
+                    propOverlayPosition.set(POSITION_CHOICES[index]);
+                    propXposition.set(0);
+                    propYposition.set(0);
                     button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                     index++;
-                } else {
-                    // Handle the case where the index is out of bounds
-                    // For example, reset the index to 0 or log an error
-                    index = 1; // Resetting index to 0 as an example
-                    propOverlayPosition.set(POSITION_CHOICES[index]);
-                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                 }
                 break;
             }
@@ -218,7 +222,7 @@ public class SubtitleDragGui extends GuiScreen {
                 if (!propDisablePopup.getBoolean()) {
                     ITextComponent message = new TextComponentString("You seem to have disabled your GUI buttons, close and open your GUI again to re-enable them. ")
                             .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true));
-                    ITextComponent clickable = new TextComponentString("Click here to disable this message")
+                    ITextComponent clickable = new TextComponentString("Close your GUI and then click here to disable this message")
                             .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true).setUnderlined(true).setBold(true)
                                     .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resetbuttons"))
                                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to disable this message popup"))));
