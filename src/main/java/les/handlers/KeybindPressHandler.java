@@ -9,14 +9,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static les.config.LESConfiguration.propShowSubtitles;
-
 @Mod.EventBusSubscriber
 public class KeybindPressHandler {
     private static final Logger logger = LogManager.getLogger("SubtitleDragGui");
    /* @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (ClientOnlyProxy.guiOpen.isPressed()) {
+        if (ClientOnlyProxy.myKeyBinding.isPressed()) {
 
 
             ; // Switches between false and true
@@ -25,7 +23,7 @@ public class KeybindPressHandler {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            if (ClientOnlyProxy.guiOpen.isPressed()) {
+            if (ClientOnlyProxy.myKeyBinding.isPressed()) {
                 SubtitleDragGui handler = new SubtitleDragGui();
 
                 Minecraft.getMinecraft().displayGuiScreen(handler);
@@ -33,10 +31,6 @@ public class KeybindPressHandler {
 
                 logger.info("Subtitle GUI opened");
                 SubtitleDragGui.isGuiOpen = true;
-            }
-
-            if (ClientOnlyProxy.offOrOnSubtitles.isPressed()) {
-                propShowSubtitles.set(!propShowSubtitles.getBoolean());
             }
         }
     }

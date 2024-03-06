@@ -17,8 +17,7 @@ import org.lwjgl.input.Keyboard;
  */
 public class ClientOnlyProxy extends CommonProxy
 {
-  public static KeyBinding guiOpen;
-  public static KeyBinding offOrOnSubtitles;
+  public static KeyBinding myKeyBinding;
 
   /**
    * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
@@ -27,10 +26,8 @@ public class ClientOnlyProxy extends CommonProxy
   {
     super.preInit();
     MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
-    offOrOnSubtitles = new KeyBinding("key.showSubtitles.desc", Keyboard.KEY_K, "key.categories.mod");
-    guiOpen = new KeyBinding("key.guiOpen.desc", Keyboard.KEY_P, "key.categories.mod");
-    ClientRegistry.registerKeyBinding(guiOpen);
-    ClientRegistry.registerKeyBinding(offOrOnSubtitles);
+    myKeyBinding = new KeyBinding("key.les_keybindings.desc", Keyboard.KEY_P, "key.categories.les_keybindings");
+    ClientRegistry.registerKeyBinding(myKeyBinding);
     les.config.StartupClientOnly.preInitClientOnly();
 
     les.gui.StartupClientOnly.preInitClientOnly();
