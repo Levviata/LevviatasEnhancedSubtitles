@@ -40,6 +40,9 @@ public abstract class CommonProxy {
 
     les.gui.StartupCommon.postInitCommon();
   }
+  public void serverInit() {
+
+  }
 
   // helper to determine whether the given player is in creative mode
   //  not necessary for most examples

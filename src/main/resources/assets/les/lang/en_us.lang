@@ -19,3 +19,5 @@ gui.les_configuration.fontGreen=Green
 gui.les_configuration.fontBlue=Blue
 gui.les_configuration.backgroundAlpha=Alpha
 gui.les_configuration.subtitleScale=Scale
+gui.les_configuration.showButtons=Show Buttons
+gui.les_configuration.disablePopup=Disable Message GUI Buttons Notice

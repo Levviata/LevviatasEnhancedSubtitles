@@ -8,7 +8,12 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.IOException;
@@ -37,6 +42,16 @@ public class SubtitleDragGui extends GuiScreen {
     private int initialScale;
     private int initialBackgroundAlpha;
     private int index = 1;
+    final String[] POSITION_CHOICES = {
+            "BOTTOM_RIGHT",
+            "BOTTOM_CENTER",
+            "BOTTOM_LEFT",
+            "CENTER_LEFT",
+            "TOP_LEFT",
+            "TOP_CENTER",
+            "TOP_RIGHT",
+            "CENTER_RIGHT"
+    };
 
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
@@ -76,7 +91,6 @@ public class SubtitleDragGui extends GuiScreen {
         );
         scale.width = 200;
         buttonList.add(scale);
-
         GuiButton alpha = new GuiSlider(new GuiPageButtonList.GuiResponder() {
             @Override
             public void setEntryValue(int id, boolean value) {
@@ -102,17 +116,16 @@ public class SubtitleDragGui extends GuiScreen {
         GuiButton overlayPosition = new GuiButton(6,
                 res.getScaledWidth() / 2 - 100,
                 95,
-                TextFormatting.YELLOW + "Overlay Position: " + propOverlayPosition.getString());
+                 "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
+
+        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 115, "Clear Buttons");
+        buttonList.add(showButtons);
 
         buttonList.add(new GuiButton(5,
                 res.getScaledWidth() / 2 - 100,
-                110,
+                135,
                 TextFormatting.YELLOW + "Set Values To Default"));
-    }
-    @Override
-    public void updateScreen() {
-        super.updateScreen();
     }
 
 
@@ -187,17 +200,30 @@ public class SubtitleDragGui extends GuiScreen {
                 break;
             }
             case 6: {
-
-                String[] positions = Arrays.stream(propOverlayPosition.getStringList()).toArray(String[]::new);
-                if (index >= 0 && index < positions.length) {
-                    propOverlayPosition.set(positions[index]);
-                    button.displayString = "Overlay Position: " + positions[index];
+                if (index >= 0 && index < POSITION_CHOICES.length) {
+                    propOverlayPosition.set(POSITION_CHOICES[index]);
+                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
+                    index++;
                 } else {
                     // Handle the case where the index is out of bounds
                     // For example, reset the index to 0 or log an error
-                    index = 0; // Resetting index to 0 as an example
-                    propOverlayPosition.set(positions[index]);
-                    button.displayString = "Overlay Position: " + positions[index];
+                    index = 1; // Resetting index to 0 as an example
+                    propOverlayPosition.set(POSITION_CHOICES[index]);
+                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
+                }
+                break;
+            }
+            case 7: {
+                buttonList.clear();
+                if (!propDisablePopup.getBoolean()) {
+                    ITextComponent message = new TextComponentString("You seem to have disabled your GUI buttons, close and open your GUI again to re-enable them. ")
+                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true));
+                    ITextComponent clickable = new TextComponentString("Click here to disable this message")
+                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true).setUnderlined(true).setBold(true)
+                                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resetbuttons"))
+                                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to disable this message popup"))));
+                    message.appendSibling(clickable);
+                    Minecraft.getMinecraft().player.sendMessage(message);
                 }
                 break;
             }
@@ -213,7 +239,6 @@ public class SubtitleDragGui extends GuiScreen {
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
 
         int maxLength = 0;
         int captionIndex = 0;

@@ -29,6 +29,8 @@ public class LESConfiguration {
 	public static Property propSubtitleScale;
 	public static Property propXposition;
 	public static Property propYposition;
+	public static Property propShowButtons;
+	public static Property propDisablePopup;
 	private static int xPosition;
 	private static int yPosition;
 	private static String initialPositionPreset;
@@ -75,6 +77,8 @@ public class LESConfiguration {
 		if (loadConfigFromFile) {
 			config.load();
 		}
+		propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup or not.");
+		propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
 
 		propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to show the subtitles or not.");
 		propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
@@ -97,6 +101,9 @@ public class LESConfiguration {
 						"BOTTOM_CENTER, BOTTOM_LEFT, CENTER_LEFT, TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_RIGHT");
 		propOverlayPosition.setLanguageKey("gui.les_configuration.overlayPosition");
 		propOverlayPosition.setValidValues(POSITION_CHOICES);
+
+		propShowButtons = config.get(CATEGORY_NAME_GENERAL, "showButtons", true, "Whether to show the buttons or not.");
+		propShowButtons.setLanguageKey("gui.les_configuration.showButtons");
 
 		final int BACKGROUND_RED_MIN_VALUE = 0;
 		final int BACKGROUND_RED_MAX_VALUE = 255;
