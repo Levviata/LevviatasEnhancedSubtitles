@@ -31,10 +31,11 @@ public class LESConfiguration {
 	public static Property propYposition;
 	public static Property propShowButtons;
 	public static Property propDisablePopup;
+	private static boolean disablePopup;
 	private static int xPosition;
 	private static int yPosition;
 	private static String initialPositionPreset;
-	private static int scale;
+	private static float scale;
 	private static boolean showSubtitles = true;
 	public static int backgroundRed;
 	public static int backgroundGreen;
@@ -77,7 +78,7 @@ public class LESConfiguration {
 		if (loadConfigFromFile) {
 			config.load();
 		}
-		propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup or not.");
+		propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup that shows when you disable your GUI buttons or not.");
 		propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
 
 		propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to show the subtitles or not.");
@@ -184,9 +185,9 @@ public class LESConfiguration {
 				FONT_BLUE_MAX_VALUE);
 		propFontBlue.setLanguageKey("gui.les_configuration.fontBlue");
 
-		final int SUBTITLE_SCALE_MIN_VALUE = 1;
-		final int SUBTITLE_SCALE_MAX_VALUE = 10;
-		final int SUBTITLE_SCALE_DEFAULT_VALUE = 1;
+		final float SUBTITLE_SCALE_MIN_VALUE = 0.1f;
+		final float SUBTITLE_SCALE_MAX_VALUE = 10f;
+		final float SUBTITLE_SCALE_DEFAULT_VALUE = 1f;
 		propSubtitleScale = config.get(
 				CATEGORY_NAME_GENERAL,
 				"subtitleScale", SUBTITLE_SCALE_DEFAULT_VALUE,
@@ -284,7 +285,7 @@ public class LESConfiguration {
 				fontBlue = FONT_BLUE_DEFAULT_VALUE;
 			}
 
-			scale = propSubtitleScale.getInt(SUBTITLE_SCALE_DEFAULT_VALUE);
+			scale = (float) propSubtitleScale.getDouble(SUBTITLE_SCALE_DEFAULT_VALUE);
 			if (scale > SUBTITLE_SCALE_MAX_VALUE || scale < SUBTITLE_SCALE_MIN_VALUE) {
 				scale = SUBTITLE_SCALE_DEFAULT_VALUE;
 			}
@@ -310,6 +311,7 @@ public class LESConfiguration {
 				yPosition = Y_POSITION_DEFAULT_VALUE;
 			}
 			initialPositionPreset = propOverlayPosition.getString();
+			disablePopup = propDisablePopup.getBoolean(false);
 		}
 
 		propShowSubtitles.set(showSubtitles);
@@ -324,6 +326,7 @@ public class LESConfiguration {
 		propXposition.set(xPosition);
 		propYposition.set(yPosition);
 		propBackgroundAlpha.set(backgroundAlpha);
+		propDisablePopup.set(disablePopup);
 
 		if (config.hasChanged()) {
 			config.save();

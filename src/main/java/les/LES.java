@@ -68,7 +68,7 @@ public class LES
   //  build.gradle file (the version, group, and archivesBaseName parameters)
   //  resources/mcmod.info (the name, description, and version parameters)
    public static final String MODID = "les";
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.3.0";
 
     public static final String GUIFACTORY = "les.config.LESGuiFactory"; //delete if MBE70 not present
 

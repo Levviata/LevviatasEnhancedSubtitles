@@ -39,7 +39,7 @@ public class SubtitleDragGui extends GuiScreen {
     private int lastMouseX;
     private int lastMouseY;
     private boolean initialShowSubtitles;
-    private int initialScale;
+    private float initialScale;
     private int initialBackgroundAlpha;
     private int index = 1;
     final String[] POSITION_CHOICES = {
@@ -61,7 +61,7 @@ public class SubtitleDragGui extends GuiScreen {
         buttonList.clear();
         //Store values for later
         initialShowSubtitles = propShowSubtitles.getBoolean();
-        initialScale = propSubtitleScale.getInt();
+        initialScale = (float) propSubtitleScale.getDouble();
         initialBackgroundAlpha = propBackgroundAlpha.getInt();
 
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
@@ -75,7 +75,8 @@ public class SubtitleDragGui extends GuiScreen {
             @Override
             public void setEntryValue(int id, float value) {
                 if (id == 3) {
-                    propSubtitleScale.set((int) value);
+                    value = Math.round(value * 10) / 10f;
+                    propSubtitleScale.set(value);
                 } else if (id == 4) {
                     propBackgroundAlpha.set((int) value);
                 }
@@ -87,7 +88,7 @@ public class SubtitleDragGui extends GuiScreen {
 
         }, 3, res.getScaledWidth() / 2 - 100, 45,
                 "Scale: ", 1, 10, initialScale,
-                (id, name, value) -> "Scale: "+ propSubtitleScale.getInt() + "x"
+                (id, name, value) -> "Scale: "+ (float) propSubtitleScale.getDouble() + "x"
         );
         scale.width = 200;
         buttonList.add(scale);

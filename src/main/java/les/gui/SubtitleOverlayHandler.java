@@ -26,13 +26,6 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     private final Minecraft mc = Minecraft.getMinecraft();
     private boolean isListening;
     public static final List<Subtitle> subtitles = Lists.newArrayList();
-    private static final List<SubtitleOverlayHandler.Subtitle> previewSubtitles = Lists.newArrayList();
-    static {
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Example Subtitle", new Vec3d(0, 0, 0)));
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Big ol' Example Subtitle", new Vec3d(0, 0, 0)));
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Hi from Example Subtitle 9876", new Vec3d(0, 0, 0)));
-        previewSubtitles.add(new SubtitleOverlayHandler.Subtitle("Example Subtitle 12345 Example Subtitle", new Vec3d(0, 0, 0)));
-    }
     public static int lastPosX;
     public static int lastPosY;
     @SubscribeEvent(receiveCanceled = true)
@@ -164,7 +157,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                 GlStateManager.translate(xPos, yPos, 0);
 
-                GlStateManager.scale(LESConfiguration.propSubtitleScale.getInt(), LESConfiguration.propSubtitleScale.getInt(), 1.0F);
+                GlStateManager.scale((float)propSubtitleScale.getDouble(),(float) propSubtitleScale.getDouble(), 1.0F);
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
                         backgroundAlpha << 24 | backgroundColor);
                 GlStateManager.enableBlend();
