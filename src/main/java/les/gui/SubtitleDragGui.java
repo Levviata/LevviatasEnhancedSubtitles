@@ -342,13 +342,12 @@ public class SubtitleDragGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
+        // if values have changed, save the changes to the config
         if (initialShowSubtitles != propShowSubtitles.getBoolean() ||
             initialScale != (float) propSubtitleScale.getDouble()  ||
             initialBackgroundAlpha != propBackgroundAlpha.getInt() ||
             initialIndex != propIndex.getInt()
             ) {
-            // Values have changed, save the changes to the config
-
             Configuration config = LESConfiguration.getConfig();
             if (config != null) {
                 // Set the new values

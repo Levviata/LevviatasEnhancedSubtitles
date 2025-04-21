@@ -21,7 +21,7 @@ public class ClientOnlyProxy extends CommonProxy
   public static KeyBinding toggleSubtitles;
 
   /**
-   * Run before anything else. Read your config, create blocks, items, etc, and register them with the GameRegistry
+   * Run before anything else. Read your config, create blocks, items, etc. and register them with the GameRegistry
    */
   public void preInit()
   {

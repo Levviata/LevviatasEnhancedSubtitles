@@ -39,8 +39,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
         // Check if it's the subtitles overlay being rendered
         if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
-            // Instantte your handler with the necessary context if required
-            event.setCanceled(true);
+            // Cancel vanilla's subtitle rendering --
+            event.setCanceled(true); // Note: This is bad for compatibility
+            // -- So we can render with our own logic
             render();
         }
     }
@@ -121,8 +122,6 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 float xPos = propXposition.getInt();
                 float yPos = propYposition.getInt();
 
-
-                // ... existing switch statement ...
                 switch (position) {
                     case "BOTTOM_CENTER":
                         xPos += (float) resolution.getScaledWidth() / 2;
@@ -186,7 +185,6 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     }}
     @Override
     public void soundPlay(ISound soundIn, SoundEventAccessor accessor) {
-        // Your custom implementation here
         if (accessor.getSubtitle() != null) {
             String subtitleText = accessor.getSubtitle().getFormattedText();
 
@@ -218,7 +216,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         public void setText(String textIn) {
             this.text = textIn;
         }
-        // Getters and setters for other fields...
+
         public String getText() {
             return text;
         }

@@ -14,11 +14,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /*
-   Each mod has a main class which is used by Forge to interact with the mod during startup.
+   Each mod has a main class which Forge uses to interact with the mod during startup.
    For more background information see here http://greyminecraftcoder.blogspot.com/2013/11/how-forge-starts-up-your-code.html
 
    The major points:
-   1) your mod is initialised in 3 phases - first preInit, then init, then postInit.  Each phase is intended for different
+   1) your mod is initialized in 3 phases - first preInit, then init, then postInit.  Each phase is intended for different
       kinds of tasks your mod should do, such as registering new blocks for example.
    2) CommonProxy, ClientOnlyProxy, and DedicatedServerProxy are used to make sure your mod works correctly when installed on
       a dedicated server.  Some of the minecraft code is marked @SideOnly(Side.CLIENT), and this must not be called when
