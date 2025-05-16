@@ -12,20 +12,26 @@ import org.apache.logging.log4j.Logger;
 import static les.config.LESConfiguration.propShowSubtitles;
 
 @Mod.EventBusSubscriber
-public class KeybindPressHandler {
+public class KeybindPressHandler
+{
+
     private static final Logger logger = LogManager.getLogger("SubtitleDragGui");
-   /* @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (ClientOnlyProxy.guiOpen.isPressed()) {
+
+    /* @SubscribeEvent
+     public void onKeyInput(InputEvent.KeyInputEvent event) {
+         if (ClientOnlyProxy.guiOpen.isPressed()) {
 
 
-            ; // Switches between false and true
-        }
-    }*/
+             ; // Switches between false and true
+         }
+     }*/
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            if (ClientOnlyProxy.guiOpen.isPressed()) {
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.END)
+        {
+            if (ClientOnlyProxy.guiOpen.isPressed())
+            {
                 SubtitleDragGui handler = new SubtitleDragGui();
 
                 Minecraft.getMinecraft().displayGuiScreen(handler);
@@ -34,7 +40,8 @@ public class KeybindPressHandler {
                 logger.info("Subtitle GUI opened");
                 SubtitleDragGui.isGuiOpen = true;
             }
-            if(ClientOnlyProxy.toggleSubtitles.isPressed()) {
+            if (ClientOnlyProxy.toggleSubtitles.isPressed())
+            {
                 boolean subtitles = propShowSubtitles.getBoolean();
                 propShowSubtitles.set(!subtitles);
                 logger.info("Subtitle GUI toggled");

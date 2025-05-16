@@ -1,6 +1,7 @@
 package les;
 
 import les.command.CommandResetButtons;
+import les.config.LESConfiguration;
 import les.handlers.KeybindPressHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -61,13 +62,14 @@ import org.apache.logging.log4j.Logger;
  */
 
 @Mod(modid = LES.MODID, version = LES.VERSION,
-     guiFactory= LES.GUIFACTORY)  //delete guiFactory if MBE70 not present and you don't have a configuration GUI
+        guiFactory = LES.GUIFACTORY)  //delete guiFactory if MBE70 not present and you don't have a configuration GUI
 public class LES
 {
-  // you also need to update the modid and version in two other places as well:
-  //  build.gradle file (the version, group, and archivesBaseName parameters)
-  //  resources/mcmod.info (the name, description, and version parameters)
-   public static final String MODID = "les";
+
+    // you also need to update the modid and version in two other places as well:
+    //  build.gradle file (the version, group, and archivesBaseName parameters)
+    //  resources/mcmod.info (the name, description, and version parameters)
+    public static final String MODID = "les";
     public static final String VERSION = "2.3.0";
 
     public static final String GUIFACTORY = "les.config.LESGuiFactory"; //delete if MBE70 not present
@@ -78,8 +80,9 @@ public class LES
     Logger logger = LogManager.getLogger(LES.class);
 
     // Says where the client and server 'proxy' code is loaded.
-    @SidedProxy(clientSide="les.ClientOnlyProxy", serverSide="les.DedicatedServerProxy")
+    @SidedProxy(clientSide = "les.ClientOnlyProxy", serverSide = "les.DedicatedServerProxy")
     public static CommonProxy commonProxy;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -92,23 +95,29 @@ public class LES
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-     commonProxy.init();
+        commonProxy.init();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-     commonProxy.postInit();
+        commonProxy.postInit();
     }
+
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandResetButtons());
     }
+
     /**
      * Prepend the name with the mod ID, suitable for ResourceLocations such as textures.
+     *
      * @param name
      * @return eg "minecraftbyexample:myblockname"
      */
-    public static String prependModID(String name) {return MODID + ":" + name;}
+    public static String prependModID(String name)
+    {
+        return MODID + ":" + name;
+    }
 }
