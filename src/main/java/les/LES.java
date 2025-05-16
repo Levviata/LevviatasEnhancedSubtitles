@@ -1,6 +1,6 @@
 package les;
 
-import les.command.CommandResetButtons;
+//import les.command.CommandResetButtons;
 import les.config.LESConfiguration;
 import les.handlers.KeybindPressHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -107,7 +107,7 @@ public class LES
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
-        event.registerServerCommand(new CommandResetButtons());
+//        event.registerServerCommand(new CommandResetButtons());
     }
 
     /**

@@ -31,9 +31,9 @@ public class LESConfiguration
     public static Property propSubtitleScale;
     public static Property propXposition;
     public static Property propYposition;
-    public static Property propDisablePopup;
+//    public static Property propDisablePopup;
     public static Property propIndex;
-    private static boolean disablePopup;
+//    private static boolean disablePopup;
     private static int xPosition;
     private static int yPosition;
     private static String initialPositionPreset;
@@ -93,8 +93,8 @@ public class LESConfiguration
         {
             config.load();
         }
-        propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup that shows when you disable your GUI buttons or not.");
-        propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
+//        propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup that shows when you disable your GUI buttons or not.");
+//        propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
 
         propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to show the subtitles or not.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
@@ -339,7 +339,7 @@ public class LESConfiguration
                 yPosition = Y_POSITION_DEFAULT_VALUE;
             }
             initialPositionPreset = propOverlayPosition.getString();
-            disablePopup = propDisablePopup.getBoolean(false);
+//            disablePopup = propDisablePopup.getBoolean(false);
             index = propIndex.getInt(0);
         }
 
@@ -355,7 +355,7 @@ public class LESConfiguration
         propXposition.set(xPosition);
         propYposition.set(yPosition);
         propBackgroundAlpha.set(backgroundAlpha);
-        propDisablePopup.set(disablePopup);
+//        propDisablePopup.set(disablePopup);
         propIndex.set(index);
 
         if (config.hasChanged())

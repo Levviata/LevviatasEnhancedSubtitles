@@ -70,6 +70,10 @@ public class SubtitleDragGui extends GuiScreen
         initialBackgroundAlpha = propBackgroundAlpha.getInt();
         initialIndex = propIndex.getInt();
 
+        initButtons();
+    }
+
+    private void initButtons() {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, TextFormatting.YELLOW + "Mod Status: " +
                 (propShowSubtitles.getBoolean(true) ? TextFormatting.DARK_GREEN + "Enabled" : TextFormatting.DARK_RED + "Disabled")));
@@ -138,15 +142,14 @@ public class SubtitleDragGui extends GuiScreen
                 "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
 
-        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 120, TextFormatting.YELLOW + "Clear Buttons");
-        buttonList.add(showButtons);
+//        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 120, TextFormatting.YELLOW + "Clear Buttons");
+//        buttonList.add(showButtons);
 
         buttonList.add(new GuiButton(5,
                 res.getScaledWidth() / 2 - 100,
-                145,
+                120,
                 TextFormatting.YELLOW + "Set Values To Default"));
     }
-
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
@@ -168,6 +171,8 @@ public class SubtitleDragGui extends GuiScreen
             this.dragging = true;
             this.lastMouseX = mouseX;
             this.lastMouseY = mouseY;
+
+            buttonList.clear();
         }
     }
 
@@ -175,7 +180,12 @@ public class SubtitleDragGui extends GuiScreen
     protected void mouseReleased(int mouseX, int mouseY, int action)
     {
         super.mouseReleased(mouseX, mouseY, action);
-        this.dragging = false;
+
+        if (this.dragging) {
+            this.dragging = false;
+            initButtons();
+        }
+
         Configuration config = LESConfiguration.getConfig();
         config.save();
     }
@@ -252,22 +262,22 @@ public class SubtitleDragGui extends GuiScreen
                 button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                 break;
             }
-            case 7:
-            {
-                buttonList.clear();
-                if (!propDisablePopup.getBoolean())
-                {
-                    ITextComponent message = new TextComponentString("You seem to have disabled your GUI buttons, close and open your GUI again to re-enable them. ")
-                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true));
-                    ITextComponent clickable = new TextComponentString("Close your GUI and then click here to disable this message")
-                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true).setUnderlined(true).setBold(true)
-                                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resetbuttons"))
-                                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to disable this message popup"))));
-                    message.appendSibling(clickable);
-                    Minecraft.getMinecraft().player.sendMessage(message);
-                }
-                break;
-            }
+//            case 7:
+//            {
+//                buttonList.clear();
+//                if (!propDisablePopup.getBoolean())
+//                {
+//                    ITextComponent message = new TextComponentString("You seem to have disabled your GUI buttons, close and open your GUI again to re-enable them. ")
+//                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true));
+//                    ITextComponent clickable = new TextComponentString("Close your GUI and then click here to disable this message")
+//                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true).setUnderlined(true).setBold(true)
+//                                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resetbuttons"))
+//                                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to disable this message popup"))));
+//                    message.appendSibling(clickable);
+//                    Minecraft.getMinecraft().player.sendMessage(message);
+//                }
+//                break;
+//            }
             /*case 6: {
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("showSubtitles").set(propShowSubtitles.getBoolean());
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("subtitleScale").set(propSubtitleScale.getInt());
