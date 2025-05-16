@@ -41,7 +41,7 @@ public class SubtitleDragGui extends GuiScreen {
     private boolean initialShowSubtitles;
     private float initialScale;
     private int initialBackgroundAlpha;
-    private int index = 1;
+    private int initialIndex;
     final String[] POSITION_CHOICES = {
             "BOTTOM_RIGHT",
             "BOTTOM_CENTER",
@@ -63,6 +63,7 @@ public class SubtitleDragGui extends GuiScreen {
         initialShowSubtitles = propShowSubtitles.getBoolean();
         initialScale = (float) propSubtitleScale.getDouble();
         initialBackgroundAlpha = propBackgroundAlpha.getInt();
+        initialIndex = propIndex.getInt();
 
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
         buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, TextFormatting.YELLOW + "Mod Status: " +
@@ -87,7 +88,7 @@ public class SubtitleDragGui extends GuiScreen {
             }
 
         }, 3, res.getScaledWidth() / 2 - 100, 45,
-                "Scale: ", 1, 10, initialScale,
+                "Scale: ", 0.1f, 10, initialScale,
                 (id, name, value) -> "Scale: "+ (float) propSubtitleScale.getDouble() + "x"
         );
         scale.width = 200;
@@ -193,29 +194,29 @@ public class SubtitleDragGui extends GuiScreen {
                 propYposition.set(yPos);
                 Configuration config = LESConfiguration.getConfig();
                 config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true).set(true);
-                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1).set(1);
+                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1D).set(1D);
                 config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(255);
+                config.get(CATEGORY_NAME_POSITION, "overlayPosition", "BOTTOM_RIGHT").set("BOTTOM_RIGHT");
+                propIndex.set(0);
                 config.save();
                 buttonList.clear();
                 initGui();
                 break;
             }
             case 6: {
-                if (index >= 0 && index < POSITION_CHOICES.length - 1) { // Ensure index is within array bounds
-                    propOverlayPosition.set(POSITION_CHOICES[index]);
-                    propXposition.set(0);
-                    propYposition.set(0);
-                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
-                    index++; // Increment index
-                } else {
+                int index = propIndex.getInt();
+                index++; // Increment index first
+                propIndex.set(index);
+                if (index >= POSITION_CHOICES.length) {
                     // Reset index to 0 when it reaches the end of the array
                     index = 0;
-                    propOverlayPosition.set(POSITION_CHOICES[index]);
-                    propXposition.set(0);
-                    propYposition.set(0);
-                    button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
-                    index++;
+                    propIndex.set(index);
                 }
+                // Now set the overlay position using the updated index
+                propOverlayPosition.set(POSITION_CHOICES[index]);
+                propXposition.set(0);
+                propYposition.set(0);
+                button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                 break;
             }
             case 7: {
@@ -276,34 +277,34 @@ public class SubtitleDragGui extends GuiScreen {
                 int fontColor = ColorConverter.colorToDecimal(fontRed, fontGreen, fontBlue);
 
                 String position = LESConfiguration.propOverlayPosition.getString();
-                int verticalSpacing = 1;
-                int horizontalSpacing = 2;
-                int subtitleSpacing = 10 * propSubtitleScale.getInt();
+                float verticalSpacing = 1;
+                float horizontalSpacing = 2;
+                float subtitleSpacing = 10 * (float) propSubtitleScale.getDouble();
                 ScaledResolution resolution = new ScaledResolution(mc);
-                int xPos = propXposition.getInt();
-                int yPos = propYposition.getInt();
+                float xPos = propXposition.getInt();
+                float yPos = propYposition.getInt();
 
                 GlStateManager.pushMatrix();
 
                 switch (position) {
                     case "BOTTOM_CENTER":
-                        xPos += resolution.getScaledWidth() / 2;
-                        yPos += (resolution.getScaledHeight() - 75) - (captionIndex * subtitleSpacing);
+                        xPos += (float) resolution.getScaledWidth() / 2;
+                        yPos += ((resolution.getScaledHeight() - 75) - (captionIndex * subtitleSpacing));
                         break;
                     case "BOTTOM_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
+                        yPos += ((resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing));
                         break;
                     case "CENTER_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() / 2) - (((previewSubtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        yPos += (((float) resolution.getScaledHeight() / 2) - (((float) (previewSubtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing);
                         break;
                     case "TOP_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
                         yPos += (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_CENTER":
-                        xPos += resolution.getScaledWidth() / 2;
+                        xPos += (float) resolution.getScaledWidth() / 2;
                         yPos += (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_RIGHT":
@@ -312,19 +313,19 @@ public class SubtitleDragGui extends GuiScreen {
                         break;
                     case "CENTER_RIGHT":
                         xPos += resolution.getScaledWidth() - halfMaxLength - horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() / 2) - (((previewSubtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        yPos += (((float) resolution.getScaledHeight() / 2) - (((float) (previewSubtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing);
                         break;
                     default: //if there's any invalid input just show it in the bottom right
                         xPos += resolution.getScaledWidth() - halfMaxLength - 2;
-                        yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
+                        yPos += ((resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing));
                         break;
                 }
-                xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - (subtitleWidth / 2));
-                yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
+                xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - ((float) subtitleWidth / 2));
+                yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - ((float) subtitleHeight / 2));
 
                 GlStateManager.translate(xPos, yPos, 0);
 
-                GlStateManager.scale(LESConfiguration.propSubtitleScale.getInt(), LESConfiguration.propSubtitleScale.getInt(), 1.0F);
+                GlStateManager.scale((float)propSubtitleScale.getDouble(), (float) propSubtitleScale.getDouble(), 1.0F);
 
                 drawRect(-halfMaxLength - 1, -subtitleHeight / 2 - 1, halfMaxLength + 1, subtitleHeight / 2 + 1,
                         backgroundAlpha << 24 | backgroundColor);
@@ -343,15 +344,18 @@ public class SubtitleDragGui extends GuiScreen {
     @Override
     public void onGuiClosed() {
         if (initialShowSubtitles != propShowSubtitles.getBoolean() ||
-                initialScale != propSubtitleScale.getInt() ||
-                initialBackgroundAlpha != propBackgroundAlpha.getInt()) {
+            initialScale != (float) propSubtitleScale.getDouble()  ||
+            initialBackgroundAlpha != propBackgroundAlpha.getInt() ||
+            initialIndex != propIndex.getInt()
+            ) {
             // Values have changed, save the changes to the config
 
             Configuration config = LESConfiguration.getConfig();
             if (config != null) {
                 // Set the new values
+                config.get(CATEGORY_NAME_GENERAL, "index", 0).set(propIndex.getInt());
                 config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true).set(propShowSubtitles.getBoolean());
-                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1).set(propSubtitleScale.getInt());
+                config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1f).set(propSubtitleScale.getDouble());
                 config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(propBackgroundAlpha.getInt());
 
                 // Save the config

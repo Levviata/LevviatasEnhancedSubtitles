@@ -29,21 +29,22 @@ public class LESConfiguration {
 	public static Property propSubtitleScale;
 	public static Property propXposition;
 	public static Property propYposition;
-	public static Property propShowButtons;
 	public static Property propDisablePopup;
+	public static Property propIndex;
 	private static boolean disablePopup;
 	private static int xPosition;
 	private static int yPosition;
 	private static String initialPositionPreset;
-	private static float scale;
+	private static double scale;
 	private static boolean showSubtitles = true;
-	public static int backgroundRed;
-	public static int backgroundGreen;
-	public static int backgroundBlue;
+	private static int backgroundRed;
+	private static int backgroundGreen;
+	private static int backgroundBlue;
 	private static int backgroundAlpha;
-	public static int fontRed;
-	public static int fontGreen;
-	public static int fontBlue;
+	private static int fontRed;
+	private static int fontGreen;
+	private static int fontBlue;
+	private static int index;
 	public static final String CATEGORY_NAME_POSITION = "category_position";
 	public static final String CATEGORY_NAME_BACKGROUND = "category_background";
 	public static final String CATEGORY_NAME_FONT = "category_font";
@@ -84,6 +85,9 @@ public class LESConfiguration {
 		propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to show the subtitles or not.");
 		propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
 
+		propIndex = config.get(CATEGORY_NAME_GENERAL, "index", 0, "Internal value that defines which overlay position is currently shown, I recommend not touching this.");
+		propIndex.setLanguageKey("gui.les_configuration.index");
+
 		final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
 		final String[] POSITION_CHOICES = {
 				"BOTTOM_RIGHT",
@@ -102,9 +106,6 @@ public class LESConfiguration {
 						"BOTTOM_CENTER, BOTTOM_LEFT, CENTER_LEFT, TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER_RIGHT");
 		propOverlayPosition.setLanguageKey("gui.les_configuration.overlayPosition");
 		propOverlayPosition.setValidValues(POSITION_CHOICES);
-
-		propShowButtons = config.get(CATEGORY_NAME_GENERAL, "showButtons", true, "Whether to show the buttons or not.");
-		propShowButtons.setLanguageKey("gui.les_configuration.showButtons");
 
 		final int BACKGROUND_RED_MIN_VALUE = 0;
 		final int BACKGROUND_RED_MAX_VALUE = 255;
@@ -185,9 +186,9 @@ public class LESConfiguration {
 				FONT_BLUE_MAX_VALUE);
 		propFontBlue.setLanguageKey("gui.les_configuration.fontBlue");
 
-		final float SUBTITLE_SCALE_MIN_VALUE = 0.1f;
-		final float SUBTITLE_SCALE_MAX_VALUE = 10f;
-		final float SUBTITLE_SCALE_DEFAULT_VALUE = 1f;
+		final double SUBTITLE_SCALE_MIN_VALUE = 0.1;
+		final double SUBTITLE_SCALE_MAX_VALUE = 10;
+		final double SUBTITLE_SCALE_DEFAULT_VALUE = 1;
 		propSubtitleScale = config.get(
 				CATEGORY_NAME_GENERAL,
 				"subtitleScale", SUBTITLE_SCALE_DEFAULT_VALUE,
@@ -285,7 +286,7 @@ public class LESConfiguration {
 				fontBlue = FONT_BLUE_DEFAULT_VALUE;
 			}
 
-			scale = (float) propSubtitleScale.getDouble(SUBTITLE_SCALE_DEFAULT_VALUE);
+			scale = propSubtitleScale.getDouble(SUBTITLE_SCALE_DEFAULT_VALUE);
 			if (scale > SUBTITLE_SCALE_MAX_VALUE || scale < SUBTITLE_SCALE_MIN_VALUE) {
 				scale = SUBTITLE_SCALE_DEFAULT_VALUE;
 			}
@@ -312,6 +313,7 @@ public class LESConfiguration {
 			}
 			initialPositionPreset = propOverlayPosition.getString();
 			disablePopup = propDisablePopup.getBoolean(false);
+			index = propIndex.getInt(0);
 		}
 
 		propShowSubtitles.set(showSubtitles);
@@ -327,6 +329,7 @@ public class LESConfiguration {
 		propYposition.set(yPosition);
 		propBackgroundAlpha.set(backgroundAlpha);
 		propDisablePopup.set(disablePopup);
+		propIndex.set(index);
 
 		if (config.hasChanged()) {
 			config.save();

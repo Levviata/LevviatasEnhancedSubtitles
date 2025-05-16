@@ -108,33 +108,33 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                 //Change happens here
 
                 String position = LESConfiguration.propOverlayPosition.getString();
-                int verticalSpacing = 1;
-                int horizontalSpacing = 2;
-                int subtitleSpacing = 10 * propSubtitleScale.getInt();
-                int xPos = propXposition.getInt();
-                int yPos = propYposition.getInt();
+                float verticalSpacing = 1;
+                float horizontalSpacing = 2;
+                float subtitleSpacing = 10 * (float) propSubtitleScale.getDouble();
+                float xPos = propXposition.getInt();
+                float yPos = propYposition.getInt();
 
 
                 // ... existing switch statement ...
                 switch (position) {
                     case "BOTTOM_CENTER":
-                        xPos += resolution.getScaledWidth() / 2;
-                        yPos += (resolution.getScaledHeight() - 75) - (captionIndex * subtitleSpacing);
+                        xPos += (float) resolution.getScaledWidth() / 2;
+                        yPos += ((resolution.getScaledHeight() - 75) - (captionIndex * subtitleSpacing));
                         break;
                     case "BOTTOM_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
+                        yPos += ((resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing));
                         break;
                     case "CENTER_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() / 2) - (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        yPos += (((float) resolution.getScaledHeight() / 2) - (((float) (subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing);
                         break;
                     case "TOP_LEFT":
                         xPos += halfMaxLength + horizontalSpacing;
                         yPos += (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_CENTER":
-                        xPos += resolution.getScaledWidth() / 2;
+                        xPos += (float) resolution.getScaledWidth() / 2;
                         yPos += (captionIndex * subtitleSpacing + 5 + verticalSpacing);
                         break;
                     case "TOP_RIGHT":
@@ -143,16 +143,16 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                         break;
                     case "CENTER_RIGHT":
                         xPos += resolution.getScaledWidth() - halfMaxLength - horizontalSpacing;
-                        yPos += (resolution.getScaledHeight() / 2) - (((subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing;
+                        yPos += (((float) resolution.getScaledHeight() / 2) - (((float) (subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing);
                         break;
                     default: //if there's any invalid input just show it in the bottom right
                         xPos += resolution.getScaledWidth() - halfMaxLength - 2;
-                        yPos += (resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing);
+                        yPos += ((resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing));
                         break;
                 }
 
-                xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - (subtitleWidth / 2));
-                yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - (subtitleHeight / 2));
+                xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - ((float) subtitleWidth / 2));
+                yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - ((float) subtitleHeight / 2));
                 // Check if the subtitle is being dragged and update its position
 
                 GlStateManager.translate(xPos, yPos, 0);

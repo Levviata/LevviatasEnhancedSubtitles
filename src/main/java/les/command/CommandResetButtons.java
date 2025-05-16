@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.entity.player.EntityPlayer;
 
+import static les.config.LESConfiguration.getConfig;
 import static les.config.LESConfiguration.propDisablePopup;
 
 public class CommandResetButtons extends CommandBase {
@@ -24,7 +25,8 @@ public class CommandResetButtons extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (sender instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) sender;
-            propDisablePopup.set(false);
+            propDisablePopup.set(true);
+            getConfig().save();
             player.sendMessage(new TextComponentString("Successfully disabled GUI notification"));
         }
     }

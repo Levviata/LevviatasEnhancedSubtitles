@@ -27,8 +27,10 @@ public class ClientOnlyProxy extends CommonProxy
   {
     super.preInit();
     MinecraftForge.EVENT_BUS.register(new SubtitleOverlayHandler());
-    guiOpen = new KeyBinding("key.les_keybindings.desc", Keyboard.KEY_P, "key.categories.les_keybindings");
+    guiOpen = new KeyBinding("key.guiOpen.desc", Keyboard.KEY_P, "key.categories.les_keybindings");
     ClientRegistry.registerKeyBinding(guiOpen);
+    toggleSubtitles = new KeyBinding("key.toggleSubtitles.desc", Keyboard.KEY_K, "key.categories.les_keybindings");
+    ClientRegistry.registerKeyBinding(toggleSubtitles);
     les.config.StartupClientOnly.preInitClientOnly();
 
     les.gui.StartupClientOnly.preInitClientOnly();
