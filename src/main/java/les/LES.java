@@ -107,7 +107,6 @@ public class LES
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
-//        event.registerServerCommand(new CommandResetButtons());
     }
 
     /**

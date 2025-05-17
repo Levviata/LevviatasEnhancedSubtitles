@@ -142,9 +142,6 @@ public class SubtitleDragGui extends GuiScreen
                 "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
 
-//        GuiButton showButtons = new GuiButton(7, res.getScaledWidth() / 2 - 100, 120, TextFormatting.YELLOW + "Clear Buttons");
-//        buttonList.add(showButtons);
-
         buttonList.add(new GuiButton(5,
                 res.getScaledWidth() / 2 - 100,
                 120,
@@ -262,22 +259,6 @@ public class SubtitleDragGui extends GuiScreen
                 button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                 break;
             }
-//            case 7:
-//            {
-//                buttonList.clear();
-//                if (!propDisablePopup.getBoolean())
-//                {
-//                    ITextComponent message = new TextComponentString("You seem to have disabled your GUI buttons, close and open your GUI again to re-enable them. ")
-//                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true));
-//                    ITextComponent clickable = new TextComponentString("Close your GUI and then click here to disable this message")
-//                            .setStyle(new Style().setColor(TextFormatting.DARK_GRAY).setItalic(true).setUnderlined(true).setBold(true)
-//                                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/resetbuttons"))
-//                                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to disable this message popup"))));
-//                    message.appendSibling(clickable);
-//                    Minecraft.getMinecraft().player.sendMessage(message);
-//                }
-//                break;
-//            }
             /*case 6: {
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("showSubtitles").set(propShowSubtitles.getBoolean());
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("subtitleScale").set(propSubtitleScale.getInt());

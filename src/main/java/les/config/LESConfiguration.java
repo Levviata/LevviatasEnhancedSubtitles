@@ -31,9 +31,7 @@ public class LESConfiguration
     public static Property propSubtitleScale;
     public static Property propXposition;
     public static Property propYposition;
-//    public static Property propDisablePopup;
     public static Property propIndex;
-//    private static boolean disablePopup;
     private static int xPosition;
     private static int yPosition;
     private static String initialPositionPreset;
@@ -233,16 +231,6 @@ public class LESConfiguration
                 Y_POSITION_MAX_VALUE);
         propYposition.setLanguageKey("gui.les_configuration.yOffset");
 
-		/*final boolean BACKGROUND_BLACK_ON_DEFAULT_VALUE = false;
-		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_BLACK_ON_DEFAULT_VALUE);
-		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
-		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundBlackOn");
-
-		final boolean BACKGROUND_WHITE_ON_DEFAULT_VALUE = false;
-		propBackgroundBlackOn = config.get(CATEGORY_NAME_GENERAL, "backgroundBlackOn", BACKGROUND_WHITE_ON_DEFAULT_VALUE);
-		propBackgroundBlackOn.setComment("§c(!) §cOVERRIDES §cALL §cCOLOR §cSETTINGS §c(!) and sets the subtitle's background to all white, cannot be turned while the setting 'All black' is turned on.");
-		propBackgroundBlackOn.setLanguageKey("gui.les_configuration.backgroundWhiteOn");*/
-
         List<String> propOrderPosition = new ArrayList<String>();
         propOrderPosition.add(propOverlayPosition.getName());
         propOrderPosition.add(propXposition.getName());
@@ -339,7 +327,6 @@ public class LESConfiguration
                 yPosition = Y_POSITION_DEFAULT_VALUE;
             }
             initialPositionPreset = propOverlayPosition.getString();
-//            disablePopup = propDisablePopup.getBoolean(false);
             index = propIndex.getInt(0);
         }
 
@@ -355,7 +342,6 @@ public class LESConfiguration
         propXposition.set(xPosition);
         propYposition.set(yPosition);
         propBackgroundAlpha.set(backgroundAlpha);
-//        propDisablePopup.set(disablePopup);
         propIndex.set(index);
 
         if (config.hasChanged())
