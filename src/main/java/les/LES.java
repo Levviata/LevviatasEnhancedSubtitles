@@ -107,6 +107,7 @@ public class LES
     @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
+        // unused
     }
 
     /**

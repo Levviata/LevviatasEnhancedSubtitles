@@ -33,8 +33,8 @@ public class ClientOnlyProxy extends CommonProxy
         ClientRegistry.registerKeyBinding(guiOpen);
         toggleSubtitles = new KeyBinding("key.toggleSubtitles.desc", Keyboard.KEY_K, "key.categories.les_keybindings");
         ClientRegistry.registerKeyBinding(toggleSubtitles);
-        LESConfiguration.clientPreInit();  // used to set up an event handler for the GUI so that the altered values are
-        //  saved back to disk.
+        LESConfiguration.clientPreInit();   // used to set up an event handler for the GUI so that the altered values are
+                                            //  saved back to disk.
     }
 
     /**
