@@ -1,4 +1,4 @@
-gui.les_configuration.mainTitle=Levviata's Enhanced Subtitles Configuration
+gui.les_configuration.mainTitle=Enhanced Subtitles Configuration
 gui.les_configuration.ctgy.position=Position Options
 gui.les_configuration.ctgy.position.tooltip=Options for changing the subtitle's position
 gui.les_configuration.ctgy.background=Background Options
@@ -7,7 +7,7 @@ gui.les_configuration.ctgy.font=Font Options
 gui.les_configuration.ctgy.font.tooltip=Options related to the subtitle's font
 gui.les_configuration.ctgy.general=General Options
 gui.les_configuration.ctgy.general.tooltip=Options for changing general aspects of the subtitles
-key.categories.les_keybindings=Levviata's Enhanced Subtitles
+key.categories.les_keybindings=Enhanced Subtitles
 key.guiOpen.desc=Open Subtitle GUI Config
 key.toggleSubtitles.desc=Toggle Subtitle Visibility
 gui.les_configuration.index=Index

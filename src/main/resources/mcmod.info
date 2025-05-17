@@ -1,8 +1,8 @@
 [
   {
     "modid": "les",
-    "name": "Levviata's Enhanced Subtitles (LES)",
-    "description": "Aimed at improving the way subtitles are displayed.",
+    "name": "Enhanced Subtitles",
+    "description": "Gives your subtitles some customization options.",
     "version": "2.4.0",
     "mcversion": "${mcversion}",
     "url": "https://github.com/levviata/LevviatasEnhancedSubtitles",

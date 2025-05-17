@@ -53,7 +53,7 @@ public class LESConfiguration
     public static void preInit()
     {
 
-        File configFile = new File(Loader.instance().getConfigDir(), "LevviatasEnhancedSubtitles.cfg");
+        File configFile = new File(Loader.instance().getConfigDir(), "EnhancedSubtitles.cfg");
 
         config = new Configuration(configFile);
 
