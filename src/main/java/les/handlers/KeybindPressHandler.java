@@ -37,14 +37,14 @@ public class KeybindPressHandler
                 Minecraft.getMinecraft().displayGuiScreen(handler);
                 handler.initGui();
 
-                logger.info("Subtitle GUI opened");
+                //logger.info("Subtitle GUI opened");
                 SubtitleDragGui.isGuiOpen = true;
             }
             if (ClientOnlyProxy.toggleSubtitles.isPressed())
             {
                 boolean subtitles = propShowSubtitles.getBoolean();
                 propShowSubtitles.set(!subtitles);
-                logger.info("Subtitle GUI toggled");
+                //logger.info("Subtitle GUI toggled");
             }
         }
     }
