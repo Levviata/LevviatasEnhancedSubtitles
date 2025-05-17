@@ -5,4 +5,4 @@ version = 2.4.0:
 - Removed debug logging
 - Fixed a translation typo
 - Code wise, fixed manifest attributes and removed useless classes
-
+- Upgraded gradle to 8.12
