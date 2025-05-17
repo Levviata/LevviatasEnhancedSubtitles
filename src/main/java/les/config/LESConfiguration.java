@@ -94,7 +94,7 @@ public class LESConfiguration
 //        propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup that shows when you disable your GUI buttons or not.");
 //        propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
 
-        propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to show the subtitles or not.");
+        propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to visually show the subtitles or not. This does not disable them.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
 
         propIndex = config.get(CATEGORY_NAME_GENERAL, "index", 0, "Internal value that defines which overlay position is currently shown, I recommend not touching this.");
@@ -136,7 +136,7 @@ public class LESConfiguration
         propBackgroundGreen = config.get(
                 CATEGORY_NAME_BACKGROUND,
                 "backgroundGreen", BACKGROUND_GREEN_DEFAULT_VALUE,
-                "The RGB green value (in decimals) for the subtitle's background.",
+                "The RBGA green value (in decimals) for the subtitle's background.",
                 BACKGROUND_GREEN_MIN_VALUE,
                 BACKGROUND_GREEN_MAX_VALUE);
         propBackgroundGreen.setLanguageKey("gui.les_configuration.backgroundGreen");
@@ -147,7 +147,7 @@ public class LESConfiguration
         propBackgroundBlue = config.get(
                 CATEGORY_NAME_BACKGROUND,
                 "backgroundBlue", BACKGROUND_BLUE_DEFAULT_VALUE,
-                "The RGB blue value (in decimals) for the subtitle's background.",
+                "The RBGA blue value (in decimals) for the subtitle's background.",
                 BACKGROUND_BLUE_MIN_VALUE,
                 BACKGROUND_BLUE_MAX_VALUE);
         propBackgroundBlue.setLanguageKey("gui.les_configuration.backgroundBlue");
@@ -158,7 +158,7 @@ public class LESConfiguration
         propBackgroundAlpha = config.get(
                 CATEGORY_NAME_BACKGROUND,
                 "backgroundAlpha", BACKGROUND_ALPHA_DEFAULT_VALUE,
-                "The RGB alpha value (in decimals) for the subtitle's background.",
+                "The RBGA alpha value (in decimals) for the subtitle's background.",
                 BACKGROUND_ALPHA_MIN_VALUE,
                 BACKGROUND_ALPHA_MAX_VALUE);
         propBackgroundAlpha.setLanguageKey("gui.les_configuration.backgroundAlpha");
