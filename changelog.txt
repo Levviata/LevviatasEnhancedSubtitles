@@ -2,7 +2,7 @@ changelog.
 
 version = 2.4.0:
 - Removed "Clear Buttons" button from the subtitle config GUI (also any mentions or config options about it), now when you click and hold anywhere in the config GUI (except the buttons), the buttons will clear until you release your mouse.
-- Mod name and description changed, name now being "Enhanced Subtitles" ("EnhancedSubtitles.cfg" is the new name for the configuration file now, mind you)
+- Mod name and description changed, name of the mod now being "Enhanced Subtitles" ("EnhancedSubtitles.cfg" is the new name for the configuration file now, mind you). Modid/internal name is still "les".
 - Removed debug logging
 - Fixed a translation typo
 - Code wise, fixed manifest attributes and removed useless classes
