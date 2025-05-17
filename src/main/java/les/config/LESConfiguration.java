@@ -91,8 +91,6 @@ public class LESConfiguration
         {
             config.load();
         }
-//        propDisablePopup = config.get(CATEGORY_NAME_GENERAL, "disablePopup", false, "Whether to disable the popup that shows when you disable your GUI buttons or not.");
-//        propDisablePopup.setLanguageKey("gui.les_configuration.disablePopup");
 
         propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to visually show the subtitles or not. This does not disable them.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
