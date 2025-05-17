@@ -1,4 +1,8 @@
 changelog.
 
 version = 2.4.0:
-Removed "Clear Buttons" button from the subtitle config GUI (also any mentions or config options about it), now when you click and hold anywhere in the config GUI (except the buttons), the buttons will clear until you release your mouse.
+- Removed "Clear Buttons" button from the subtitle config GUI (also any mentions or config options about it), now when you click and hold anywhere in the config GUI (except the buttons), the buttons will clear until you release your mouse.
+- Removed debug logging
+- Fixed a translation typo
+- Code wise, fixed manifest attributes and removed useless classes
+
