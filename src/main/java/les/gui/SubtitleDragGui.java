@@ -57,6 +57,10 @@ public class SubtitleDragGui extends GuiScreen
     private float initialScale;
     private int initialBackgroundAlpha;
     private int initialIndex;
+    private static final int TOGGLE_SUBTITLES_BUTTON_ID = 1;
+    private static final int OVERLAY_POSITION_BUTTON_ID = 5;
+    private static final int RESET_TO_DEFAULTS_BUTTON_ID = 6;
+
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
     @Override
@@ -136,13 +140,13 @@ public class SubtitleDragGui extends GuiScreen
         alpha.width = 200;
         buttonList.add(alpha);
 
-        GuiButton overlayPosition = new GuiButton(6,
+        GuiButton overlayPosition = new GuiButton(OVERLAY_POSITION_BUTTON_ID,
                 res.getScaledWidth() / 2 - 100,
                 95,
                 "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
 
-        buttonList.add(new GuiButton(5,
+        buttonList.add(new GuiButton(RESET_TO_DEFAULTS_BUTTON_ID,
                 res.getScaledWidth() / 2 - 100,
                 120,
                 TextFormatting.YELLOW + "Set Values To Default"));
@@ -210,7 +214,7 @@ public class SubtitleDragGui extends GuiScreen
         if (button == null) return;
         switch (button.id)
         {
-            case 1:
+            case TOGGLE_SUBTITLES_BUTTON_ID:
             {
                 boolean getShowSubtitles = propShowSubtitles.getBoolean();
                 getShowSubtitles = !getShowSubtitles;
@@ -218,7 +222,7 @@ public class SubtitleDragGui extends GuiScreen
                 button.displayString = "Mod Status: " + (propShowSubtitles.getBoolean() ? TextFormatting.DARK_GREEN + "Enabled" : TextFormatting.DARK_RED + "Disabled");
                 break;
             }
-            case 5:
+            case RESET_TO_DEFAULTS_BUTTON_ID:
             {
                 // Change back color to normal
                 button.displayString = "Reset Values To Default";
@@ -241,7 +245,7 @@ public class SubtitleDragGui extends GuiScreen
                 initGui();
                 break;
             }
-            case 6:
+            case OVERLAY_POSITION_BUTTON_ID:
             {
                 int index = propIndex.getInt();
                 index++; // Increment index first
