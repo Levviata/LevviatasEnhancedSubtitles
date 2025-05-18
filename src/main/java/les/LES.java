@@ -1,7 +1,5 @@
 package les;
 
-//import les.command.CommandResetButtons;
-import les.config.LESConfiguration;
 import les.handlers.KeybindPressHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
