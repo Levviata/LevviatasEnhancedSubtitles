@@ -36,8 +36,9 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         // Check if it's the subtitles overlay being rendered
         if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES)
         {
-            // Instantte your handler with the necessary context if required
+            // Cancel vanilla's rendering event
             event.setCanceled(true);
+            // Call our own rendering event/method
             render();
         }
     }
@@ -129,8 +130,6 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                     float xPos = propXposition.getInt();
                     float yPos = propYposition.getInt();
 
-
-                    // ... existing switch statement ...
                     switch (position)
                     {
                         case "BOTTOM_CENTER":
@@ -169,8 +168,8 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
 
                     xPos = MathHelper.clamp(xPos, 0, resolution.getScaledWidth() - ((float) subtitleWidth / 2));
                     yPos = MathHelper.clamp(yPos, 0, resolution.getScaledHeight() - ((float) subtitleHeight / 2));
-                    // Check if the subtitle is being dragged and update its position
 
+                    // Update the subtitle's position
                     GlStateManager.translate(xPos, yPos, 0);
 
                     GlStateManager.scale((float) propSubtitleScale.getDouble(), (float) propSubtitleScale.getDouble(), 1.0F);
@@ -201,7 +200,6 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
     @Override
     public void soundPlay(ISound soundIn, SoundEventAccessor accessor)
     {
-        // Your custom implementation here
         if (accessor.getSubtitle() != null)
         {
             String subtitleText = accessor.getSubtitle().getFormattedText();
@@ -243,8 +241,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         {
             this.text = textIn;
         }
-
-        // Getters and setters for other fields...
+        
         public String getText()
         {
             return text;
