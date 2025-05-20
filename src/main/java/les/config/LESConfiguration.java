@@ -297,7 +297,7 @@ public class LESConfiguration
             {
                 scale = SUBTITLE_SCALE_DEFAULT_VALUE;
             }
-            // If overlayPosition can't get any config it just simply defaults to "BOTTOM_RIGHT"
+            // If overlayPosition can't get any config value, it defaults to "BOTTOM_RIGHT"
             overlayPosition = propOverlayPosition.getString();
             boolean overlayMatched = false;
             for (String entry : POSITION_CHOICES)
