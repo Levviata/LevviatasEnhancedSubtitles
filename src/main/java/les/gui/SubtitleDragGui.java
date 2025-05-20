@@ -46,12 +46,16 @@ public class SubtitleDragGui extends GuiScreen
     private boolean dragging;
     private int lastMouseX;
     private int lastMouseY;
+
     private boolean initialShowSubtitles;
     private float initialScale;
     private int initialBackgroundAlpha;
     private int initialIndex;
+    private int initialFontRed;
+    private int initialFontGreen;
+    private int initialFontBlue;
+
     private boolean isNormalOptions = true;
-    private boolean isAdvancedOptions = false;
     private static final int TOGGLE_SUBTITLES_BUTTON_ID = 1;
     // ID 2 nowhere to be seen lol
     private static final int SCALE_BUTTON_ID = 3;
@@ -60,7 +64,11 @@ public class SubtitleDragGui extends GuiScreen
     private static final int ADVANCED_OPTIONS_BUTTON_ID = 6;
     private static final int RESET_TO_DEFAULTS_BUTTON_ID = 7;
 
+    private boolean isAdvancedOptions = false;
     private static final int GO_BACK_BUTTON_ID = 8;
+    private static final int FONT_RED_BUTTON_ID = 9;
+    private static final int FONT_GREEN_BUTTON_ID = 10;
+    private static final int FONT_BLUE_BUTTON_ID = 11;
 
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
@@ -74,6 +82,9 @@ public class SubtitleDragGui extends GuiScreen
         initialScale = (float) propSubtitleScale.getDouble();
         initialBackgroundAlpha = propBackgroundAlpha.getInt();
         initialIndex = propIndex.getInt();
+        initialFontRed = propFontRed.getInt();
+        initialFontGreen = propFontGreen.getInt();
+        initialFontBlue = propFontBlue.getInt();
 
         isNormalOptions = true;
         isAdvancedOptions = false;
@@ -169,6 +180,87 @@ public class SubtitleDragGui extends GuiScreen
                 20,
                 TextFormatting.YELLOW + "<- Go Back");
         buttonList.add(goBack);
+
+        GuiButton fontRed = new GuiSlider(new GuiPageButtonList.GuiResponder()
+        {
+            @Override
+            public void setEntryValue(int id, boolean value)
+            {
+            }
+
+            @Override
+            public void setEntryValue(int id, float value)
+            {
+                if (id == FONT_RED_BUTTON_ID)
+                {
+                    propFontRed.set((int) value);
+                }
+            }
+
+            @Override
+            public void setEntryValue(int id, String value)
+            {
+            }
+        }, FONT_RED_BUTTON_ID, res.getScaledWidth() / 2 - 100, 45,
+                "Font Red: ", 0, 255, initialFontRed,
+                (id, name, value) -> "Font Red: " + propFontRed.getInt() + " (RGB)"
+        );
+        fontRed.width = 200;
+        buttonList.add(fontRed);
+
+        GuiButton fontGreen = new GuiSlider(new GuiPageButtonList.GuiResponder()
+        {
+            @Override
+            public void setEntryValue(int id, boolean value)
+            {
+            }
+
+            @Override
+            public void setEntryValue(int id, float value)
+            {
+                if (id == FONT_GREEN_BUTTON_ID)
+                {
+                    propFontGreen.set((int) value);
+                }
+            }
+
+            @Override
+            public void setEntryValue(int id, String value)
+            {
+            }
+        }, FONT_GREEN_BUTTON_ID, res.getScaledWidth() / 2 - 100, 70,
+                "Font Green: ", 0, 255, initialFontGreen,
+                (id, name, value) -> "Font Green: " + propFontGreen.getInt() + " (RGB)"
+        );
+        fontGreen.width = 200;
+        buttonList.add(fontGreen);
+
+        GuiButton fontBlue = new GuiSlider(new GuiPageButtonList.GuiResponder()
+        {
+            @Override
+            public void setEntryValue(int id, boolean value)
+            {
+            }
+
+            @Override
+            public void setEntryValue(int id, float value)
+            {
+                if (id == FONT_BLUE_BUTTON_ID)
+                {
+                    propFontBlue.set((int) value);
+                }
+            }
+
+            @Override
+            public void setEntryValue(int id, String value)
+            {
+            }
+        }, FONT_BLUE_BUTTON_ID, res.getScaledWidth() / 2 - 100, 95,
+                "Font Blue: ", 0, 255, initialFontBlue,
+                (id, name, value) -> "Font Blue: " + propFontBlue.getInt() + " (RGB)"
+        );
+        fontBlue.width = 200;
+        buttonList.add(fontBlue);
     }
 
     @Override
@@ -265,6 +357,10 @@ public class SubtitleDragGui extends GuiScreen
                 config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1D).set(1D);
                 config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(255);
                 config.get(CATEGORY_NAME_POSITION, "overlayPosition", "BOTTOM_RIGHT").set("BOTTOM_RIGHT");
+                config.get(CATEGORY_NAME_FONT, "fontRed", propFontRed.getDefault()).set(propFontRed.getDefault());
+                config.get(CATEGORY_NAME_FONT, "fontGreen", propFontGreen.getDefault()).set(propFontGreen.getDefault());
+                config.get(CATEGORY_NAME_FONT, "fontBlue", propFontBlue.getDefault()).set(propFontBlue.getDefault());
+
                 propIndex.set(0);
                 config.save();
                 buttonList.clear();
@@ -424,7 +520,10 @@ public class SubtitleDragGui extends GuiScreen
         if (initialShowSubtitles != propShowSubtitles.getBoolean() ||
                 initialScale != (float) propSubtitleScale.getDouble() ||
                 initialBackgroundAlpha != propBackgroundAlpha.getInt() ||
-                initialIndex != propIndex.getInt()
+                initialIndex != propIndex.getInt()  ||
+                initialFontRed != propFontRed.getInt() ||
+                initialFontGreen != propFontGreen.getInt() ||
+                initialFontBlue != propFontBlue.getInt()
         )
         {
             // Values have changed, save the changes to the config
@@ -437,6 +536,9 @@ public class SubtitleDragGui extends GuiScreen
                 config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true).set(propShowSubtitles.getBoolean());
                 config.get(CATEGORY_NAME_GENERAL, "subtitleScale", 1f).set(propSubtitleScale.getDouble());
                 config.get(CATEGORY_NAME_BACKGROUND, "backgroundAlpha", 255).set(propBackgroundAlpha.getInt());
+                config.get(CATEGORY_NAME_FONT, "fontRed", 255).set(propFontRed.getInt());
+                config.get(CATEGORY_NAME_FONT, "fontGreen", 255).set(propFontGreen.getInt());
+                config.get(CATEGORY_NAME_FONT, "fontBlue", 255).set(propFontBlue.getInt());
 
                 // Save the config
                 config.save();
