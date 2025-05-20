@@ -43,7 +43,6 @@ public class SubtitleDragGui extends GuiScreen
             "TOP_RIGHT",
             "CENTER_RIGHT"
     };
-    private boolean isButtonPressed = false;
     private boolean dragging;
     private int lastMouseX;
     private int lastMouseY;
