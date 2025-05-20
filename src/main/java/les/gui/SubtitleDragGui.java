@@ -51,9 +51,14 @@ public class SubtitleDragGui extends GuiScreen
     private float initialScale;
     private int initialBackgroundAlpha;
     private int initialIndex;
+    private boolean isNormalOptions = true;
+    private boolean isAdvancedOptions = false;
     private static final int TOGGLE_SUBTITLES_BUTTON_ID = 1;
     private static final int OVERLAY_POSITION_BUTTON_ID = 5;
-    private static final int RESET_TO_DEFAULTS_BUTTON_ID = 6;
+    private static final int ADVANCED_OPTIONS_BUTTON_ID = 6;
+    private static final int RESET_TO_DEFAULTS_BUTTON_ID = 7;
+
+    private static final int GO_BACK_BUTTON_ID = 8;
 
     private Logger logger = Logger.getLogger("SubtitleDragGui");
 
@@ -67,6 +72,9 @@ public class SubtitleDragGui extends GuiScreen
         initialScale = (float) propSubtitleScale.getDouble();
         initialBackgroundAlpha = propBackgroundAlpha.getInt();
         initialIndex = propIndex.getInt();
+
+        isNormalOptions = true;
+        isAdvancedOptions = false;
 
         initButtons();
     }
@@ -140,10 +148,25 @@ public class SubtitleDragGui extends GuiScreen
                 "Overlay Position: " + TextFormatting.YELLOW + propOverlayPosition.getString());
         buttonList.add(overlayPosition);
 
-        buttonList.add(new GuiButton(RESET_TO_DEFAULTS_BUTTON_ID,
+        GuiButton advancedOptions = new GuiButton(ADVANCED_OPTIONS_BUTTON_ID,
                 res.getScaledWidth() / 2 - 100,
                 120,
+                TextFormatting.YELLOW + "Advanced Options");
+        buttonList.add(advancedOptions);
+
+        buttonList.add(new GuiButton(RESET_TO_DEFAULTS_BUTTON_ID,
+                res.getScaledWidth() / 2 - 100,
+                145,
                 TextFormatting.YELLOW + "Set Values To Default"));
+    }
+
+    private void initAdvancedButtons() {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        GuiButton goBack = new GuiButton(GO_BACK_BUTTON_ID,
+                res.getScaledWidth() / 2 - 100,
+                20,
+                TextFormatting.YELLOW + "<- Go Back");
+        buttonList.add(goBack);
     }
 
     @Override
@@ -166,8 +189,16 @@ public class SubtitleDragGui extends GuiScreen
             this.dragging = true;
             this.lastMouseX = mouseX;
             this.lastMouseY = mouseY;
-
+        }
+        if (isNormalOptions)
+        {
             buttonList.clear();
+            initButtons();
+        }
+        if (isAdvancedOptions)
+        {
+            buttonList.clear();
+            initAdvancedButtons();
         }
     }
 
@@ -178,7 +209,6 @@ public class SubtitleDragGui extends GuiScreen
 
         if (this.dragging) {
             this.dragging = false;
-            initButtons();
         }
 
         Configuration config = LESConfiguration.getConfig();
@@ -254,9 +284,33 @@ public class SubtitleDragGui extends GuiScreen
                 propOverlayPosition.set(POSITION_CHOICES[index]);
                 propXposition.set(0);
                 propYposition.set(0);
+                isNormalOptions = true;
                 button.displayString = "Overlay Position: " + POSITION_CHOICES[index];
                 break;
             }
+            case ADVANCED_OPTIONS_BUTTON_ID:
+            {
+                buttonList.clear();
+
+                isNormalOptions = false;
+                isAdvancedOptions = true;
+
+                initAdvancedButtons();
+
+                break;
+            }
+            case GO_BACK_BUTTON_ID:
+            {
+                buttonList.clear();
+
+                isNormalOptions = true;
+                isAdvancedOptions = false;
+
+                initButtons();
+
+                break;
+            }
+
             /*case 6: {
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("showSubtitles").set(propShowSubtitles.getBoolean());
                 LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("subtitleScale").set(propSubtitleScale.getInt());
