@@ -310,15 +310,6 @@ public class SubtitleDragGui extends GuiScreen
 
                 break;
             }
-
-            /*case 6: {
-                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("showSubtitles").set(propShowSubtitles.getBoolean());
-                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_GENERAL).get("subtitleScale").set(propSubtitleScale.getInt());
-                LESConfiguration.getConfig().getCategory(CATEGORY_NAME_BACKGROUND).get("backgroundAlpha").set(propBackgroundAlpha.getInt());
-                LESConfiguration.getConfig().save();
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Changes applied!"));
-                break;
-            }*/
         }
     }
 
