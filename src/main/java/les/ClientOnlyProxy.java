@@ -55,7 +55,7 @@ public class ClientOnlyProxy extends CommonProxy
     }
 
     @Override
-    public boolean playerIsInCreativeMode(EntityPlayer player)
+    public boolean playerIsInCreativeMode(EntityPlayer player) // UNUSED
     {
         if (player instanceof EntityPlayerMP)
         {
