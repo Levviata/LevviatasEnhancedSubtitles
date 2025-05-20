@@ -53,6 +53,9 @@ public class SubtitleDragGui extends GuiScreen
     private boolean isNormalOptions = true;
     private boolean isAdvancedOptions = false;
     private static final int TOGGLE_SUBTITLES_BUTTON_ID = 1;
+    // ID 2 nowhere to be seen lol
+    private static final int SCALE_BUTTON_ID = 3;
+    private static final int BACKGROUND_ALPHA_BUTTON_ID = 4;
     private static final int OVERLAY_POSITION_BUTTON_ID = 5;
     private static final int ADVANCED_OPTIONS_BUTTON_ID = 6;
     private static final int RESET_TO_DEFAULTS_BUTTON_ID = 7;
@@ -80,7 +83,7 @@ public class SubtitleDragGui extends GuiScreen
 
     private void initButtons() {
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-        buttonList.add(new GuiButton(1, res.getScaledWidth() / 2 - 100, 20, TextFormatting.YELLOW + "Mod Status: " +
+        buttonList.add(new GuiButton(TOGGLE_SUBTITLES_BUTTON_ID, res.getScaledWidth() / 2 - 100, 20, TextFormatting.YELLOW + "Mod Status: " +
                 (propShowSubtitles.getBoolean(true) ? TextFormatting.DARK_GREEN + "Enabled" : TextFormatting.DARK_RED + "Disabled")));
 
         GuiButton scale = new GuiSlider(new GuiPageButtonList.GuiResponder()
@@ -93,13 +96,13 @@ public class SubtitleDragGui extends GuiScreen
             @Override
             public void setEntryValue(int id, float value)
             {
-                if (id == 3)
+                if (id == SCALE_BUTTON_ID)
                 {
                     value = Math.round(value * 10) / 10f;
                     propSubtitleScale.set(value);
-                } else if (id == 4)
+                } else if (id == BACKGROUND_ALPHA_BUTTON_ID)
                 {
-                    propBackgroundAlpha.set((int) value);
+                    propBackgroundAlpha.set((int) value); // wtf is this?
                 }
             }
 
@@ -108,7 +111,7 @@ public class SubtitleDragGui extends GuiScreen
             {
             }
 
-        }, 3, res.getScaledWidth() / 2 - 100, 45,
+        }, SCALE_BUTTON_ID, res.getScaledWidth() / 2 - 100, 45,
                 "Scale: ", 0.1f, 10, initialScale,
                 (id, name, value) -> "Scale: " + (float) propSubtitleScale.getDouble() + "x"
         );
@@ -124,7 +127,7 @@ public class SubtitleDragGui extends GuiScreen
             @Override
             public void setEntryValue(int id, float value)
             {
-                if (id == 4)
+                if (id == BACKGROUND_ALPHA_BUTTON_ID)
                 {
                     propBackgroundAlpha.set((int) value);
                 }
@@ -134,7 +137,7 @@ public class SubtitleDragGui extends GuiScreen
             public void setEntryValue(int id, String value)
             {
             }
-        }, 4, res.getScaledWidth() / 2 - 100, 70,
+        }, BACKGROUND_ALPHA_BUTTON_ID, res.getScaledWidth() / 2 - 100, 70,
                 "Alpha: ", 0, 255, initialBackgroundAlpha,
                 (id, name, value) -> "Alpha: " + propBackgroundAlpha.getInt() + "%"
         );
