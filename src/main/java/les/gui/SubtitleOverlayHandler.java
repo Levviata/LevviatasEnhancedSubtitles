@@ -228,23 +228,12 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
         final String subtitle;
         long startTime;
         Vec3d location;
-        String text;
 
         public Subtitle(String subtitleIn, Vec3d locationIn)
         {
             this.subtitle = subtitleIn;
             this.location = locationIn;
             this.startTime = Minecraft.getSystemTime();
-        }
-
-        public void setText(String textIn)
-        {
-            this.text = textIn;
-        }
-        
-        public String getText()
-        {
-            return text;
         }
 
         public String getString()
