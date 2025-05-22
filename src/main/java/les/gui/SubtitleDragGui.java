@@ -111,9 +111,9 @@ public class SubtitleDragGui extends GuiScreen
                 {
                     value = Math.round(value * 10) / 10f;
                     propSubtitleScale.set(value);
-                } else if (id == BACKGROUND_ALPHA_BUTTON_ID)
+                } else if (id == BACKGROUND_ALPHA_BUTTON_ID) // wtf is this?
                 {
-                    propBackgroundAlpha.set((int) value); // wtf is this?
+                    propBackgroundAlpha.set((int) value);
                 }
             }
 
@@ -414,6 +414,14 @@ public class SubtitleDragGui extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+//        if (propFontRed.getInt() == 0 &&
+//                propFontGreen.getInt() == 0 &&
+//                propFontBlue.getInt() == 0 &&
+//                isAdvancedOptions &&
+//                isGuiOpen)
+//        {
+//            here i could make the gui sliders/button of the font red, green, blue say "BLACK" when they all are 0 but its too much work so no thanks (yet)
+//        }
 
         int maxLength = 0;
         int captionIndex = 0;
