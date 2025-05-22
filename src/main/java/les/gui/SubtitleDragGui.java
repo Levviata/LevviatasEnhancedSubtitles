@@ -552,7 +552,7 @@ public class SubtitleDragGui extends GuiScreen
                 config.save();
             } else
             {
-                logger.warning("SubtitleDragGui: No config found, cannot save values");
+                logger.warning("SubtitleDragGui: No config found, cannot save new values to the config.");
             }
         }
         isGuiOpen = false;
