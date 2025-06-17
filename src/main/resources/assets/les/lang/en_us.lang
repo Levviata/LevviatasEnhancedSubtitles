@@ -11,6 +11,7 @@ key.categories.les_keybindings=Enhanced Subtitles
 key.guiOpen.desc=Open Subtitle GUI Config
 key.toggleSubtitles.desc=Toggle Subtitle Visibility
 gui.les_configuration.index=Index
+gui.les_configuration.lockPosition=Lock Position
 gui.les_configuration.showSubtitles=Show Subtitles
 gui.les_configuration.overlayPosition=Position Preset
 gui.les_configuration.backgroundRed=Red

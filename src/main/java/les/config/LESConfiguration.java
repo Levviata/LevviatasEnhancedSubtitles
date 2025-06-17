@@ -31,6 +31,7 @@ public class LESConfiguration
     public static Property propXposition;
     public static Property propYposition;
     public static Property propIndex;
+    public static Property propLockPosition;
     private static int xPosition;
     private static int yPosition;
     private static String initialPositionPreset;
@@ -44,6 +45,7 @@ public class LESConfiguration
     private static int fontGreen;
     private static int fontBlue;
     private static int index;
+    private static boolean lockPosition = false;
     public static final String CATEGORY_NAME_POSITION = "category_position";
     public static final String CATEGORY_NAME_BACKGROUND = "category_background";
     public static final String CATEGORY_NAME_FONT = "category_font";
@@ -93,6 +95,9 @@ public class LESConfiguration
 
         propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to visually show the subtitles or not. This does not disable them.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
+
+        propLockPosition = config.get(CATEGORY_NAME_GENERAL, "lockPosition", false, "Locks the subtitle's position. Configuration can still be used to change the subtitle's position.");
+        propShowSubtitles.setLanguageKey("gui.les_configuration.lockPosition");
 
         propIndex = config.get(CATEGORY_NAME_GENERAL, "index", 0, "Internal value that defines which overlay position is currently shown, I recommend not touching this.");
         propIndex.setLanguageKey("gui.les_configuration.index");
@@ -250,12 +255,14 @@ public class LESConfiguration
         List<String> propOrderGeneral = new ArrayList<String>();
         propOrderGeneral.add(propShowSubtitles.getName());
         propOrderGeneral.add(propSubtitleScale.getName());
+        propOrderGeneral.add(propLockPosition.getName());
         config.setCategoryPropertyOrder(CATEGORY_NAME_GENERAL, propOrderGeneral);
 
         if (readFieldsFromConfig)
         {
 
             showSubtitles = propShowSubtitles.getBoolean(true);
+            lockPosition = propLockPosition.getBoolean(false);
             backgroundRed = propBackgroundRed.getInt(BACKGROUND_RED_DEFAULT_VALUE);
             if (backgroundRed > BACKGROUND_RED_MAX_VALUE || backgroundRed < BACKGROUND_RED_MIN_VALUE)
             {
@@ -328,6 +335,7 @@ public class LESConfiguration
         }
 
         propShowSubtitles.set(showSubtitles);
+        propLockPosition.set(lockPosition);
         propOverlayPosition.set(overlayPosition);
         propBackgroundRed.set(backgroundRed);
         propBackgroundGreen.set(backgroundGreen);
