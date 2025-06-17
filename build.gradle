@@ -102,6 +102,9 @@ jar {
     }
 }
 
+tasks.named('build') {
+    dependsOn 'runClient'
+}
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
