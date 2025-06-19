@@ -160,7 +160,7 @@ public class SubtitleOverlayHandler extends Gui implements ISoundEventListener
                             xPos += resolution.getScaledWidth() - halfMaxLength - horizontalSpacing;
                             yPos += (((float) resolution.getScaledHeight() / 2) - (((float) (subtitles.size() - 1) / 2) - captionIndex) * subtitleSpacing);
                             break;
-                        default: //if there's any invalid input just show it in the bottom right
+                        default: // any other value given, even "BOTTOM_RIGHT", set to the bottom right
                             xPos += resolution.getScaledWidth() - halfMaxLength - 2;
                             yPos += ((resolution.getScaledHeight() - 30) - (captionIndex * subtitleSpacing));
                             break;
