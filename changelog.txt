@@ -3,6 +3,9 @@ changelog.
 Version = 2.4.0:
 - Removed "Clear Buttons" button from the subtitle config GUI (also any mentions or config options about it), now when you click and hold anywhere in the config GUI (except the buttons), the buttons will clear until you release your mouse.
 - Mod name and description changed, name of the mod now being "Enhanced Subtitles" ("EnhancedSubtitles.cfg" is the new name for the configuration file now, mind you). Modid/internal name is still "les".
+- Fixed GUI color scheme (yellow tint = default value, white tint = changed value -- this is for the buttons/sliders in the GUI)
+- Removed obsolete "Index" config value (propIndex), the config GUI handles it internally now
+- Added new buttons/sliders to the config GUI: Advanced Options, Background and Font Colors (inside Advanced Options), and Lock Position
 - Removed debug logging
 - Fixed a translation typo
 - Code wise, fixed manifest attributes and removed useless classes
