@@ -96,7 +96,7 @@ public class LESConfiguration
         propShowSubtitles = config.get(CATEGORY_NAME_GENERAL, "showSubtitles", true, "Whether to visually show the subtitles or not. This does not disable them.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.showSubtitles");
 
-        propLockPosition = config.get(CATEGORY_NAME_GENERAL, "lockPosition", false, "Locks the subtitle's position. Configuration can still be used to change the subtitle's position.");
+        propLockPosition = config.get(CATEGORY_NAME_GENERAL, "lockPosition", false, "Locks dragging of the subtitles while in the config GUI. Position can still be changed manually through the configuration.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.lockPosition");
 
         propIndex = config.get(CATEGORY_NAME_GENERAL, "index", 0, "Internal value that defines which overlay position is currently shown, I recommend not touching this.");
