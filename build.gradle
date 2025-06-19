@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 
 version = '2.4.0'
 group = 'levviata.les' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'LevviatasEnhancedSubtitles'
+archivesBaseName = 'EnhancedSubtitles'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
