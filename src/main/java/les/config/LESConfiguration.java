@@ -30,7 +30,6 @@ public class LESConfiguration
     public static Property propSubtitleScale;
     public static Property propXposition;
     public static Property propYposition;
-    public static Property propIndex;
     public static Property propLockPosition;
     private static int xPosition;
     private static int yPosition;
@@ -44,7 +43,6 @@ public class LESConfiguration
     private static int fontRed;
     private static int fontGreen;
     private static int fontBlue;
-    private static int index;
     private static boolean lockPosition = false;
     public static final String CATEGORY_NAME_POSITION = "category_position";
     public static final String CATEGORY_NAME_BACKGROUND = "category_background";
@@ -98,9 +96,6 @@ public class LESConfiguration
 
         propLockPosition = config.get(CATEGORY_NAME_GENERAL, "lockPosition", false, "Locks dragging of the subtitles while in the config GUI. Position can still be changed manually through the configuration.");
         propShowSubtitles.setLanguageKey("gui.les_configuration.lockPosition");
-
-        propIndex = config.get(CATEGORY_NAME_GENERAL, "index", 0, "Internal value that defines which overlay position is currently shown, I recommend not touching this.");
-        propIndex.setLanguageKey("gui.les_configuration.index");
 
         final String OVERLAY_POSITION_DEFAULT_VALUE = "BOTTOM_RIGHT";
         final String[] POSITION_CHOICES = {
@@ -331,7 +326,6 @@ public class LESConfiguration
                 yPosition = Y_POSITION_DEFAULT_VALUE;
             }
             initialPositionPreset = propOverlayPosition.getString();
-            index = propIndex.getInt(0);
         }
 
         propShowSubtitles.set(showSubtitles);
@@ -347,7 +341,6 @@ public class LESConfiguration
         propXposition.set(xPosition);
         propYposition.set(yPosition);
         propBackgroundAlpha.set(backgroundAlpha);
-        propIndex.set(index);
 
         if (config.hasChanged())
         {
