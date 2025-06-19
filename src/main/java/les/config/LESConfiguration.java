@@ -116,6 +116,8 @@ public class LESConfiguration
         propOverlayPosition.setLanguageKey("gui.les_configuration.overlayPosition");
         propOverlayPosition.setValidValues(POSITION_CHOICES);
 
+        // Background
+
         final int BACKGROUND_RED_MIN_VALUE = 0;
         final int BACKGROUND_RED_MAX_VALUE = 255;
         final int BACKGROUND_RED_DEFAULT_VALUE = 0;
