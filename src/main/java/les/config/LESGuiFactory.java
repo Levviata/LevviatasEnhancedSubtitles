@@ -34,7 +34,8 @@ public class LESGuiFactory implements IModGuiFactory
         return new LESConfigGui(parentScreen);
     }
 
-    public boolean hasConfigGui() {
+    public boolean hasConfigGui()
+    {
         return true;
     }
 
@@ -49,6 +50,7 @@ public class LESGuiFactory implements IModGuiFactory
     // configuration categories
     public static class LESConfigGui extends GuiConfig
     {
+
         public LESConfigGui(GuiScreen parentScreen)
         {
             //I18n function basically "translates" or localizes the given key using the appropriate .lang file
@@ -71,6 +73,7 @@ public class LESGuiFactory implements IModGuiFactory
         //the next two classes are the edit screens for each configuration category
         public static class CategoryEntryPosition extends CategoryEntry
         {
+
             public CategoryEntryPosition(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
             {
                 super(owningScreen, owningEntryList, prop);
@@ -102,38 +105,44 @@ public class LESGuiFactory implements IModGuiFactory
                 // how it works, look into the definitions of the called functions and objects
             }
         }
-        public static class CategoryEntryBackground extends CategoryEntry {
-            public CategoryEntryBackground(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+
+        public static class CategoryEntryBackground extends CategoryEntry
+        {
+
+            public CategoryEntryBackground(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+            {
                 super(owningScreen, owningEntryList, prop);
             }
 
-        @Override
-        protected GuiScreen buildChildScreen()
-        {
-            //The following GuiConfig object specifies the configID of the object and thus will force-save
-            // when closed.
-            //Parent GuiConfig object's entryList will also be refreshed to reflect the changes.
-            // --see GuiFactory of Forge for more info
-            //Additionally, Forge best practices say to put the path to the config file for the category as
-            // the title for the category config screen
+            @Override
+            protected GuiScreen buildChildScreen()
+            {
+                //The following GuiConfig object specifies the configID of the object and thus will force-save
+                // when closed.
+                //Parent GuiConfig object's entryList will also be refreshed to reflect the changes.
+                // --see GuiFactory of Forge for more info
+                //Additionally, Forge best practices say to put the path to the config file for the category as
+                // the title for the category config screen
 
-            Configuration configuration = LESConfiguration.getConfig();
-            ConfigElement cat_general = new ConfigElement(configuration.getCategory(LESConfiguration.CATEGORY_NAME_BACKGROUND));
-            List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
-            String windowTitle = configuration.toString();
+                Configuration configuration = LESConfiguration.getConfig();
+                ConfigElement cat_general = new ConfigElement(configuration.getCategory(LESConfiguration.CATEGORY_NAME_BACKGROUND));
+                List<IConfigElement> propertiesOnThisScreen = cat_general.getChildElements();
+                String windowTitle = configuration.toString();
 
-            return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
-                    this.owningScreen.modID,
-                    LESConfiguration.CATEGORY_NAME_BACKGROUND,
-                    this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
-                    this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
-                    windowTitle);
-            //this is a complicated object that specifies the category's gui screen, to better understand
-            // how it works, look into the definitions of the called functions and objects
+                return new GuiConfig(this.owningScreen, propertiesOnThisScreen,
+                        this.owningScreen.modID,
+                        LESConfiguration.CATEGORY_NAME_BACKGROUND,
+                        this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                        windowTitle);
+                //this is a complicated object that specifies the category's gui screen, to better understand
+                // how it works, look into the definitions of the called functions and objects
+            }
         }
-    }
+
         public static class CategoryEntryGeneral extends CategoryEntry
         {
+
             public CategoryEntryGeneral(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
             {
                 super(owningScreen, owningEntryList, prop);
@@ -158,8 +167,10 @@ public class LESGuiFactory implements IModGuiFactory
             }
         }
     }
+
     public static class CategoryEntryFont extends CategoryEntry
     {
+
         public CategoryEntryFont(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
         {
             super(owningScreen, owningEntryList, prop);
